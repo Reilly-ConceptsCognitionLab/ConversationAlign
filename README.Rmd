@@ -1,0 +1,69 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ConversationAlign: An R package for analyzing alignment between speakers in natural language transcripts
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Overview
+
+
+
+
+## Installation
+Install the development version of ConversationAlign from [GitHub](https://github.com/) by typing the following in your console or script (make sure you have devtools installed):
+
+``` {r, eval=F}
+# install.packages("devtools")
+devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
+```
+
+## Prep your language transcripts
+Move your Otter.ai text files or CSV files into a folder.  The default folder name is 'my_transcripts'. If you want to specify your own folder name in the root directory that's fine too. You will call that path as an argument to the first function called read_dyads()
+
+## Read your transcripts into R
+### read_dyads()
+This will read all your files and concatenate them into a single dataframe, appending document IDs
+```{r, eval=F}
+myrawtranscripts <- read_dyads()
+myrawtranscripts <- read_dyads(/my_customfolder)  #if specifying a custom folder path
+```
+
+## Clean your transcripts
+This step uses regular expressions to clean and format your data, eliminating stopwords, changing the case to lower, omitting whitespaces and non-alphabetic characters, etc.
+```{r, eval=F}
+#takes object from the read_dyads step
+mycleantranscripts <- clean_dyads(myrawtranscripts)
+```
+
+## Align your transcripts
+```{r, eval=F}
+#TBD
+```
+
+## Inspect your transcripts
+```{r, eval=F}
+#TBD
+```
+
+## Analyze your transcripts
+```{r, eval=F}
+#TBD
+```
+
+## Get in touch
+Email Jamie Reilly with any feedback.
+
