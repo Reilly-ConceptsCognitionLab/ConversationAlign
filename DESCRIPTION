@@ -1,12 +1,16 @@
 Package: ConversationAlign
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An R package for analyzing alignment between speakers in natural language transcripts
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Jamie Reilly, Ginney Ulichney, Ben Sacks
+Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
