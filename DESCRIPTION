@@ -2,10 +2,10 @@ Package: ConversationAlign
 Type: Package
 Title: An R package for analyzing alignment between speakers in natural language transcripts
 Version: 0.1.0
-Author: c(
-person("Jamie", "Reilly", role = c("aut", "cre"), email ="jamie_reilly@temple.edu"), 
-person("Virginia", "Ulichney", role = c("aut", "cre")),
-person("Ben", "Sacks", role = c("aut", "cre")))
+Authors@R: c(
+    person("Jamie", "Reilly", email = "jamie_reilly@temple.edu", role = c("aut", "cre")),
+    person("Virginia", "Ulichney", role = c("aut", "cre")),
+    person("Ben, "Sacks", role = c("aut", "cre")))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
 Description: This package reads dyad transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.
 License: GPL (>= 3)
@@ -14,13 +14,12 @@ LazyData: true
 Depends: 
     R (>= 2.10),
     dplyr (>= 0.4.3),
-    magrittr
-    dplyr
-    tidyverse
+    magrittr,
+    tidyverse,
     stringi,
     knitr,
     textstem,
-    here
+    here,
     tm,
     textclean,
     tidytable,
