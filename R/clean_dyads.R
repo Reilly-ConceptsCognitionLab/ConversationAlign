@@ -13,6 +13,7 @@
 #' @importFrom textstem lemmatize_words
 #' @importFrom tidyverse rowwise
 #' @importFrom tidyverse mutate
+#' @importFrom tidyverse str_split_1
 #' @importFrom stringi stri_remove_empty
 #' @importFrom tidyr separate_rows
 #' @importFrom dplyr group_by
