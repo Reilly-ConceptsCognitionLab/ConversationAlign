@@ -1,12 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ConversationAlign: An R package for analyzing alignment between speakers in natural language transcripts
+# ConversationAlign
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 ## Overview
+
+An R package for analyzing semantic and affective alignment between
+speakers in natural language transcripts. One of the primary
+applications of this package will be analyzing attributes of
+intergenerational communication.
+
+![](https://reilly-lab.github.io/agepos1.jpg)
 
 ## Installation
 
