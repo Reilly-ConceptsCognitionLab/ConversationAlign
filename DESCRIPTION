@@ -2,17 +2,34 @@ Package: ConversationAlign
 Type: Package
 Title: An R package for analyzing alignment between speakers in natural language transcripts
 Version: 0.1.0
-Author: Jamie Reilly, Ginney Ulichney, Ben Sacks
+Author: c(
+person("Jamie", "Reilly", role = c("aut", "cre"), email ="jamie_reilly@temple.edu"), 
+person("Virginia", "Ulichney", role = c("aut", "cre")),
+person("Ben", "Sacks", role = c("aut", "cre")))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: This package reads dyad transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+Depends: 
+    R (>= 2.10),
+    dplyr (>= 0.4.3),
+    magrittr
+    dplyr
+    tidyverse
+    stringi,
+    knitr,
+    textstem,
+    here
+    tm,
+    textclean,
+    tidytable,
+    stringr
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
+URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign
 Config/testthat/edition: 3
+RoxygenNote: 7.2.3
