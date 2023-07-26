@@ -8,7 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
+  fig.path = "man/figures/",
   out.width = "100%"
 )
 ```
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ## Overview
 An R package for analyzing semantic and affective alignment between speakers in natural language transcripts. One of the primary applications of this package will be analyzing attributes of intergenerational communication.
 
-![](https://reilly-lab.github.io/agepos1.jpg)
+![2 women having a conversation](https://reilly-lab.github.io/agepos1.jpg)
 
 
 ## Installation
