@@ -14,7 +14,7 @@ applications of this package will be analyzing attributes of
 intergenerational communication.
 
 <figure>
-<img src="https://reilly-lab.github.io/agepos1.jpg"
+<img src="man/figures/agepos1.jpg"
 alt="2 women having a conversation" />
 <figcaption aria-hidden="true">2 women having a
 conversation</figcaption>

@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ## Overview
 An R package for analyzing semantic and affective alignment between speakers in natural language transcripts. One of the primary applications of this package will be analyzing attributes of intergenerational communication.
 
-![2 women having a conversation](https://reilly-lab.github.io/agepos1.jpg)
+![2 women having a conversation](man/figures/agepos1.jpg)
 
 
 ## Installation
