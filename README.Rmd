@@ -27,7 +27,7 @@ An R package for analyzing semantic and affective alignment between speakers in 
 Install the development version of ConversationAlign from [GitHub](https://github.com/) by typing the following in your console or script (make sure you have devtools installed):
 
 ``` {r, eval=F}
-# install.packages("devtools")
+install.packages("devtools")
 devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 ```
 

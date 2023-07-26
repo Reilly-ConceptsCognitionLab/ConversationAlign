@@ -27,7 +27,7 @@ Install the development version of ConversationAlign from
 script (make sure you have devtools installed):
 
 ``` r
-# install.packages("devtools")
+install.packages("devtools")
 devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 ```
 
