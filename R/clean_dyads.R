@@ -60,7 +60,7 @@ clean_dyads <- function(read_ts_df) {
     x <- gsub("n't", " not", x) #replace contraction with full word not
     x <- textclean::replace_contraction(x) #replace contractions
     x <- gsub("-", " ", x) #replace all hyphens with spaces
-    x <- tm::removeWords(x, omissions_dyads23$.)
+    x <- tm::removeWords(x, omissions_dyads23$word)
     x <- gsub("\\d+(st|nd|rd|th)", " ", x) #omits 6th, 23rd, ordinal numbers
     x <- gsub("[^a-zA-Z]", " ", x) #omit non-alphabetic characters
     x <- gsub("\\b[a]\\b{1}", " ", x)
