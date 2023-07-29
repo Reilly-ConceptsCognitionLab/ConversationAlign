@@ -19,7 +19,7 @@
 align_dyads <- function(clean_ts_df) {
   load("data/lookup_db.rda") #load lookup database
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
-  myvars <- select.list(c("admiration", "anger", "animosity", "anticipation", "anxiety", "aoa", "awe", "boredom", "calmness",  "closeness", "comfort", "compatibility", "concreteness", "confusion", "contempt", "disgust", "distance", "dominance", "doubt", "empathy", "encouragement", "excitement", "fear", "friendliness", "gratitude", "happiness", "hostility", "interest", "joy", "lg10wf", "love", "n_letters", "relieved", "sadness", "satisfaction", "stress", "surprise", "tension", "trust", "valence", "add my own database as well"),
+  myvars <- select.list(c("admiration", "anger", "animosity", "anticipation", "anxiety", "aoa", "awe", "boredom", "calmness",  "closeness", "comfort", "compatibility", "concreteness", "confusion", "contempt", "disgust", "distance", "dominance", "doubt", "empathy", "encouragement", "excitement", "fear", "friendliness", "gratitude", "happiness", "hostility", "interest", "joy", "lg10wf", "love", "n_letters", "relieved", "sadness", "satisfaction", "stress", "surprise", "tension", "trust", "valence"),
                         preselect = NULL, multiple = TRUE,
                         title = "Select the variables you would like to align your conversation transcripts on",
                         graphics = FALSE)
@@ -27,38 +27,12 @@ align_dyads <- function(clean_ts_df) {
   if (length(myvars) == 0) { #if no variables are selected, defaults are automatically added
     myvars <- c("happiness", "hostility", "empathy", "excitement")
   }
-
   var_selected <- lookup_db %>% #select desired columns from lookup_db
     select(matches("^word$"), contains(myvars))
-
-  if (any(grepl("add my own database as well", myvars)) == TRUE) {
-    #take use input for the full file path to the data base they want to use
-    database_path <- readline("Input the file path to the database you would like to add.")
-    user_added_db <- read.csv(database_path) #IS IT OK TO ASSUME THAT DATABASE WILL BE .CSV???
-    user_added_db <- data.frame(user_added_db)
-    #display the column names of user added database and allow them to choose the columns they want
-    subset_user_db <- select.list(c(colnames(user_added_db), "Select all columns"),
-                                  preselect = NULL, multiple = TRUE,
-                                  title = "Select the columns you would like to subset. The word column must be included.",
-                                  graphics = FALSE)
-    #allows user to select one option to select every column in their added database
-    if (any(grepl("Select all columns", subset_user_db)) == TRUE) {
-      subset_user_db <- colnames(user_added_db)
-    }
-    user_added_db <- user_added_db %>% select(contains(subset_user_db)) #select the columns specified from the database
-    #alter the word column on the added database to match the column name of the built in databse
-    colnames(user_added_db)[grep("^word$", colnames(user_added_db), ignore.case = TRUE)] <- "word"
-    #if user added their own database and subsetted from built in - binds both together.
-    if (length(myvars[-grep("add my own database as well", myvars)]) > 0) {
-      var_selected <- full_join(x = var_selected, y = user_added_db, by="word")
-    }
-  }
   #create variable containing the column names of each variable to be aligned
   var_aligners <- colnames(var_selected)[-grep("^word$", colnames(lookup_db), ignore.case = TRUE)]
 
-  var_selected <- var_selected %>% distinct(word, .keep_all = TRUE)
-
-  ts_list <- split(clean_ts_df, f = clean_ts_df$Doc_id) #split the transcript data frame into a list by Doc_id
+  ts_list <- split(clean_ts_df, f = clean_ts_df$Doc_id) #split transcript df into list by Doc_id
   ts_aligned_list <- lapply(ts_list, function(ts_select){
     #join measures of each variable to each word in each transcript
     df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
@@ -71,7 +45,7 @@ align_dyads <- function(clean_ts_df) {
       # select variables, speaker and dyad information, and word analytics
       group_by(Doc_id, TurnCount, Speaker_names_raw) %>% #group by doc id, turn, and speaker
       summarise(Time = min(Time), #make time the minimum for each turn
-                across(contains(var_aligners), mean), #average each variable by turn
+                across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average each variable by turn
                 across(starts_with("Analytics_wordcount"), sum), #sum word counts
                 across(starts_with("Analytics_words_removed"), sum), #sum removed word counts
                 across(starts_with("Analytics_mean_word_length"), mean),
