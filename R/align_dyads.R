@@ -21,7 +21,7 @@ align_dyads <- function(clean_ts_df) {
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
   myvars <- select.list(c("admiration", "anger", "animosity", "anticipation", "anxiety", "aoa", "awe", "boredom", "calmness",  "closeness", "comfort", "compatibility", "concreteness", "confusion", "contempt", "disgust", "distance", "dominance", "doubt", "empathy", "encouragement", "excitement", "fear", "friendliness", "gratitude", "happiness", "hostility", "interest", "joy", "lg10wf", "love", "n_letters", "relieved", "sadness", "satisfaction", "stress", "surprise", "tension", "trust", "valence"),
                         preselect = NULL, multiple = TRUE,
-                        title = "Select the variables you would like to align your conversation transcripts on",
+                        title = "Select the variables you would like to align your conversation transcripts on. Please do not select more than three variables.",
                         graphics = FALSE)
 
   if (length(myvars) == 0) { #if no variables are selected, defaults are automatically added
@@ -35,7 +35,7 @@ align_dyads <- function(clean_ts_df) {
   ts_list <- split(clean_ts_df, f = clean_ts_df$Doc_id) #split transcript df into list by Doc_id
   ts_aligned_list <- lapply(ts_list, function(ts_select){
     #join measures of each variable to each word in each transcript
-    df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
+    df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "warning")
     df_aligned <- df_aligned[complete.cases(df_aligned), ] # remove any words that couldn't be aligned
     df_aligned <- data.frame(df_aligned)
 
