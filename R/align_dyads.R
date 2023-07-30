@@ -35,7 +35,7 @@ align_dyads <- function(clean_ts_df) {
   ts_list <- split(clean_ts_df, f = clean_ts_df$Doc_id) #split transcript df into list by Doc_id
   ts_aligned_list <- lapply(ts_list, function(ts_select){
     #join measures of each variable to each word in each transcript
-    df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "warning")
+    df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
     df_aligned <- df_aligned[complete.cases(df_aligned), ] # remove any words that couldn't be aligned
     df_aligned <- data.frame(df_aligned)
 
