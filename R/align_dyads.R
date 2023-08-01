@@ -19,7 +19,7 @@
 align_dyads <- function(clean_ts_df) {
   load("data/lookup_db.rda") #load lookup database
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
-  myvars <- select.list(c("admiration", "anger", "animosity", "anticipation", "anxiety", "aoa", "awe", "boredom", "calmness",  "closeness", "comfort", "compatibility", "concreteness", "confusion", "contempt", "disgust", "distance", "dominance", "doubt", "empathy", "encouragement", "excitement", "fear", "friendliness", "gratitude", "happiness", "hostility", "interest", "joy", "lg10wf", "love", "n_letters", "relieved", "sadness", "satisfaction", "stress", "surprise", "tension", "trust", "valence"),
+  myvars <- select.list(c("admiration", "anger", "animosity", "anticipation", "anxiety", "aoa", "arousal", "awe", "boredom", "calmness",  "closeness", "comfort", "compatibility", "concreteness", "confusion", "contempt", "disgust", "distance", "dominance", "doubt", "empathy", "encouragement", "excitement", "fear", "friendliness", "gratitude", "happiness", "hostility", "interest", "joy", "wfreq", "love", "n_letters", "relieved", "sadness", "satisfaction", "stress", "surprise", "tension", "trust", "valence"),
                         preselect = NULL, multiple = TRUE,
                         title = "Select the variables you would like to align your conversation transcripts on. Please do not select more than three variables.",
                         graphics = FALSE)
@@ -32,7 +32,7 @@ align_dyads <- function(clean_ts_df) {
   #create variable containing the column names of each variable to be aligned
   var_aligners <- colnames(var_selected)[-grep("^word$", colnames(lookup_db), ignore.case = TRUE)]
 
-  ts_list <- split(clean_ts_df, f = clean_ts_df$Doc_id) #split transcript df into list by Doc_id
+  ts_list <- split(clean_ts_df, f = clean_ts_df$Event_id) #split transcript df into list by Event_id
   ts_aligned_list <- lapply(ts_list, function(ts_select){
     #join measures of each variable to each word in each transcript
     df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
@@ -41,9 +41,9 @@ align_dyads <- function(clean_ts_df) {
 
     df_aligned_agg <- df_aligned %>%
       mutate(TurnCount = consecutive_id(Speaker_names_raw), .before = 1) %>% # add a turn column
-      select(Doc_id, Speaker_names_raw, TurnCount, Time, contains(var_aligners), starts_with("Analytics")) %>%
+      select(Event_id, Speaker_names_raw, TurnCount, Time, contains(var_aligners), starts_with("Analytics")) %>%
       # select variables, speaker and dyad information, and word analytics
-      group_by(Doc_id, TurnCount, Speaker_names_raw) %>% #group by doc id, turn, and speaker
+      group_by(Event_id, TurnCount, Speaker_names_raw) %>% #group by doc id, turn, and speaker
       summarise(Time = min(Time), #make time the minimum for each turn
                 across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average each variable by turn
                 across(starts_with("Analytics_wordcount"), sum), #sum word counts
@@ -73,7 +73,7 @@ align_dyads <- function(clean_ts_df) {
     ask_demo_filepath <- readline("If you would like to align demographics to speakers, input the file path to the demographic csv file.")
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_demo_filepath) == "random") {
-      randomly <- lapply(split(aligned_ts_df, aligned_ts_df$Doc_id), function(x){ #iterates over each doc
+      randomly <- lapply(split(aligned_ts_df, aligned_ts_df$Event_id), function(x){ #iterates over each doc
         x <- data.frame(x)
         #creates a vector of each speaker with random indexes and assigns a alphanumeric sequence name
         speakervec <- sample(unique(x[,grep("Speaker_names_raw", colnames(x), ignore.case = T)]))
@@ -136,4 +136,3 @@ align_dyads <- function(clean_ts_df) {
   #END DEFINING DEMOGRAPHIC_ALIGN FUNCTION
   demographic_align(aligned_ts_df = ts_aligned_df_total) #run demoraphic aligner on aligned data frame
 }
-

@@ -35,7 +35,7 @@ clean_dyads <- function(read_ts_df) {
     filter(Speaker_names_raw != "Assistant") %>%
     filter(Speaker_names_raw != "assistant")
   read_data_frame$Speaker_names_raw <- as.factor(read_data_frame$Speaker_names_raw) #convert variables to factor
-  read_data_frame$Doc_id <- as.factor(read_data_frame$Doc_id)
+  read_data_frame$Event_id <- as.factor(read_data_frame$Event_id)
 
   #convert time from hh:mm:ss or mm:ss to milliseconds
   read_data_frame$Time <- sapply(read_data_frame$Time, function(x){

@@ -70,7 +70,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
       data.table::setattr(txtdata, "names", file_list_txt) #add names attribute to each list element
       #adds a doc id column to each transcript based on its name attribute
       #    txtdata <- lapply(names(txtdata), function(x){
-      #      txtdata[[match(x, names(txtdata))]] <- cbind(Doc_id = rep(x, nrow(txtdata[[match(x, names(txtdata))]])), txtdata[[match(x, names(txtdata))]])})
+      #      txtdata[[match(x, names(txtdata))]] <- cbind(Event_id = rep(x, nrow(txtdata[[match(x, names(txtdata))]])), txtdata[[match(x, names(txtdata))]])})
       #returns the list of each data frame with doc IDs.
       return(txtdata)
     }} #end of the read_me txt function
@@ -94,7 +94,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
       data.table::setattr(csvdata, "names", file_list_csv) #add names attribute to textdata
       #adds a doc id column to each transcript based on its name attribute
       #      csvdata <- lapply(names(csvdata), function(x){
-      #        csvdata[[match(x, names(csvdata))]] <- cbind(Doc_id = rep(x, nrow(csvdata[[match(x, names(csvdata))]])), csvdata[[match(x, names(csvdata))]])})
+      #        csvdata[[match(x, names(csvdata))]] <- cbind(Event_id = rep(x, nrow(csvdata[[match(x, names(csvdata))]])), csvdata[[match(x, names(csvdata))]])})
       return(csvdata)
     }}
   #END OF THE READ_ME__CSV FUNCTION
@@ -105,8 +105,8 @@ read_dyads <- function(folder_name = "my_transcripts") {
   all_list <- append(txtlist, csvlist) #append the two lists into one list
 
   all_list_num <- lapply(seq(length(all_list)), function(doc_num){ #iterate over each transcript
-    all_list[[doc_num]] <- cbind(Doc_id = rep(doc_num, nrow(all_list[[doc_num]])), all_list[[doc_num]])}) #bind the index of the transcript as a column to the data frame
+    all_list[[doc_num]] <- cbind(Event_id = rep(doc_num, nrow(all_list[[doc_num]])), all_list[[doc_num]])}) #bind the index of the transcript as a column to the data frame
   alldf <- bind_rows(all_list_num) #binds the rows  of each list into one data frame
   return(alldf)
-  #outputs a data frame containing every dyad with columns: Doc_id, Speaker_names_raw, Time, and RawText
+  #outputs a data frame containing every dyad with columns: Event_id, Speaker_names_raw, Time, and RawText
 }
