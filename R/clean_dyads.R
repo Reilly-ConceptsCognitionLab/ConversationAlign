@@ -22,7 +22,7 @@
 
 clean_dyads <- function(read_ts_df) {
   read_data_frame <- read_ts_df %>%
-    filter(Speaker_names_raw != "Unknown") %>% #filter out common unwanted speaker names
+    dplyr::filter(Speaker_names_raw != "Unknown") %>% #filter out common unwanted speaker names
     filter(Speaker_names_raw != "unknown") %>%
     filter(Speaker_names_raw != "Speaker") %>%
     filter(Speaker_names_raw != "speaker") %>%
@@ -69,26 +69,26 @@ clean_dyads <- function(read_ts_df) {
     x <- textstem::lemmatize_words(x)
   }
 
-  read_data_frame$RawText <- str_squish(read_data_frame$RawText) #remove unneeded white space from text
+  read_data_frame$RawText <- stringr::str_squish(read_data_frame$RawText) #remove unneeded white space from text
 
   df_with_word_count <- read_data_frame %>%
-    rowwise() %>% #group by individual row
-    mutate(Analytics_wordcount_raw = length(stri_remove_empty(str_split_1(paste(RawText, collapse = " "), " "))), #create new column of word count by row
-           Analytics_mean_word_length_raw = mean(nchar(stri_remove_empty(str_split_1(paste(RawText, collapse = " "), pattern = " "))))) %>% #create new column of average word length by row
-    ungroup()
+    dplyr::rowwise() %>% #group by individual row
+    dplyr::mutate(Analytics_wordcount_raw = length(stri_remove_empty(str_split_1(paste(RawText, collapse = " "), " "))), #create new column of word count by row
+                  Analytics_mean_word_length_raw = mean(nchar(stri_remove_empty(str_split_1(paste(RawText, collapse = " "), pattern = " "))))) %>% #create new column of average word length by row
+    dplyr::ungroup()
 
   dfclean <- df_with_word_count %>%
-    mutate(CleanText = clean(RawText)) %>%  #run clean function on raw text, making a new column
-    rowwise() %>% #group by individual row
-    mutate(Analytics_wordcount_clean = length(stri_remove_empty(str_split_1(paste(CleanText, collapse = " "), " "))), # create word count column for cleaned text
-           Analytics_mean_word_length_clean = mean(nchar(stri_remove_empty(str_split_1(paste(CleanText, collapse = " "), pattern = " "))))) %>% #create mean word length column for clean text
-    ungroup() %>%
-    select(!RawText)# remove old raw text and grouping column
+    dplyr::mutate(CleanText = clean(RawText)) %>%  #run clean function on text, making a new column
+    dplyr::rowwise() %>% #group by individual row
+    dplyr::mutate(Analytics_wordcount_clean = length(stri_remove_empty(str_split_1(paste(CleanText, collapse = " "), " "))), # create word count column for cleaned text
+                  Analytics_mean_word_length_clean = mean(nchar(stri_remove_empty(str_split_1(paste(CleanText, collapse = " "), pattern = " "))))) %>% #create mean word length column for clean text
+    dplyr::ungroup() %>%
+    dplyr::select(!RawText)# remove old raw text and grouping column
 
   dfclean_sep <- tidyr::separate_rows(dfclean, CleanText) # create row for each word in clean text
 
   dfclean_filtered <- dfclean_sep %>%
-    filter(CleanText != "")#remove rows where text is an empty string
+    dplyr::filter(CleanText != "")#remove rows where text is an empty string
 
   #calculate words removed from the difference between the raw word count and clean word count
   dfclean_filtered$Analytics_words_removed <- dfclean_filtered$Analytics_wordcount_raw - dfclean_filtered$Analytics_wordcount_clean

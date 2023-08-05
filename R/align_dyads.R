@@ -19,11 +19,15 @@
 align_dyads <- function(clean_ts_df) {
   load("data/lookup_db.rda") #load lookup database
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
-  myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness", "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy", "aff_encouragement",
-                          "aff_excitement", "aff_guilt", "aff_happiness", "aff_hope", "aff_hostility", "aff_politeness", "aff_sadness",
-                          "aff_stress", "aff_surprise", "aff_trust", "aff_valence", "lex_age_acquisition", "lex_letter_count_raw",
-                          "lex_morphemecount_raw", "lex_prevalence", "lex_senses_polysemy" ,  "lex_wordfreqlg10_raw",
-                          "sem_arousal", "sem_concreteness", "sem_diversity", "sem_neighbors"), preselect = NULL, multiple = TRUE,
+  myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
+                          "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
+                          "aff_encouragement", "aff_excitement", "aff_guilt", "aff_happiness",
+                          "aff_hope", "aff_hostility", "aff_politeness", "aff_sadness",
+                          "aff_stress", "aff_surprise", "aff_trust", "aff_valence",
+                          "lex_age_acquisition", "lex_letter_count_raw",
+                          "lex_morphemecount_raw", "lex_prevalence", "lex_senses_polysemy",
+                          "lex_wordfreqlg10_raw", "sem_arousal", "sem_concreteness",
+                          "sem_diversity", "sem_neighbors"), preselect = NULL, multiple = TRUE,
                         title = "Select the variables you would like to align your conversation transcripts on. Please do not select more than three variables.",
                         graphics = FALSE)
   var_selected <- lookup_db %>% #select desired columns from lookup_db
@@ -34,32 +38,31 @@ align_dyads <- function(clean_ts_df) {
   ts_list <- split(clean_ts_df, f = clean_ts_df$Event_id) #split transcript df into list by Event_id
   ts_aligned_list <- lapply(ts_list, function(ts_select){
     #join measures of each variable to each word in each transcript
-    df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
-    df_aligned <- df_aligned[complete.cases(df_aligned), ] # remove any words that couldn't be aligned
+    df_aligned <- dplyr::left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
     df_aligned <- data.frame(df_aligned)
+    df_aligned <- df_aligned[complete.cases(df_aligned[, c(which(colnames(df_aligned) %in% myvars))]),]     # remove rows with words that couldn't be aligned
+
     df_aligned_agg <- df_aligned %>%
-      mutate(TurnCount = consecutive_id(Speaker_names_raw), .before = 1) %>% # add a turn column
-      select(Event_id, Speaker_names_raw, TurnCount, Time, contains(var_aligners), starts_with("Analytics")) %>%
-      # select variables, speaker and dyad information, and word analytics
-      group_by(Event_id, TurnCount, Speaker_names_raw) %>% #group by doc id, turn, and speaker
-      summarise(Time = min(Time), #make time the minimum for each turn
-                across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average each variable by turn
-                across(starts_with("Analytics_wordcount"), sum), #sum word counts
-                across(starts_with("Analytics_words_removed"), sum), #sum removed word counts
-                across(starts_with("Analytics_mean_word_length"), mean),
-                .groups = "drop") %>%
-      ungroup() #reformat data frame back to chronological order
+      dplyr::mutate(Turn_count = consecutive_id(Speaker_names_raw), .before = 1) %>% # add turn seq
+      dplyr::select(Event_id, Speaker_names_raw, Turn_count, Time, contains(var_aligners), starts_with("Analytics")) %>%  # select variables, speaker and dyad information, and word analytics
+      dplyr::group_by(Event_id, Turn_count, Speaker_names_raw) %>% #group by doc id, turn, and speaker
+      dplyr::summarise(Time = min(Time), #make time the minimum for each turn
+                       across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average each variable by turn
+                       across(starts_with("Analytics_wordcount"), sum), #sum word counts
+                       across(starts_with("Analytics_words_removed"), sum), #sum removed word counts
+                       across(starts_with("Analytics_mean_word_length"), mean),
+                       .groups = "drop") %>%
+      dplyr::ungroup() #reformat data frame back to chronological order
+
     # identifies if there are an odd number of rows (one speaker spoke but other did not respond)
     if ((nrow(df_aligned_agg)%%2) == 1 ) {
       temprow <- data.frame(matrix(NA, nrow = 1, ncol = ncol(df_aligned_agg))) #creates a new adder row
       colnames(temprow) <- c(colnames(df_aligned_agg))
       df_aligned_agg <- rbind(df_aligned_agg, temprow) #adds row full of NA to end of the data frame
     }
-    ExchangeCount <- rep(seq(1:(length(df_aligned_agg$TurnCount)/2)), each=2) #creates Exchange Count
-    df_aligned_EC <- cbind(ExchangeCount, df_aligned_agg) #binds ExC to the data frame
-    df_aligned_EC <- na.omit(df_aligned_EC) #removes added NA row
-    df_aligned_EC <- df_aligned_EC %>%
-      select(!TurnCount) #removes turn count column
+    ExchangeCount <- rep(seq(1:(length(df_aligned_agg$Turn_count)/2)), each=2) #creates Exchange Count
+    df_aligned_EC <- data.frame(cbind(ExchangeCount, df_aligned_agg)) #binds ExC to the data frame
+    df_aligned_EC <- df_aligned_EC[complete.cases(df_aligned_EC[, which(colnames(df_aligned_EC) %in% "Event_id")]),]
 
     df_aligned_EC #output the transcript exchange count organized aligned data frame to a list
   })
@@ -68,7 +71,7 @@ align_dyads <- function(clean_ts_df) {
   #DEFINE THE DEMOGRAPHIC_ALIGN FUNCTION
   demographic_align <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_demo_filepath <- readline("If you would like to align demographics to speakers, input the file path to the demographic csv file.")
+    ask_demo_filepath <- readline("If you would like to align demographics to speakers, input the file path to the demographic csv file. If you do not wish to align demographics do not enter anything. Enter 'random' to align a random code to each speaker in each dyad.")
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_demo_filepath) == "random") {
       randomly <- lapply(split(aligned_ts_df, aligned_ts_df$Event_id), function(x){ #iterates over each doc
@@ -96,27 +99,29 @@ align_dyads <- function(clean_ts_df) {
       #allows the user to specify which columns they want to subset
       subset_demo_data <- select.list(c(colnames(demoinfo), "Select all columns"),
                                       preselect = NULL, multiple = TRUE,
-                                      title = "Select the columns you would like to subset. The participant ID column must be included.",
+                                      title = "Select the columns you would like to subset. The participant ID column must be included as the first selection.",
                                       graphics = FALSE)
       #if the select all option is chosen, selects every column
       if (any(grepl("Select all columns", subset_demo_data)) == TRUE) {
         subset_demo_data <- colnames(demoinfo)
       }
       demos_selected <- demoinfo %>%
-        select(contains(subset_demo_data)) #selects only specified columns from the demographics
+        dplyr::select(contains(subset_demo_data)) #selects specified columns from demographics
 
       demos <- demos_selected %>%
-        select(!contains("PID")) %>%
-        select(!contains("Participant")) #selects only columns that aren't participant ID
+        dplyr::select(!contains("PID")) %>%
+        dplyr::select(!contains("Participant")) #selects only columns that aren't participant ID
 
       partid <- demos_selected %>%
-        select(contains(setdiff(colnames(demos_selected), colnames(demos))))
+        dplyr::select(contains(setdiff(colnames(demos_selected), colnames(demos))))
+      demos <- data.frame(demos)
       #creates a new data frame that just includes specified demo domains and combines them into to one string, which will be a total combination of demographics
-      domaincode <- data.frame(sapply(colnames(demos), function(x) {
-        domainlvl <- sort(unique(demos[, match(x, colnames(demos))]))  #creates a vector of unique domain info
-        names(domainlvl) <- paste("S", 1:length(domainlvl), sep = "")  #alphabetically assigns a code to each
-        coloutput <- sapply(demos[match(x, colnames(demos))], function(y) {
+      domaincode <- data.frame(sapply(colnames(demos), function(demo_select) {
+        domainlvl <- sort(unique(demos[, match(demo_select, colnames(demos))])) #create vector of domain info
+        names(domainlvl) <- paste("S", 1:length(domainlvl), sep = "")  #alphabetically assign a code
+        coloutput <- sapply(demos[match(demo_select , colnames(demos))], function(y) {
           names(domainlvl)[match(y, domainlvl)]
+
         })
         coloutput
       }))
@@ -124,10 +129,10 @@ align_dyads <- function(clean_ts_df) {
       colnames(demos) <- paste("Speaker_group_var", tolower(colnames(demos)), sep = "_")
       demos <- cbind(demos, domaincode) #bind the assigned codes to the original groups
       demos[] <- lapply(demos[], factor) #make each grouping variable a factor
-      demos <- cbind(PID = partid, demos) #bind participant ID to the demographic groups
+      demos <- cbind(partid, demos) #bind participant ID to the demographic groups
 
       demo_aligned_df <- aligned_ts_df %>%
-        left_join(demos, by=c("Speaker_names_raw" = "PID")) #align demographic groups by participant ID
+        dplyr::left_join(demos, by=c("Speaker_names_raw" = "PID")) #align demographic groups by PID
 
       return(demo_aligned_df)
     }}
