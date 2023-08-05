@@ -19,14 +19,13 @@
 align_dyads <- function(clean_ts_df) {
   load("data/lookup_db.rda") #load lookup database
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
-  myvars <- select.list(c("admiration", "anger", "animosity", "anticipation", "anxiety", "aoa", "arousal", "awe", "boredom", "calmness",  "closeness", "comfort", "compatibility", "concreteness", "confusion", "contempt", "disgust", "distance", "dominance", "doubt", "empathy", "encouragement", "excitement", "fear", "friendliness", "gratitude", "happiness", "hostility", "interest", "joy", "wfreq", "love", "n_letters", "relieved", "sadness", "satisfaction", "stress", "surprise", "tension", "trust", "valence"),
-                        preselect = NULL, multiple = TRUE,
+  myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness", "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy", "aff_encouragement",
+                          "aff_excitement", "aff_guilt", "aff_happiness", "aff_hope", "aff_hostility", "aff_politeness", "aff_sadness",
+                          "aff_stress", "aff_surprise", "aff_trust", "aff_valence", "lex_age_acquisition", "lex_letter_count_raw",
+                          "lex_morphemecount_raw", "lex_prevalence", "lex_senses_polysemy" ,  "lex_wordfreqlg10_raw",
+                          "sem_arousal", "sem_concreteness", "sem_diversity", "sem_neighbors"), preselect = NULL, multiple = TRUE,
                         title = "Select the variables you would like to align your conversation transcripts on. Please do not select more than three variables.",
                         graphics = FALSE)
-
-  if (length(myvars) == 0) { #if no variables are selected, defaults are automatically added
-    myvars <- c("happiness", "hostility", "empathy", "excitement")
-  }
   var_selected <- lookup_db %>% #select desired columns from lookup_db
     select(matches("^word$"), contains(myvars))
   #create variable containing the column names of each variable to be aligned
@@ -38,7 +37,6 @@ align_dyads <- function(clean_ts_df) {
     df_aligned <- left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
     df_aligned <- df_aligned[complete.cases(df_aligned), ] # remove any words that couldn't be aligned
     df_aligned <- data.frame(df_aligned)
-
     df_aligned_agg <- df_aligned %>%
       mutate(TurnCount = consecutive_id(Speaker_names_raw), .before = 1) %>% # add a turn column
       select(Event_id, Speaker_names_raw, TurnCount, Time, contains(var_aligners), starts_with("Analytics")) %>%
