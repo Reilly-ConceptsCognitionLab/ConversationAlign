@@ -68,74 +68,56 @@ align_dyads <- function(clean_ts_df) {
   })
   ts_aligned_df_total <- bind_rows(ts_aligned_list)
 
-  #DEFINE THE DEMOGRAPHIC_ALIGN FUNCTION
-  demographic_align <- function(aligned_ts_df) {
+  #DEFINE THE METADATA ALIGN FUNCTION
+  align_metadata <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_demo_filepath <- readline("If you would like to align demographics to speakers, input the file path to the demographic csv file. If you do not wish to align demographics do not enter anything. Enter 'random' to align a random code to each speaker in each dyad.")
+    ask_meta_filepath <- readline("If you would like to align metadata by speaker and event ID, input the file path to the metadata csv file. If you do not wish to align metadata do not enter anything. Enter 'random' to randomly assign a variable to each speaker in each dyad.")
     #if user inputs 'random', randomly assigns groups across transcripts
-    if (str_to_lower(ask_demo_filepath) == "random") {
+    if (str_to_lower(ask_meta_filepath) == "random") {
       randomly <- lapply(split(aligned_ts_df, aligned_ts_df$Event_id), function(x){ #iterates over each doc
         x <- data.frame(x)
-        #creates a vector of each speaker with random indexes and assigns a alphanumeric sequence name
+        #creates vector of each speaker with random indexes and assigns a alphanumeric sequence name
         speakervec <- sample(unique(x[,grep("Speaker_names_raw", colnames(x), ignore.case = T)]))
         names(speakervec) <- paste("S", 1:length(speakervec), sep = "")
         #creates a data frame with just speaker names and assigned code
         coloutput <- data.frame(Speaker_names_raw = speakervec,
-                                Speaker_Code_Random = sapply(speakervec, function(y) {
+                                Speaker_group_var_random = sapply(speakervec, function(y) {
                                   names(speakervec)[match(y, speakervec)]}))
-        x <- x %>% left_join(coloutput, by=c("Speaker_names_raw")) #binds code to the aligned data frame
+        x <- x %>% left_join(coloutput, by=c("Speaker_names_raw")) #binds code to aligned data frame
       })
       randomly <- bind_rows(randomly) #binds all the doc data frame into one
       return(randomly)
     }
     #if input is empty, returns the aligned data frame with no demographics
-    else if (ask_demo_filepath == "") {
+    else if (ask_meta_filepath == "") {
       return(aligned_ts_df)
     }
     #if file path is entered:
     else {
       #reads in a csv file of demographic information associated with participant IDs.
-      demoinfo <- data.frame(read.csv(ask_demo_filepath))
+      metadata <- data.frame(read.csv(ask_meta_filepath))
       #allows the user to specify which columns they want to subset
-      subset_demo_data <- select.list(c(colnames(demoinfo), "Select all columns"),
-                                      preselect = NULL, multiple = TRUE,
-                                      title = "Select the columns you would like to subset. The participant ID column must be included as the first selection.",
-                                      graphics = FALSE)
+      subset_metadata <- select.list(c(colnames(metadata), "Select all columns"),
+                                     preselect = NULL, multiple = TRUE,
+                                     title = "Select the columns you would like to subset. The participant ID and event/transcript ID column must be included.",
+                                     graphics = FALSE)
       #if the select all option is chosen, selects every column
-      if (any(grepl("Select all columns", subset_demo_data)) == TRUE) {
-        subset_demo_data <- colnames(demoinfo)
+      if (any(grepl("Select all columns", subset_metadata)) == TRUE) {
+        subset_metadata <- colnames(metadata)
       }
-      demos_selected <- demoinfo %>%
-        dplyr::select(contains(subset_demo_data)) #selects specified columns from demographics
+      metadata_selected <- metadata[,colnames(metadata) %in% subset_metadata] #select specified columns
+      #select dimensions that aren't used to align on
+      meta_dims <- which(!colnames(metadata_selected) %in% c("Event_id", "Speaker"))
+      #make all dimensions that aren't alingers factors
+      metadata_selected[,meta_dims] <- lapply(metadata_selected[,meta_dims], factor)
+      colnames(metadata_selected)[meta_dims] <- paste("Metadata", tolower(colnames(metadata_selected)[meta_dims]), sep = "_")
 
-      demos <- demos_selected %>%
-        dplyr::select(!contains("PID")) %>%
-        dplyr::select(!contains("Participant")) #selects only columns that aren't participant ID
-
-      partid <- demos_selected %>%
-        dplyr::select(contains(setdiff(colnames(demos_selected), colnames(demos))))
-      demos <- data.frame(demos)
-      #creates a new data frame that just includes specified demo domains and combines them into to one string, which will be a total combination of demographics
-      domaincode <- data.frame(sapply(colnames(demos), function(demo_select) {
-        domainlvl <- sort(unique(demos[, match(demo_select, colnames(demos))])) #create vector of domain info
-        names(domainlvl) <- paste("S", 1:length(domainlvl), sep = "")  #alphabetically assign a code
-        coloutput <- sapply(demos[match(demo_select , colnames(demos))], function(y) {
-          names(domainlvl)[match(y, domainlvl)]
-
-        })
-        coloutput
-      }))
-      colnames(domaincode) <- paste("Speaker_group_var_code", tolower(colnames(demos)), sep = "_")
-      colnames(demos) <- paste("Speaker_group_var", tolower(colnames(demos)), sep = "_")
-      demos <- cbind(demos, domaincode) #bind the assigned codes to the original groups
-      demos[] <- lapply(demos[], factor) #make each grouping variable a factor
-      demos <- cbind(partid, demos) #bind participant ID to the demographic groups
-
-      demo_aligned_df <- aligned_ts_df %>%
-        dplyr::left_join(demos, by=c("Speaker_names_raw" = "PID")) #align demographic groups by PID
-
-      return(demo_aligned_df)
-    }}
-  #END DEFINING DEMOGRAPHIC_ALIGN FUNCTION
-  demographic_align(aligned_ts_df = ts_aligned_df_total) #run demoraphic aligner on aligned data frame
+      #join metadata to aligned data frame by event id and PID
+      metadata_aligned_df <- dplyr::left_join(aligned_ts_df, metadata_selected,
+                                              by=c("Event_id", "Speaker_names_raw" = "Speaker"))
+      return(metadata_aligned_df)
+    }
+  }
+  #END DEFINING METADATA ALIGN FUNCTION
+  align_metadata(aligned_ts_df = ts_aligned_df_total) #run demoraphic aligner on aligned data frame
 }
