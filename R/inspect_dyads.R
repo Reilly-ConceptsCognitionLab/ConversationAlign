@@ -29,12 +29,12 @@
 inspect_dyads <- function(aligned_ts_df, dimensions = "all") {
   inspect_analytics_output_df <- aligned_ts_df %>%
     dplyr::select(Event_id, ExchangeCount, Speaker_names_raw, starts_with("Analytics_"),
-                  starts_with("Speaker_group_var")) %>% #select only analytic, demo, and grouping columns
+                  starts_with("Metadata_")) %>% #select only analytic, demo, and grouping columns
     #calculate how large a percentage of raw word were removed
-    mutate(Percent_stopword_removed = (Analytics_words_removed / Analytics_wordcount_raw)*100) %>%
-    group_by(Event_id, Speaker_names_raw) %>%
-    mutate(N_turns = max(ExchangeCount)) %>% #make number of turns the highest ExC from each speaker
-    ungroup() %>%
+    dplyr::mutate(Percent_stopword_removed = (Analytics_words_removed / Analytics_wordcount_raw)*100) %>%
+    dplyr::group_by(Event_id, Speaker_names_raw) %>%
+    dplyr::mutate(N_turns = max(ExchangeCount)) %>% #make number of turns the highest ExC from each speaker
+    dplyr::ungroup() %>%
     dplyr::select(!c(ExchangeCount, Analytics_words_removed)) %>%
     tidyr::pivot_longer(cols = starts_with("Analytics_"), #pivot all analytic columns to 3 columns
                         names_to = c("Measure", "Version"),      #pivots to version (clean vs raw) and
@@ -43,16 +43,16 @@ inspect_dyads <- function(aligned_ts_df, dimensions = "all") {
                         values_to = "Score") %>%
     dplyr::mutate(Version = str_to_sentence(Version), #make elements of new columns sentence case
                   Measure = str_to_sentence(Measure)) %>%
-    group_by(Measure) %>% #group and create a grouped sequence to aid pivot wider
+    dplyr::group_by(Measure) %>% #group and create a grouped sequence to aid pivot wider
     dplyr::mutate(row = row_number()) %>%
     tidyr::pivot_wider(names_from = Measure, values_from = Score) %>% #pivot measurements and scores
-    group_by(Event_id, Speaker_names_raw, Version) %>%
+    dplyr::group_by(Event_id, Speaker_names_raw, Version) %>%
     dplyr::summarise(N_turns = first(N_turns), #summarise over dyad, speaker, and version
                      Wordcount_total = sum(Wordcount), #computes total WC, mean WC, mean word length
                      Words_per_turn_mean = mean(Wordcount),
                      Percent_stopword_removed = mean(Percent_stopword_removed),#preserves other measures
                      Mean_word_length = mean(Mean_word_length),
-                     across(starts_with("Speaker_group_var"), first),
+                     across(starts_with("Metadata_"), first),
                      .groups = "drop")
   #visualization portion of inspect
   aligned <- aligned_ts_df
@@ -83,9 +83,9 @@ inspect_dyads <- function(aligned_ts_df, dimensions = "all") {
   align_long$Event_id <- as.factor(align_long$Event_id)
 
   align_long_pairings <- align_long %>%
-    group_by(Event_id) %>%
+    dplyr::group_by(Event_id) %>%
     dplyr::mutate(Speaker_pair = as.factor(paste(unique(Speaker), collapse = "-"))) %>%
-    ungroup()
+    dplyr::ungroup()
 
   alignplots <-  ggplot2::ggplot(align_long_pairings, ggplot2::aes(ExchangeCount, Salience, group=Speaker)) +
     ggplot2::geom_path(size= 0.2, linejoin = "round") +
