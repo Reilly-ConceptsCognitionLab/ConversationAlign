@@ -35,22 +35,22 @@ align_dyads <- function(clean_ts_df) {
   #create variable containing the column names of each variable to be aligned
   var_aligners <- colnames(var_selected)[-grep("^word$", colnames(lookup_db), ignore.case = TRUE)]
 
-  ts_list <- split(clean_ts_df, f = clean_ts_df$Event_id) #split transcript df into list by Event_id
+  ts_list <- split(clean_ts_df, f = clean_ts_df$event_id) #split transcript df into list by event_id
   ts_aligned_list <- lapply(ts_list, function(ts_select){
     #join measures of each variable to each word in each transcript
-    df_aligned <- dplyr::left_join(ts_select, var_selected, by = c("CleanText" = "word"), multiple = "first")
+    df_aligned <- dplyr::left_join(ts_select, var_selected, by = c("cleantext" = "word"), multiple = "first")
     df_aligned <- data.frame(df_aligned)
     df_aligned <- df_aligned[complete.cases(df_aligned[, c(which(colnames(df_aligned) %in% myvars))]),]     # remove rows with words that couldn't be aligned
 
     df_aligned_agg <- df_aligned %>%
-      dplyr::mutate(Turn_count = consecutive_id(Speaker_names_raw), .before = 1) %>% # add turn seq
-      dplyr::select(Event_id, Speaker_names_raw, Turn_count, Time, contains(var_aligners), starts_with("Analytics")) %>%  # select variables, speaker and dyad information, and word analytics
-      dplyr::group_by(Event_id, Turn_count, Speaker_names_raw) %>% #group by doc id, turn, and speaker
-      dplyr::summarise(Time = min(Time), #make time the minimum for each turn
-                       across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average each variable by turn
-                       across(starts_with("Analytics_wordcount"), sum), #sum word counts
-                       across(starts_with("Analytics_words_removed"), sum), #sum removed word counts
-                       across(starts_with("Analytics_mean_word_length"), mean),
+      dplyr::mutate(turncount = consecutive_id(speaker_names_raw), .before = 1) %>% # add turn seq
+      dplyr::select(event_id, speaker_names_raw, turncount, time, contains(var_aligners), starts_with("an_")) %>%  # select variables, speaker and dyad information, and word analytics
+      dplyr::group_by(event_id, turncount, speaker_names_raw) %>% #group by doc id, turn, and speaker
+      dplyr::summarise(time = min(time), #make time the minimum for each turn
+                       across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average dims by turn
+                       across(starts_with("an_wordcount"), sum), #sum word counts
+                       across(starts_with("an_words_removed"), sum), #sum removed word counts
+                       across(starts_with("an_mean_word_length"), mean),
                        .groups = "drop") %>%
       dplyr::ungroup() #reformat data frame back to chronological order
 
@@ -60,9 +60,9 @@ align_dyads <- function(clean_ts_df) {
       colnames(temprow) <- c(colnames(df_aligned_agg))
       df_aligned_agg <- rbind(df_aligned_agg, temprow) #adds row full of NA to end of the data frame
     }
-    ExchangeCount <- rep(seq(1:(length(df_aligned_agg$Turn_count)/2)), each=2) #creates Exchange Count
-    df_aligned_EC <- data.frame(cbind(ExchangeCount, df_aligned_agg)) #binds ExC to the data frame
-    df_aligned_EC <- df_aligned_EC[complete.cases(df_aligned_EC[, which(colnames(df_aligned_EC) %in% "Event_id")]),]
+    exchangecount <- rep(seq(1:(length(df_aligned_agg$turncount)/2)), each=2) #creates Exchange Count
+    df_aligned_EC <- data.frame(cbind(exchangecount, df_aligned_agg)) #binds ExC to the data frame
+    df_aligned_EC <- df_aligned_EC[complete.cases(df_aligned_EC[, which(colnames(df_aligned_EC) %in% "event_id")]),]
 
     df_aligned_EC #output the transcript exchange count organized aligned data frame to a list
   })
@@ -74,16 +74,16 @@ align_dyads <- function(clean_ts_df) {
     ask_meta_filepath <- readline("If you would like to align metadata by speaker and event ID, input the file path to the metadata csv file. If you do not wish to align metadata do not enter anything. Enter 'random' to randomly assign a variable to each speaker in each dyad.")
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_meta_filepath) == "random") {
-      randomly <- lapply(split(aligned_ts_df, aligned_ts_df$Event_id), function(x){ #iterates over each doc
+      randomly <- lapply(split(aligned_ts_df, aligned_ts_df$event_id), function(x){ #iterates over each doc
         x <- data.frame(x)
         #creates vector of each speaker with random indexes and assigns a alphanumeric sequence name
-        speakervec <- sample(unique(x[,grep("Speaker_names_raw", colnames(x), ignore.case = T)]))
+        speakervec <- sample(unique(x[,grep("speaker_names_raw", colnames(x), ignore.case = T)]))
         names(speakervec) <- paste("S", 1:length(speakervec), sep = "")
         #creates a data frame with just speaker names and assigned code
-        coloutput <- data.frame(Speaker_names_raw = speakervec,
-                                Speaker_group_var_random = sapply(speakervec, function(y) {
+        coloutput <- data.frame(speaker_names_raw = speakervec,
+                                speaker_group_var_random = sapply(speakervec, function(y) {
                                   names(speakervec)[match(y, speakervec)]}))
-        x <- x %>% left_join(coloutput, by=c("Speaker_names_raw")) #binds code to aligned data frame
+        x <- x %>% left_join(coloutput, by=c("speaker_names_raw")) #binds code to aligned data frame
       })
       randomly <- bind_rows(randomly) #binds all the doc data frame into one
       return(randomly)
@@ -106,15 +106,16 @@ align_dyads <- function(clean_ts_df) {
         subset_metadata <- colnames(metadata)
       }
       metadata_selected <- metadata[,colnames(metadata) %in% subset_metadata] #select specified columns
+      colnames(metadata_selected) <- tolower(colnames(metadata_selected))
       #select dimensions that aren't used to align on
-      meta_dims <- which(!colnames(metadata_selected) %in% c("Event_id", "Speaker"))
+      meta_dims <- which(!colnames(metadata_selected) %in% c("event_id", "speaker"))
       #make all dimensions that aren't alingers factors
       metadata_selected[,meta_dims] <- lapply(metadata_selected[,meta_dims], factor)
-      colnames(metadata_selected)[meta_dims] <- paste("Metadata", tolower(colnames(metadata_selected)[meta_dims]), sep = "_")
+      colnames(metadata_selected)[meta_dims] <- paste("m", tolower(colnames(metadata_selected)[meta_dims]), sep = "_")
 
       #join metadata to aligned data frame by event id and PID
       metadata_aligned_df <- dplyr::left_join(aligned_ts_df, metadata_selected,
-                                              by=c("Event_id", "Speaker_names_raw" = "Speaker"))
+                                              by=c("event_id", "speaker_names_raw" = "speaker"))
       return(metadata_aligned_df)
     }
   }

@@ -6,6 +6,7 @@
 #' @param folder_name user can specify a folder name and directory for where their language transcripts will be read from, default is 'my-transcripts' in root
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
+#' @importFrom dplyr bind_rows
 #' @importFrom data.table setattr
 #' @export read_dyads
 
@@ -44,9 +45,9 @@ read_dyads <- function(folder_name = "my_transcripts") {
       current_line <- line_counter + 1 #move to next speaker
     }
     #create df
-    transcript_df <- data.frame(Speaker_names_raw = speaker,
-                                Time = time,
-                                RawText = text,
+    transcript_df <- data.frame(speaker_names_raw = speaker,
+                                time = time,
+                                rawtext = text,
                                 stringsAsFactors = FALSE)
     return(transcript_df)
   }
@@ -91,9 +92,9 @@ read_dyads <- function(folder_name = "my_transcripts") {
       current_line <- line_counter + 1 #move to next speaker
     }
     #create df
-    transcript_df <- data.frame(Speaker_names_raw = speaker,
-                                Time = time,
-                                RawText = text,
+    transcript_df <- data.frame(speaker_names_raw = speaker,
+                                time = time,
+                                rawtext = text,
                                 stringsAsFactors = FALSE)
     return(transcript_df)
   }
@@ -122,7 +123,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
 
       #adds a doc id column to each transcript based on its name attribute
       txtdata <- lapply(file_names_txt, function(x){
-        txtdata[[match(x, file_names_txt)]] <- cbind(Event_id = rep(x, nrow(txtdata[[match(x, file_names_txt)]])), txtdata[[match(x, file_names_txt)]])})
+        txtdata[[match(x, file_names_txt)]] <- cbind(event_id = rep(x, nrow(txtdata[[match(x, file_names_txt)]])), txtdata[[match(x, file_names_txt)]])})
       return(txtdata)
     }}
   #END DEFINE READ ME TXT FILE FUNCITON
@@ -153,56 +154,56 @@ read_dyads <- function(folder_name = "my_transcripts") {
         # If the transcript has 2/3 cols or already formatted with at least speaker and text column
         if (ncol(x_read_csv) == 3 |
             ncol(x_read_csv) == 2 |
-            ((any(grepl("^Speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+            ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
               any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
               any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
              (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
               any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE))) {
 
           #exclusively check if the column names are correct
-          if ((any(grepl("^Speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+          if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
                any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
                any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
               (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
                any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
 
             #tests for column named time - if not present it adds a time column filled with NAs
-            if (any(grepl("Time", colnames(x_read_csv), ignore.case = TRUE))) {
-              colnames(x_read_csv)[which(grepl("Time", colnames(x_read_csv), ignore.case = T) |
-                                           grepl("Start", colnames(x_read_csv), ignore.case = T))] <- "Time"
+            if (any(grepl("time", colnames(x_read_csv), ignore.case = TRUE))) {
+              colnames(x_read_csv)[which(grepl("time", colnames(x_read_csv), ignore.case = T) |
+                                           grepl("Start", colnames(x_read_csv), ignore.case = T))] <- "time"
             }
             else {
-              x_read_csv$Time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
+              x_read_csv$time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
             }
             #correct the speaker and text names to our conventions
-            colnames(x_read_csv)[which(grepl("Speaker", colnames(x_read_csv), ignore.case = T) |
+            colnames(x_read_csv)[which(grepl("speaker", colnames(x_read_csv), ignore.case = T) |
                                          grepl("PID", colnames(x_read_csv), ignore.case = T) |
-                                         grepl("Participant", colnames(x_read_csv), ignore.case = T))] <- "Speaker_names_raw"
+                                         grepl("Participant", colnames(x_read_csv), ignore.case = T))] <- "speaker_names_raw"
 
             colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
-                                         grepl("Utterance", colnames(x_read_csv), ignore.case = T))] <- "RawText"
+                                         grepl("Utterance", colnames(x_read_csv), ignore.case = T))] <- "rawtext"
 
             x_read_csv <- data.frame(x_read_csv)
-            #remove all columns that not identified as Speaker, Time, or Text
+            #remove all columns that not identified as speaker, time, or Text
             x_read_csv <- x_read_csv[, colnames(x_read_csv) %in%
-                                       c("Speaker_names_raw", "Time", "RawText")]
+                                       c("speaker_names_raw", "time", "rawtext")]
             x_read_csv
           } #end check for columns named speaker and text
           else {
-            #iterate over columns, run parameters to identify which is Time, Speaker, and Text
+            #iterate over columns, run parameters to identify which is time, speaker, and Text
             colnames(x_read_csv) <- sapply(seq(ncol(x_read_csv)), function(col_num){
               col_select <- x_read_csv[,col_num]
               if (sum(grepl("\\d:\\d\\d", col_select)) > (length(col_select)/2)) {
-                "Time"
+                "time"
               }
               else if (length(unique(col_select)) < (length(col_select)/2)) {
-                "Speaker_names_raw" #if most of the column is the same, makes it the speaker column
+                "speaker_names_raw" #if most of the column is the same, makes it the speaker column
               }
               else if (length(unique(col_select) > (length(col_select)/2))) {
-                "RawText" #if most of the column is different, assigns in to text column name
+                "rawtext" #if most of the column is different, assigns in to text column name
               }})
-            if (any(grepl("Time", colnames(x_read_csv))) == FALSE) {
-              x_read_csv$Time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
+            if (any(grepl("time", colnames(x_read_csv))) == FALSE) {
+              x_read_csv$time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
             }
             x_read_csv
           }
@@ -220,7 +221,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
                      as.character(match(x, file_list_csv)), sep = ""), call. = FALSE)
         }
         if (ncol(x_final) != 3) { #if there are less than three columns
-          missing_col <- setdiff(tolower(sort(c("Rawspeaker", "RawText", "Time"))),
+          missing_col <- setdiff(tolower(sort(c("Rawspeaker", "rawtext", "time"))),
                                  tolower(sort(colnames(x_final)))) #finds missing column name(s)
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
                      as.character(match(x, file_list_csv)), #also states the transcript
@@ -231,7 +232,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
       })
       csvdata <- lapply(csvdata, data.frame)
       csvdata <- lapply(file_names_csv, function(x){
-        csvdata[[match(x, file_names_csv)]] <- cbind(Event_id = rep(x, nrow(csvdata[[match(x, file_names_csv)]])), csvdata[[match(x, file_names_csv)]])})
+        csvdata[[match(x, file_names_csv)]] <- cbind(event_id = rep(x, nrow(csvdata[[match(x, file_names_csv)]])), csvdata[[match(x, file_names_csv)]])})
       return(csvdata)
     }}
   #END DEFINE READ ME CSV FILE FUNCTION
@@ -245,7 +246,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
     stop("No files found. Please make sure you are providing the local path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
 
-  alldf <- bind_rows(all_list) #binds the rows  of each list into one data frame
+  alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
   return(alldf)
-  #outputs a data frame containing every dyad with columns: Event_id, Speaker_names_raw, Time, and RawText
+  #outputs a data frame containing every dyad with columns: event_id, speaker_names_raw, time, and rawtext
 }

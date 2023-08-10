@@ -21,6 +21,7 @@
 #' @importFrom ggplot2 ylim
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 geom_text
+#' @importFrom ggplot2 theme_grey
 #' @importFrom ggplot2 facet_grid
 #' @importFrom ggplot2 ggtitle
 #' @importFrom ggplot2 ggsave
@@ -28,31 +29,31 @@
 
 inspect_dyads <- function(aligned_ts_df, dimensions = "all") {
   inspect_analytics_output_df <- aligned_ts_df %>%
-    dplyr::select(Event_id, ExchangeCount, Speaker_names_raw, starts_with("Analytics_"),
-                  starts_with("Metadata_")) %>% #select only analytic, demo, and grouping columns
+    dplyr::select(event_id, exchangecount, speaker_names_raw, starts_with("an_"),
+                  starts_with("m_")) %>% #select only analytic, demo, and grouping columns
     #calculate how large a percentage of raw word were removed
-    dplyr::mutate(Percent_stopword_removed = (Analytics_words_removed / Analytics_wordcount_raw)*100) %>%
-    dplyr::group_by(Event_id, Speaker_names_raw) %>%
-    dplyr::mutate(N_turns = max(ExchangeCount)) %>% #make number of turns the highest ExC from each speaker
+    dplyr::mutate(percent_stopword_removed = (an_words_removed / an_wordcount_raw)*100) %>%
+    dplyr::group_by(event_id, speaker_names_raw) %>%
+    dplyr::mutate(n_turns = max(exchangecount)) %>% #make number of turns the highest ExC from each speaker
     dplyr::ungroup() %>%
-    dplyr::select(!c(ExchangeCount, Analytics_words_removed)) %>%
-    tidyr::pivot_longer(cols = starts_with("Analytics_"), #pivot all analytic columns to 3 columns
-                        names_to = c("Measure", "Version"),      #pivots to version (clean vs raw) and
-                        names_prefix = "Analytics_",             #measurement (ie word count) + the value
+    dplyr::select(!c(exchangecount, an_words_removed)) %>%
+    tidyr::pivot_longer(cols = starts_with("an_"), #pivot all analytic columns to 3 columns
+                        names_to = c("measure", "version"),      #pivots to version (clean vs raw) and
+                        names_prefix = "an_",             #measurement (ie word count) + the value
                         names_pattern = "(.+)_([A-Za-z]+$)",
-                        values_to = "Score") %>%
-    dplyr::mutate(Version = str_to_sentence(Version), #make elements of new columns sentence case
-                  Measure = str_to_sentence(Measure)) %>%
-    dplyr::group_by(Measure) %>% #group and create a grouped sequence to aid pivot wider
+                        values_to = "score") %>%
+    dplyr::mutate(version = version, #make elements of new columns sentence case
+                  measure = measure) %>%
+    dplyr::group_by(measure) %>% #group and create a grouped sequence to aid pivot wider
     dplyr::mutate(row = row_number()) %>%
-    tidyr::pivot_wider(names_from = Measure, values_from = Score) %>% #pivot measurements and scores
-    dplyr::group_by(Event_id, Speaker_names_raw, Version) %>%
-    dplyr::summarise(N_turns = first(N_turns), #summarise over dyad, speaker, and version
-                     Wordcount_total = sum(Wordcount), #computes total WC, mean WC, mean word length
-                     Words_per_turn_mean = mean(Wordcount),
-                     Percent_stopword_removed = mean(Percent_stopword_removed),#preserves other measures
-                     Mean_word_length = mean(Mean_word_length),
-                     across(starts_with("Metadata_"), first),
+    tidyr::pivot_wider(names_from = measure, values_from = score) %>% #pivot measurements and scores
+    dplyr::group_by(event_id, speaker_names_raw, version) %>%
+    dplyr::summarise(n_turns = first(n_turns), #summarise over dyad, speaker, and version
+                     wordcount_total = sum(wordcount), #computes total WC, mean WC, mean word length
+                     words_per_turn_mean = mean(wordcount),
+                     percent_stopword_removed = mean(percent_stopword_removed),#preserves other measures
+                     mean_word_length = mean(mean_word_length),
+                     across(starts_with("m_"), first),
                      .groups = "drop")
   #visualization portion of inspect
   aligned <- aligned_ts_df
@@ -78,22 +79,22 @@ inspect_dyads <- function(aligned_ts_df, dimensions = "all") {
                         values_to="Salience")
   align_long$Dimension <- as.factor(align_long$Dimension)
   align_long <- align_long %>%
-    dplyr::rename("Speaker"="Speaker_names_raw")
-  align_long$Speaker <- as.factor(align_long$Speaker)
-  align_long$Event_id <- as.factor(align_long$Event_id)
+    dplyr::rename("speaker"="speaker_names_raw")
+  align_long$speaker <- as.factor(align_long$speaker)
+  align_long$event_id <- as.factor(align_long$event_id)
 
   align_long_pairings <- align_long %>%
-    dplyr::group_by(Event_id) %>%
-    dplyr::mutate(Speaker_pair = as.factor(paste(unique(Speaker), collapse = "-"))) %>%
+    dplyr::group_by(event_id) %>%
+    dplyr::mutate(speaker_pair = as.factor(paste(unique(speaker), collapse = "-"))) %>%
     dplyr::ungroup()
 
-  alignplots <-  ggplot2::ggplot(align_long_pairings, ggplot2::aes(ExchangeCount, Salience, group=Speaker)) +
-    ggplot2::geom_path(size= 0.2, linejoin = "round") +
+  alignplots <-  ggplot2::ggplot(align_long_pairings, ggplot2::aes(exchangecount, Salience, group=speaker)) +
+    ggplot2::geom_path(linewidth= 0.2, linejoin = "round") +
     ggplot2::ylim(0, 10) +
-    ggplot2::geom_line(ggplot2::aes(color=Speaker), size = 0.25) +
-    jamie.theme +
-    ggplot2::geom_text(mapping = ggplot2::aes(max(ExchangeCount)/2, y = 9, label = Speaker_pair), size = 3.25, color = "black") +
-    ggplot2::facet_grid(Event_id ~ Dimension) +
+    ggplot2::geom_line(ggplot2::aes(color=speaker), size = 0.25) +
+    ggplot2::theme_grey() +
+    ggplot2::geom_text(mapping = ggplot2::aes(max(exchangecount)/2, y = 9, label = speaker_pair), size = 3.25, color = "black") +
+    ggplot2::facet_grid(event_id ~ Dimension) +
     ggplot2::ggtitle("Plots facetted by dyad and dimension")
   #save a pdf file of the faceted graphs to the users disc
   ggplot2::ggsave("alignplots.pdf",width = 8, height = 15, dpi = 300)
