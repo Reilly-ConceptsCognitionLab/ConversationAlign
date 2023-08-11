@@ -120,5 +120,11 @@ align_dyads <- function(clean_ts_df) {
     }
   }
   #END DEFINING METADATA ALIGN FUNCTION
-  align_metadata(aligned_ts_df = ts_aligned_df_total) #run demoraphic aligner on aligned data frame
+
+  output <- align_metadata(aligned_ts_df = ts_aligned_df_total) #run demoraphic aligner on aligned data frame
+  if (is.factor(output$speaker_names_raw) == FALSE & is.factor(output$event_id) == FALSE) {
+    output$speaker_names_raw <- as.factor(output$speaker_names_raw)
+    output$event_id <- as.factor(output$event_id)
+  }
+  return(output)
 }

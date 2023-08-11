@@ -246,7 +246,9 @@ read_dyads <- function(folder_name = "my_transcripts") {
     stop("No files found. Please make sure you are providing the local path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
 
-  alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
+  alldf <- bind_rows(all_list) #binds the rows  of each list into one data frame
+  alldf$event_id <- as.factor(alldf$event_id)
+  alldf$speaker_names_raw <- as.factor(alldf$speaker_names_raw)
   return(alldf)
   #outputs a data frame containing every dyad with columns: event_id, speaker_names_raw, time, and rawtext
 }
