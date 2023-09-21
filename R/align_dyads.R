@@ -28,7 +28,7 @@ align_dyads <- function(clean_ts_df) {
                           "lex_morphemecount_raw", "lex_prevalence", "lex_senses_polysemy",
                           "lex_wordfreqlg10_raw", "sem_arousal", "sem_concreteness",
                           "sem_diversity", "sem_neighbors"), preselect = NULL, multiple = TRUE,
-                        title = "Select the variables you would like to align your conversation transcripts on. Please do not select more than three variables.",
+                        title = writeLines("Select the variables you would like to align your conversation transcripts on.\nPlease do not select more than three variables."),
                         graphics = FALSE)
   var_selected <- lookup_db %>% #select desired columns from lookup_db
     select(matches("^word$"), contains(myvars))
@@ -44,12 +44,12 @@ align_dyads <- function(clean_ts_df) {
 
     df_aligned_agg <- df_aligned %>%
       dplyr::mutate(turncount = consecutive_id(speaker_names_raw), .before = 1) %>% # add turn seq
-      dplyr::select(event_id, speaker_names_raw, turncount, time, contains(var_aligners), starts_with("an_")) %>%  # select variables, speaker and dyad information, and word analytics
-      dplyr::group_by(event_id, turncount, speaker_names_raw) %>% #group by doc id, turn, and speaker
+      dplyr::select(event_id, speaker_names_raw, turncount, time, contains(var_aligners), starts_with("an_")) %>%  # select variables, speaker and dyad information, and analytics
+      dplyr::group_by(event_id, turncount, speaker_names_raw) %>% #group
       dplyr::summarise(time = min(time), #make time the minimum for each turn
-                       across(starts_with(var_aligners) & ends_with(var_aligners), mean), #average dims by turn
-                       across(starts_with("an_wordcount"), sum), #sum word counts
-                       across(starts_with("an_words_removed"), sum), #sum removed word counts
+                       across(starts_with(var_aligners) & ends_with(var_aligners), mean),
+                       across(starts_with("an_wordcount"), first), #sum word counts
+                       across(starts_with("an_words_removed"), first), #sum removed word counts
                        across(starts_with("an_mean_word_length"), mean),
                        .groups = "drop") %>%
       dplyr::ungroup() #reformat data frame back to chronological order
@@ -71,7 +71,7 @@ align_dyads <- function(clean_ts_df) {
   #DEFINE THE METADATA ALIGN FUNCTION
   align_metadata <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_meta_filepath <- readline("If you would like to align metadata by speaker and event ID, input the file path to the metadata csv file. If you do not wish to align metadata do not enter anything. Enter 'random' to randomly assign a variable to each speaker in each dyad.")
+    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by speaker and event ID, input the file path to the metadata csv file.\nIf you do not wish to align metadata do not enter anything.\nEnter 'random' to randomly assign a variable to each speaker in each dyad."))
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_meta_filepath) == "random") {
       randomly <- lapply(split(aligned_ts_df, aligned_ts_df$event_id), function(x){ #iterates over each doc

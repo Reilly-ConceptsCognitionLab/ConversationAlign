@@ -143,6 +143,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
         sum_nas_es <- apply(x_read_csv, 2, function(y){sum(is.na(y) | y == "")})
         x_read_csv <- x_read_csv[sum_nas_es < nrow(x_read_csv)]
         x_read_csv <- data.frame(x_read_csv)
+
         #identifies and removes the first column if it sequences by one each row
         if (is.numeric(x_read_csv[,1]) == TRUE) {
           if (all(x_read_csv[,1] == seq(x_read_csv[1,1]:x_read_csv[nrow(x_read_csv),1])) == TRUE){
@@ -155,6 +156,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
         if (ncol(x_read_csv) == 3 |
             ncol(x_read_csv) == 2 |
             ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+              any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
               any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
               any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
              (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
@@ -162,6 +164,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
 
           #exclusively check if the column names are correct
           if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+               any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
                any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
                any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
               (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
@@ -189,6 +192,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                        c("speaker_names_raw", "time", "rawtext")]
             x_read_csv
           } #end check for columns named speaker and text
+
           else {
             #iterate over columns, run parameters to identify which is time, speaker, and Text
             colnames(x_read_csv) <- sapply(seq(ncol(x_read_csv)), function(col_num){
