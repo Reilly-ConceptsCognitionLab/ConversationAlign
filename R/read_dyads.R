@@ -152,92 +152,56 @@ read_dyads <- function(folder_name = "my_transcripts") {
         }
 
 
-        # If the transcript has 2/3 cols or already formatted with at least speaker and text column
-        if (ncol(x_read_csv) == 3 |
-            ncol(x_read_csv) == 2 |
-            ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-              any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-              any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-              any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
-             (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-              any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE))) {
+        #check that the column names are correct
+        if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
+            (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
 
-          #exclusively check if the column names are correct
-          if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-               any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-               any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-               any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
-              (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-               any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
-
-            #tests for column named time - if not present it adds a time column filled with NAs
-            if (any(grepl("time", colnames(x_read_csv), ignore.case = TRUE))) {
-              colnames(x_read_csv)[which(grepl("time", colnames(x_read_csv), ignore.case = T) |
-                                           grepl("Start", colnames(x_read_csv), ignore.case = T))] <- "time"
-            }
-            else {
-              x_read_csv$time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
-            }
-            #correct the speaker and text names to our conventions
-            colnames(x_read_csv)[which(grepl("speaker", colnames(x_read_csv), ignore.case = T) |
-                                         grepl("PID", colnames(x_read_csv), ignore.case = T) |
-                                         grepl("Participant", colnames(x_read_csv), ignore.case = T))] <- "speaker_names_raw"
-
-            colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
-                                         grepl("Utterance", colnames(x_read_csv), ignore.case = T))] <- "rawtext"
-
-            x_read_csv <- data.frame(x_read_csv)
-            #remove all columns that not identified as speaker, time, or Text
-            x_read_csv <- x_read_csv[, colnames(x_read_csv) %in%
-                                       c("speaker_names_raw", "time", "rawtext")]
-            x_read_csv
-          } #end check for columns named speaker and text
-
-          else {
-            #iterate over columns, run parameters to identify which is time, speaker, and Text
-            colnames(x_read_csv) <- sapply(seq(ncol(x_read_csv)), function(col_num){
-              col_select <- x_read_csv[,col_num]
-              if (sum(grepl("\\d:\\d\\d", col_select)) > (length(col_select)/2)) {
-                "time"
-              }
-              else if (length(unique(col_select)) < (length(col_select)/2)) {
-                "speaker_names_raw" #if most of the column is the same, makes it the speaker column
-              }
-              else if (length(unique(col_select) > (length(col_select)/2))) {
-                "rawtext" #if most of the column is different, assigns in to text column name
-              }})
-            if (any(grepl("time", colnames(x_read_csv))) == FALSE) {
-              x_read_csv$time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
-            }
-            x_read_csv
+          #tests for column named time - if not present it adds a time column filled with NAs
+          if (any(grepl("^time*", colnames(x_read_csv), ignore.case = TRUE)) |
+              any(grepl("^start*", colnames(x_read_csv), ignore.case = TRUE))) {
+            colnames(x_read_csv)[which(grepl("^time*", colnames(x_read_csv), ignore.case = T) |
+                                         grepl("^start*", colnames(x_read_csv), ignore.case = T))] <- "time"
           }
+          else {
+            x_read_csv$time <- rep(NA, nrow(x_read_csv)) #if no time col fill with NA
+          }
+          #correct the speaker and text names to our conventions
+          colnames(x_read_csv)[which(grepl("speaker", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("PID", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "speaker_names_raw"
+
+          colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "rawtext"
+
+          x_read_csv <- data.frame(x_read_csv)
+          #remove all columns that not identified as speaker, time, or Text
+          #x_read_csv <- x_read_csv[, colnames(x_read_csv) %in%
+          #c("speaker_names_raw", "time", "rawtext")]
           x_final <- x_read_csv
         }
-        else { #if the transcript is not formatted at all - function to process it
-          x_otter_read <- read_otter_format_csv(file_path = x)
-          x_final <- x_otter_read
-        }
-        if (any(duplicated(colnames(x_final))) == TRUE) { #tests for any repeated column names
-          error_col_name <- colnames(x_final)[duplicated(colnames(x_final))]
-          stop(paste("Duplicated column name ", #throws an error, stating column misinterpretation
-                     paste0(error_col_name, "."),
-                     " Check column names or formatting of csv transcript ",
-                     as.character(match(x, file_list_csv)), sep = ""), call. = FALSE)
-        }
-        if (ncol(x_final) != 3) { #if there are less than three columns
-          missing_col <- setdiff(tolower(sort(c("Rawspeaker", "rawtext", "time"))),
-                                 tolower(sort(colnames(x_final)))) #finds missing column name(s)
+        #else {
+        col_check <- x_read_csv[, colnames(x_read_csv) %in%
+                                  c("speaker_names_raw", "rawtext", "time")]
+
+        print(col_check)
+
+        if (ncol(col_check) != 3) { #if there are less than three columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
                      as.character(match(x, file_list_csv)), #also states the transcript
-                     " correctly. Column ", missing_col, " is missing.",
+                     " correctly. Make sure that each transcript includes a column named 'speaker', 'participant', 'PID', or 'speaker_names_raw' and a column named 'utterance' or 'text'. If you wish to include a time column please title it 'time' or 'start'.",
                      sep = ""), call. = FALSE)
+          #}
         }
         x_final
       })
       csvdata <- lapply(csvdata, data.frame)
       csvdata <- lapply(file_names_csv, function(x){
         csvdata[[match(x, file_names_csv)]] <- cbind(event_id = rep(x, nrow(csvdata[[match(x, file_names_csv)]])), csvdata[[match(x, file_names_csv)]])})
-      return(csvdata)
+      csvdata
     }}
   #END DEFINE READ ME CSV FILE FUNCTION
   #calls two functions to read in txt and csv file transcripts, returning a list.

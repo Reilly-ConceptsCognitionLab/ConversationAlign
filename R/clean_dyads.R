@@ -38,16 +38,22 @@ clean_dyads <- function(read_ts_df) {
   read_data_frame$speaker_names_raw <- as.factor(read_data_frame$speaker_names_raw) #convert variables to factor
   read_data_frame$event_id <- as.factor(read_data_frame$event_id)
 
+  #ADD TO
+
   #convert time from hh:mm:ss or mm:ss to milliseconds
   read_data_frame$time <- sapply(read_data_frame$time, function(x){
     if (any(grepl(":", x)) == TRUE) {  #checks for colons, indicative of mm:ss
       x <- as.numeric(unlist(str_split(x, ":"))) #breaks string into vector by colon placement
       if (length(x) == 2) { #shows just mm, ss
-        sum((x[1]*60000), (x[2]*1000))      }
+        sum((x[1]*60000), (x[2]*1000))
+      }
       else if ( length(xvec) == 3) { #shows hh, mm, ss
-        sum((x[1]*3600000), (x[2]*60000), (x[3]*1000))}}
-    else if (is.na(x) == TRUE) { #keeps NA time values as NA - may be a better way to do this?
-      NA}})
+        sum((x[1]*3600000), (x[2]*60000), (x[3]*1000))
+      }}
+    else {
+      x
+    }
+  })
 
   load("data/omissions_dyads23.rda") #load in omissions database
 
