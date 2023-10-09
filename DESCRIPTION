@@ -4,12 +4,12 @@ Title: ConversationAlign
 Version: 0.1.0
 Authors@R: c(
     person("Jamie", "Reilly", email = "jamie_reilly@temple.edu", role = c("aut", "cre")),
-    person("Virginia", "Ulichney", role = c("aut", "cre"),
+    person("Virginia", "Ulichney", role = "aut"),
     person("Ben", "Sacks", role = "aut"),
-    person("Duncan", "Anna", role = "ctb"),
+    person("Anna", "Duncan", role = "ctb"),
     person("Chelsea", "Helion", role = "ctb"))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
-Description: This package reads dyad transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.
+Description: This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -30,6 +30,6 @@ Suggests:
     knitr,
     rmarkdown,
 VignetteBuilder: knitr
-URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign
+URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign, https://reilly-conceptscognitionlab.github.io/ConversationAlign/
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3

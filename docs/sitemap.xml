@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/my-vignette.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles/my-vignette.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/index.html</loc>
   </url>
   <url>
-    <loc>/reference/align_dyads.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/align_dyads.html</loc>
   </url>
   <url>
-    <loc>/reference/clean_dyads.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/clean_dyads.html</loc>
   </url>
   <url>
-    <loc>/reference/hello.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/hello.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/read_dyads.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/read_dyads.html</loc>
   </url>
   <url>
-    <loc>/reference/read_me.html</loc>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/read_me.html</loc>
+  </url>
+  <url>
+    <loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/summarize_dyads.html</loc>
   </url>
 </urlset>
