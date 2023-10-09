@@ -1,6 +1,6 @@
 #' read_dyads
 #'
-#' Reads pre-formatted conversation transcripts from txt or csv on user's machine
+#' Reads pre-formatted conversation transcripts from txt or csv on user's machine; user supplies directory path (e.g., "my_transcripts") to local folder as argument to function call
 #'
 #' @name read_dyads
 #' @param folder_name user can specify a folder name and directory for where their language transcripts will be read from, default is 'my-transcripts' in root
@@ -145,11 +145,12 @@ read_dyads <- function(folder_name = "my_transcripts") {
         x_read_csv <- data.frame(x_read_csv)
 
         #identifies and removes the first column if it sequences by one each row
-        if (is.numeric(x_read_csv[,1]) == TRUE) {
-          if (all(x_read_csv[,1] == seq(x_read_csv[1,1]:x_read_csv[nrow(x_read_csv),1])) == TRUE){
-            x_read_csv <- x_read_csv[,-1]
-          }
-        }
+        # 10/8/23 - Ben commented this out because it throws a warning and it is worth more trouble than it's worth
+        # if (is.numeric(x_read_csv[,1]) == TRUE) {
+        #   if (all(x_read_csv[,1] == seq(x_read_csv[1,1]:x_read_csv[nrow(x_read_csv),1])) == TRUE){
+        #     x_read_csv <- x_read_csv[,-1]
+        #   }
+        # }
 
 
         #check that the column names are correct
@@ -186,9 +187,6 @@ read_dyads <- function(folder_name = "my_transcripts") {
         #else {
         col_check <- x_read_csv[, colnames(x_read_csv) %in%
                                   c("speaker_names_raw", "rawtext", "time")]
-
-        print(col_check)
-
         if (ncol(col_check) != 3) { #if there are less than three columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
                      as.character(match(x, file_list_csv)), #also states the transcript

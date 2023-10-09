@@ -8,7 +8,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr full_join
 #' @importFrom dplyr left_join
-#' @importFrom tidyverse mutate
+#' @importFrom dplyr mutate
 #' @importFrom tidytable consecutive_id
 #' @importFrom dplyr bind_rows
 #' @importFrom tidyverse group_by
@@ -49,30 +49,37 @@ align_dyads <- function(clean_ts_df) {
       group_by(event_id) %>%
       mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
       group_by(turncount, .add = TRUE) %>%
-      mutate(an_wordcount_clean = ifelse(length(unique(an_wordcount_clean)) == 1,
-                                         unique(an_wordcount_clean),
-                                         sum(unique(an_wordcount_clean))),
-             an_wordcount_raw = ifelse(length(unique(an_wordcount_raw)) == 1,
-                                       unique(an_wordcount_raw),
-                                       sum(unique(an_wordcount_raw))),
-             an_mean_word_length_clean = ifelse(length(unique(an_mean_word_length_clean)) == 1,
-                                                unique(an_mean_word_length_clean),
-                                                mean(unique(an_mean_word_length_clean))),
-             an_mean_word_length_raw = ifelse(length(unique(an_mean_word_length_raw)) == 1,
-                                              unique(an_mean_word_length_raw),
-                                              mean(unique(an_mean_word_length_raw))),
-             an_words_removed = an_wordcount_raw - an_wordcount_clean,
-             an_wordcount_align = n(),
-             an_words_removed_align = an_wordcount_clean - an_wordcount_align) %>%
+      dplyr::mutate(an_wordcount_raw = ifelse(an_wordcount_clean[1] == length(an_wordcount_clean),
+                                              an_wordcount_raw,
+                                              #if turns were combined, iterate over each unique clean wc value, then each raw wc value in that and sum
+                                              sum(sapply(unique(an_wordcount_clean), function(clean_num){
+                                                u_raw_for_c <- unique(an_wordcount_raw[which(an_wordcount_clean == clean_num)])
+                                                total_raw_for_c <- 0
+                                                for (raw_num in u_raw_for_c){ #iterate over unique raw numbers in the clean numbers
+                                                  rows <- sum(an_wordcount_clean == clean_num & an_wordcount_raw == raw_num)
+                                                  total_raw <- raw_num * rows
+                                                  final_raw <- total_raw / rows # control for the number of rows (only add what is shown)
+                                                  total_raw_for_c <- total_raw_for_c + final_raw
+                                                }
+                                                total_raw_for_c #return the total raw word count for all raw words with x amount of clean
+                                              }))),
+                    an_wordcount_clean = ifelse(an_wordcount_clean[1] == length(an_wordcount_clean),
+                                                an_wordcount_clean,
+                                                #if turns were combined, iterate over each unique clean wc value and return that number controlled for dupes
+                                                sum(sapply(unique(an_wordcount_clean), function(clean_num){
+                                                  #if clean wc changed with align removal, iterate over each count to aggregate and catch possible duplicates
+                                                  u_raw_for_c <- unique(an_wordcount_raw[which(an_wordcount_clean == clean_num)])
+                                                  rows <- sum(an_wordcount_clean == clean_num)
+                                                  full_c <- clean_num * rows
+                                                  final_c <- full_c / rows # control for the number of rows (only add what is shown)
+                                                  final_c
+                                                }))),
+                    an_wordcount_align = n(), #aggregate clean word count to the number of rows occupied
+                    an_words_removed_align = an_wordcount_clean - an_wordcount_align,
+                    an_words_removed = an_wordcount_raw - an_wordcount_clean, #create words removed by turn
+                    an_mean_word_length_clean = mean(an_mean_word_length_clean), #aggregate word length stats
+                    an_mean_word_length_raw = mean(an_mean_word_length_raw)) %>%
       ungroup()
-
-    #where the clean word count did not properly sum becuase both were the same number
-    df_aligned_turn$an_wordcount_clean[which(df_aligned_turn$an_words_removed_align < 0)] <- df_aligned_turn$an_wordcount_clean[which(df_aligned_turn$an_words_removed_align < 0)] + (df_aligned_turn$an_words_removed_align[which(df_aligned_turn$an_words_removed_align < 0)] * -1)
-    #recalculate the aligned words removed. This is not elegant... BUT IT WORKS
-    df_aligned_turn$an_words_removed_align = df_aligned_turn$an_wordcount_clean - df_aligned_turn$an_wordcount_align
-
-    #BEN - YOU PROBABLY HAVE TO ADD A SIMILAR THING THAT CAN CORRECT FOR THE RAW TEXT WORDCOUNT...
-    #UNFORTUNATELY - USING UNIQUE MAY BE FLAWED...
 
     #add an exchange count variable, which is one turn from each speaker
     df_aligned_turn$exchangecount <- ceiling(df_aligned_turn$turncount / 2)

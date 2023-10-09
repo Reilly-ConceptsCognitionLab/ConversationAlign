@@ -10,5 +10,5 @@ read_dyads(folder_name = "my_transcripts")
 \item{folder_name}{user can specify a folder name and directory for where their language transcripts will be read from, default is 'my-transcripts' in root}
 }
 \description{
-Reads pre-formatted conversation transcripts from txt or csv on user's machine
+Reads pre-formatted conversation transcripts from txt or csv on user's machine; user supplies directory path (e.g., "my_transcripts") to local folder as argument to function call
 }

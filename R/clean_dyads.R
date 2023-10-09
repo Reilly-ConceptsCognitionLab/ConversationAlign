@@ -94,11 +94,30 @@ clean_dyads <- function(read_ts_df) {
 
   dfclean_sep <- tidyr::separate_rows(dfclean, cleantext) # create row for each word in clean text
 
-  dfclean_filtered <- dfclean_sep %>%
-    dplyr::filter(cleantext != "")#remove rows where text is an empty string
-
-  #calculate words removed from the difference between the raw word count and clean word count
-  dfclean_filtered$an_words_removed <- dfclean_filtered$an_wordcount_raw - dfclean_filtered$an_wordcount_clean
-
+  dfclean_filtered <- dfclean_sep %>%     #remove rows where text is an empty string
+    dplyr::mutate(an_words_removed = an_wordcount_raw - an_wordcount_clean) %>%
+    dplyr::filter(cleantext != "") %>%
+    #new stuff for testing the word count analytic fun
+    dplyr::group_by(event_id) %>% #add a turn count per dyad, which counts by speaker change
+    dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
+    dplyr::group_by(turncount, .add = TRUE) %>% #group by new turncount to aggregate word counts
+    dplyr::mutate(an_wordcount_raw = ifelse(an_wordcount_clean[1] == length(an_wordcount_clean),
+                                            an_wordcount_raw,
+                                            #if turns were combined, iterate over each unique clean wc value, then each raw wc value in that and sum
+                                            sum(sapply(unique(an_wordcount_clean), function(clean_num){
+                                              u_raw_for_c <- unique(an_wordcount_raw[which(an_wordcount_clean == clean_num)])
+                                              total_raw_for_c <- 0
+                                              for (raw_num in u_raw_for_c){ #iterate over unique raw numbers in the clean numbers
+                                                rows <- sum(an_wordcount_clean == clean_num & an_wordcount_raw == raw_num)
+                                                total_raw <- raw_num * rows
+                                                final_raw <- total_raw / rows # control for the number of rows (only add what is shown)
+                                                total_raw_for_c <- total_raw_for_c + final_raw
+                                              }
+                                              total_raw_for_c #return the total raw word count for all raw words with x amount of clean
+                                            }))),
+                  an_wordcount_clean = n(), #aggregate clean word count to the number of rows occupied
+                  an_words_removed = an_wordcount_raw - an_wordcount_clean, #create words removed by turn
+                  an_mean_word_length_clean = mean(an_mean_word_length_clean), #aggregate word length stats
+                  an_mean_word_length_raw = mean(an_mean_word_length_raw)) %>% ungroup()
   return(dfclean_filtered)
 }
