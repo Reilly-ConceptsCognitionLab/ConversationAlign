@@ -22,19 +22,20 @@
 #' @export clean_dyads
 
 clean_dyads <- function(read_ts_df) {
-  read_data_frame <- read_ts_df %>%
-    dplyr::filter(speaker_names_raw != "Unknown") %>% #filter out common unwanted speaker names
-    filter(speaker_names_raw != "unknown") %>%
-    filter(speaker_names_raw != "speaker") %>%
-    filter(speaker_names_raw != "speaker") %>%
-    filter(speaker_names_raw != "Other") %>%
-    filter(speaker_names_raw != "other") %>%
-    filter(speaker_names_raw != "E") %>%
-    filter(speaker_names_raw != "e") %>%
-    filter(speaker_names_raw != "Experimenter") %>%
-    filter(speaker_names_raw != "experimenter") %>%
-    filter(speaker_names_raw != "Assistant") %>%
-    filter(speaker_names_raw != "assistant")
+  read_data_frame <- read_ts_df
+  # read_data_frame <- read_ts_df %>%
+  #   dplyr::filter(speaker_names_raw != "Unknown") %>% #filter out common unwanted speaker names
+  #   filter(speaker_names_raw != "unknown") %>%
+  #   filter(speaker_names_raw != "speaker") %>%
+  #   filter(speaker_names_raw != "speaker") %>%
+  #   filter(speaker_names_raw != "Other") %>%
+  #   filter(speaker_names_raw != "other") %>%
+  #   filter(speaker_names_raw != "E") %>%
+  #   filter(speaker_names_raw != "e") %>%
+  #   filter(speaker_names_raw != "Experimenter") %>%
+  #   filter(speaker_names_raw != "experimenter") %>%
+  #   filter(speaker_names_raw != "Assistant") %>%
+  #   filter(speaker_names_raw != "assistant")
   read_data_frame$speaker_names_raw <- as.factor(read_data_frame$speaker_names_raw) #convert variables to factor
   read_data_frame$event_id <- as.factor(read_data_frame$event_id)
 
