@@ -17,7 +17,6 @@
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
-  load("data/lookup_db.rda") #load lookup database
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
   myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
