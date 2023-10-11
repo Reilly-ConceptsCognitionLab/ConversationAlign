@@ -23,6 +23,8 @@
 
 clean_dyads <- function(read_ts_df) {
   read_data_frame <- read_ts_df
+
+
   # read_data_frame <- read_ts_df %>%
   #   dplyr::filter(speaker_names_raw != "Unknown") %>% #filter out common unwanted speaker names
   #   filter(speaker_names_raw != "unknown") %>%
@@ -57,8 +59,6 @@ clean_dyads <- function(read_ts_df) {
       }
     })
   }
-
-  load("data/omissions_dyads23.rda") #load in omissions database
 
   clean <- function(x) {
     x <- tolower(x) #to lower
