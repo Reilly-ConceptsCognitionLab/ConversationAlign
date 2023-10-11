@@ -44,42 +44,17 @@ align_dyads <- function(clean_ts_df) {
     df_aligned <- data.frame(df_aligned)
     df_aligned <- df_aligned[complete.cases(df_aligned[, c(which(colnames(df_aligned) %in% myvars))]),]     # remove rows with words that couldn't be aligned
 
+    # concatonate all aligned words into a single string and split the string into a vector
+    total_align <- paste(df_aligned$cleantext, collapse = " ")
+    total_align_s <- str_squish(str_split_1(total_align, " "))
+
     #group on event id and add a turn count column that sequences each uninterrupted utterance
     df_aligned_turn <- df_aligned %>%
-      group_by(event_id) %>%
-      mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
-      group_by(turncount, .add = TRUE) %>%
-      dplyr::mutate(an_wordcount_raw = ifelse(an_wordcount_clean[1] == length(an_wordcount_clean),
-                                              an_wordcount_raw,
-                                              #if turns were combined, iterate over each unique clean wc value, then each raw wc value in that and sum
-                                              sum(sapply(unique(an_wordcount_clean), function(clean_num){
-                                                u_raw_for_c <- unique(an_wordcount_raw[which(an_wordcount_clean == clean_num)])
-                                                total_raw_for_c <- 0
-                                                for (raw_num in u_raw_for_c){ #iterate over unique raw numbers in the clean numbers
-                                                  rows <- sum(an_wordcount_clean == clean_num & an_wordcount_raw == raw_num)
-                                                  total_raw <- raw_num * rows
-                                                  final_raw <- total_raw / rows # control for the number of rows (only add what is shown)
-                                                  total_raw_for_c <- total_raw_for_c + final_raw
-                                                }
-                                                total_raw_for_c #return the total raw word count for all raw words with x amount of clean
-                                              }))),
-                    an_wordcount_clean = ifelse(an_wordcount_clean[1] == length(an_wordcount_clean),
-                                                an_wordcount_clean,
-                                                #if turns were combined, iterate over each unique clean wc value and return that number controlled for dupes
-                                                sum(sapply(unique(an_wordcount_clean), function(clean_num){
-                                                  #if clean wc changed with align removal, iterate over each count to aggregate and catch possible duplicates
-                                                  u_raw_for_c <- unique(an_wordcount_raw[which(an_wordcount_clean == clean_num)])
-                                                  rows <- sum(an_wordcount_clean == clean_num)
-                                                  full_c <- clean_num * rows
-                                                  final_c <- full_c / rows # control for the number of rows (only add what is shown)
-                                                  final_c
-                                                }))),
-                    an_wordcount_align = n(), #aggregate clean word count to the number of rows occupied
-                    an_words_removed_align = an_wordcount_clean - an_wordcount_align,
-                    an_words_removed = an_wordcount_raw - an_wordcount_clean, #create words removed by turn
-                    an_mean_word_length_clean = mean(an_mean_word_length_clean), #aggregate word length stats
-                    an_mean_word_length_raw = mean(an_mean_word_length_raw)) %>%
-      ungroup()
+      dplyr::group_by(event_id) %>%
+      dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1,
+                    an_wordcount_align = length(total_align_s),
+                    an_word_removed_align = mean(nchar(total_align_s)),
+                    an_word_removed_align = an_wordcount_clean - an_wordcount_align)
 
     #add an exchange count variable, which is one turn from each speaker
     df_aligned_turn$exchangecount <- ceiling(df_aligned_turn$turncount / 2)

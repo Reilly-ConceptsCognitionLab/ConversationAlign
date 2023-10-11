@@ -40,20 +40,22 @@ clean_dyads <- function(read_ts_df) {
 
   #ADD TO
 
-  #convert time from hh:mm:ss or mm:ss to milliseconds
-  read_data_frame$time <- sapply(read_data_frame$time, function(x){
-    if (any(grepl(":", x)) == TRUE) {  #checks for colons, indicative of mm:ss
-      x <- as.numeric(unlist(str_split(x, ":"))) #breaks string into vector by colon placement
-      if (length(x) == 2) { #shows just mm, ss
-        sum((x[1]*60000), (x[2]*1000))
+  if (any(grepl("time", colnames(read_data_frame), ignore.case = TRUE)) == TRUE){
+    #convert time from hh:mm:ss or mm:ss to milliseconds
+    read_data_frame$time <- sapply(read_data_frame$time, function(x){
+      if (any(grepl(":", x)) == TRUE) {  #checks for colons, indicative of mm:ss
+        x <- as.numeric(unlist(str_split(x, ":"))) #breaks string into vector by colon placement
+        if (length(x) == 2) { #shows just mm, ss
+          sum((x[1]*60000), (x[2]*1000))
+        }
+        else if ( length(xvec) == 3) { #shows hh, mm, ss
+          sum((x[1]*3600000), (x[2]*60000), (x[3]*1000))
+        }}
+      else {
+        x
       }
-      else if ( length(xvec) == 3) { #shows hh, mm, ss
-        sum((x[1]*3600000), (x[2]*60000), (x[3]*1000))
-      }}
-    else {
-      x
-    }
-  })
+    })
+  }
 
   load("data/omissions_dyads23.rda") #load in omissions database
 
@@ -77,47 +79,30 @@ clean_dyads <- function(read_ts_df) {
   }
 
   read_data_frame$rawtext <- stringr::str_squish(read_data_frame$rawtext) #remove unneeded white space from text
+  #pull all utterances into one string then split them by word into a vector
+  total_raw <- paste(read_data_frame$rawtext, collapse = " ")
+  total_raw_s <- str_squish(str_split_1(total_raw, " "))
 
-  df_with_word_count <- read_data_frame %>%
-    dplyr::rowwise() %>% #group by individual row
-    dplyr::mutate(an_wordcount_raw = length(stri_remove_empty(str_split_1(paste(rawtext, collapse = " "), " "))), #create new column of word count by row
-                  an_mean_word_length_raw = mean(nchar(stri_remove_empty(str_split_1(paste(rawtext, collapse = " "), pattern = " "))))) %>% #create new column of average word length by row
-    dplyr::ungroup()
-
-  dfclean <- df_with_word_count %>%
+  dfclean <- read_data_frame %>%
     dplyr::mutate(cleantext = clean(rawtext)) %>%  #run clean function on text, making a new column
-    dplyr::rowwise() %>% #group by individual row
-    dplyr::mutate(an_wordcount_clean = length(stri_remove_empty(str_split_1(paste(cleantext, collapse = " "), " "))), # create word count column for cleaned text
-                  an_mean_word_length_clean = mean(nchar(stri_remove_empty(str_split_1(paste(cleantext, collapse = " "), pattern = " "))))) %>% #create mean word length column for clean text
-    dplyr::ungroup() %>%
     dplyr::select(!rawtext)# remove old raw text and grouping column
+  #pull all cleaned utterances into a single string then split into a vector by word
+  total_clean <- paste(dfclean$cleantext, collapse = " ")
+  total_clean_s <- str_squish(str_split_1(total_clean, " "))
 
   dfclean_sep <- tidyr::separate_rows(dfclean, cleantext) # create row for each word in clean text
 
   dfclean_filtered <- dfclean_sep %>%     #remove rows where text is an empty string
-    dplyr::mutate(an_words_removed = an_wordcount_raw - an_wordcount_clean) %>%
     dplyr::filter(cleantext != "") %>%
     #new stuff for testing the word count analytic fun
     dplyr::group_by(event_id) %>% #add a turn count per dyad, which counts by speaker change
     dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
-    dplyr::group_by(turncount, .add = TRUE) %>% #group by new turncount to aggregate word counts
-    dplyr::mutate(an_wordcount_raw = ifelse(an_wordcount_clean[1] == length(an_wordcount_clean),
-                                            an_wordcount_raw,
-                                            #if turns were combined, iterate over each unique clean wc value, then each raw wc value in that and sum
-                                            sum(sapply(unique(an_wordcount_clean), function(clean_num){
-                                              u_raw_for_c <- unique(an_wordcount_raw[which(an_wordcount_clean == clean_num)])
-                                              total_raw_for_c <- 0
-                                              for (raw_num in u_raw_for_c){ #iterate over unique raw numbers in the clean numbers
-                                                rows <- sum(an_wordcount_clean == clean_num & an_wordcount_raw == raw_num)
-                                                total_raw <- raw_num * rows
-                                                final_raw <- total_raw / rows # control for the number of rows (only add what is shown)
-                                                total_raw_for_c <- total_raw_for_c + final_raw
-                                              }
-                                              total_raw_for_c #return the total raw word count for all raw words with x amount of clean
-                                            }))),
-                  an_wordcount_clean = n(), #aggregate clean word count to the number of rows occupied
-                  an_words_removed = an_wordcount_raw - an_wordcount_clean, #create words removed by turn
-                  an_mean_word_length_clean = mean(an_mean_word_length_clean), #aggregate word length stats
-                  an_mean_word_length_raw = mean(an_mean_word_length_raw)) %>% ungroup()
+    ungroup() %>%
+    dplyr::mutate(an_wordcount_raw = length(total_raw_s),
+                  an_wordcount_clean = length(total_clean_s),
+                  an_word_removed_clean = an_wordcount_raw - an_wordcount_clean,
+                  an_mean_word_length_raw = mean(nchar(total_raw_s)),
+                  an_mean_word_length_clean = mean(nchar(total_clean_s)))
+
   return(dfclean_filtered)
 }
