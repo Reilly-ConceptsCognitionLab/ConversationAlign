@@ -43,17 +43,18 @@ align_dyads <- function(clean_ts_df) {
     df_aligned <- data.frame(df_aligned)
     df_aligned <- df_aligned[complete.cases(df_aligned[, c(which(colnames(df_aligned) %in% myvars))]),]     # remove rows with words that couldn't be aligned
 
-    # concatonate all aligned words into a single string and split the string into a vector
-    total_align <- paste(df_aligned$cleantext, collapse = " ")
-    total_align_s <- str_squish(str_split_1(total_align, " "))
+    df_aligned_an <- df_aligned %>%
+      group_by(event_id, speaker_names_raw) %>%
+      mutate(an_wordcount_align = length(str_squish(str_split_1(paste(cleantext, collapse = " "), " "))),
+             an_mean_word_length_align = mean(nchar(str_squish(str_split_1(paste(cleantext, collapse = " "), " ")))),
+             an_word_removed_align = an_wordcount_clean - an_wordcount_align) %>%
+      ungroup()
 
     #group on event id and add a turn count column that sequences each uninterrupted utterance
-    df_aligned_turn <- df_aligned %>%
+    df_aligned_turn <- df_aligned_an %>%
       dplyr::group_by(event_id) %>%
-      dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1,
-                    an_wordcount_align = length(total_align_s),
-                    an_word_removed_align = mean(nchar(total_align_s)),
-                    an_word_removed_align = an_wordcount_clean - an_wordcount_align)
+      dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
+      ungroup()
 
     #add an exchange count variable, which is one turn from each speaker
     df_aligned_turn$exchangecount <- ceiling(df_aligned_turn$turncount / 2)

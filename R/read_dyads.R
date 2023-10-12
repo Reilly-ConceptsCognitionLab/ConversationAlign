@@ -53,53 +53,6 @@ read_dyads <- function(folder_name = "my_transcripts") {
   }
   #END DEFINE OTTER READ TRANSCRIPT .TXT FILE FUNCTION
 
-
-  #DEFINE READ OTTER STYLECSV TRANSCRIPTS FUNCITON
-  read_otter_format_csv <- function(file_path) {
-    lines <- readLines(file_path) #read otter ai file
-    #removes otter.ai watermark if it is present
-    if (any(grepl("otter.ai", lines)) == TRUE) { #remove otter watermark if present
-      lines <- as.character(lines[-grep("otter.ai", lines)])
-    }
-    if (any(grepl("column\\d", lines, ignore.case = T)) == TRUE) { #remove any column titles if present
-      lines <- as.character(lines[-grep("column\\d", lines, ignore.case = T)])
-    }
-    lines <- gsub(",", "", lines)
-    #from here on, this is the same as the function for reading otter files
-    num_lines <- length(lines) #create a var for number of lines
-    speaker <- character() #create speaker, time, and text col
-    time <- character()
-    text <- character()
-
-    #process lines of dialogue
-    current_line <- 1
-    while (current_line <= num_lines) {
-      speaker_time <- strsplit(lines[current_line], " ")[[1]]
-      speaker <- c(speaker, speaker_time[1]) #select speaker
-      #Ben added - allows for last names and also timeless transcripts
-      timeadd <- tryCatch({speaker_time[max(grep(":", speaker_time))]}, #attempts to identify a colon
-                          warning = function(w){return(NA)}) #if no colon, continues without gathering time
-      time <- c(time, timeadd)
-
-      #select lines of speech
-      speech_lines <- character()
-      line_counter <- current_line + 1
-      while (line_counter <= num_lines && lines[line_counter] != "") { #if not max line not/empty line
-        speech_lines <- c(speech_lines, lines[line_counter]) #add text on line to text vector
-        line_counter <- line_counter + 1
-      }
-      text <- c(text, paste(speech_lines, collapse = " ")) #append speech on line to vector as a string
-      current_line <- line_counter + 1 #move to next speaker
-    }
-    #create df
-    transcript_df <- data.frame(speaker_names_raw = speaker,
-                                time = time,
-                                rawtext = text,
-                                stringsAsFactors = FALSE)
-    return(transcript_df)
-  }
-  #END DEFINE READ OTTER STYLECSV TRANSCRIPTS FUNCITON
-
   #DEFINE READ ME TXT FILE FUNCITON
   read_dyads_txt <- function(folder_name){
     if (any(grepl("*.txt$", list.files(path = folder_name, pattern = ".", full.names = TRUE, recursive = TRUE))) == TRUE) {
@@ -143,15 +96,6 @@ read_dyads <- function(folder_name = "my_transcripts") {
         sum_nas_es <- apply(x_read_csv, 2, function(y){sum(is.na(y) | y == "")})
         x_read_csv <- x_read_csv[sum_nas_es < nrow(x_read_csv)]
         x_read_csv <- data.frame(x_read_csv)
-
-        #identifies and removes the first column if it sequences by one each row
-        # 10/8/23 - Ben commented this out because it throws a warning and it is worth more trouble than it's worth
-        # if (is.numeric(x_read_csv[,1]) == TRUE) {
-        #   if (all(x_read_csv[,1] == seq(x_read_csv[1,1]:x_read_csv[nrow(x_read_csv),1])) == TRUE){
-        #     x_read_csv <- x_read_csv[,-1]
-        #   }
-        # }
-
 
         #check that the column names are correct
         if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |

@@ -22,30 +22,20 @@
 #' @export clean_dyads
 
 clean_dyads <- function(read_ts_df) {
-  read_data_frame <- read_ts_df
+  #specify a group of speaker names that should be automatically removed from the transcript
+  s_remove <- c("Unknown", "unknown", "Speaker", "speaker", "Other", "other", "E", "e", "Experimenter", "experimenter", "Assistant", "assistant")
+  #removes rows from the transcript that have the speaker as specified in the remove
+  if (any(read_ts_df$speaker_names_raw %in% s_remove) == TRUE){ #conditional in case no matches
+    read_ts_df <- read_ts_df[-which(read_ts_df$speaker_names_raw %in% s_remove)]
+  }
 
+  #set event_id  and speaker names as factors
+  read_ts_df$speaker_names_raw <- as.factor(read_ts_df$speaker_names_raw) #convert variables to factor
+  read_ts_df$event_id <- as.factor(read_ts_df$event_id)
 
-  # read_data_frame <- read_ts_df %>%
-  #   dplyr::filter(speaker_names_raw != "Unknown") %>% #filter out common unwanted speaker names
-  #   filter(speaker_names_raw != "unknown") %>%
-  #   filter(speaker_names_raw != "speaker") %>%
-  #   filter(speaker_names_raw != "speaker") %>%
-  #   filter(speaker_names_raw != "Other") %>%
-  #   filter(speaker_names_raw != "other") %>%
-  #   filter(speaker_names_raw != "E") %>%
-  #   filter(speaker_names_raw != "e") %>%
-  #   filter(speaker_names_raw != "Experimenter") %>%
-  #   filter(speaker_names_raw != "experimenter") %>%
-  #   filter(speaker_names_raw != "Assistant") %>%
-  #   filter(speaker_names_raw != "assistant")
-  read_data_frame$speaker_names_raw <- as.factor(read_data_frame$speaker_names_raw) #convert variables to factor
-  read_data_frame$event_id <- as.factor(read_data_frame$event_id)
-
-  #ADD TO
-
-  if (any(grepl("time", colnames(read_data_frame), ignore.case = TRUE)) == TRUE){
+  if (any(grepl("time", colnames(read_ts_df), ignore.case = TRUE)) == TRUE){
     #convert time from hh:mm:ss or mm:ss to milliseconds
-    read_data_frame$time <- sapply(read_data_frame$time, function(x){
+    read_ts_df$time <- sapply(read_ts_df$time, function(x){
       if (any(grepl(":", x)) == TRUE) {  #checks for colons, indicative of mm:ss
         x <- as.numeric(unlist(str_split(x, ":"))) #breaks string into vector by colon placement
         if (length(x) == 2) { #shows just mm, ss
@@ -79,17 +69,30 @@ clean_dyads <- function(read_ts_df) {
     x <- textstem::lemmatize_words(x)
   }
 
-  read_data_frame$rawtext <- stringr::str_squish(read_data_frame$rawtext) #remove unneeded white space from text
-  #pull all utterances into one string then split them by word into a vector
-  total_raw <- paste(read_data_frame$rawtext, collapse = " ")
-  total_raw_s <- str_squish(str_split_1(total_raw, " "))
+  read_ts_df$rawtext <- stringr::str_squish(read_ts_df$rawtext) #remove unneeded white space from text
+
+
+  #code that adds word count and mean word length by dyad by speaker
+  read_data_frame <- read_ts_df %>%
+    dplyr::group_by(event_id, speaker_names_raw) %>% #group and take word count and length
+    dplyr::mutate(an_wordcount_raw = length(str_squish(str_split_1(paste(rawtext, collapse = " "), " "))),
+                  an_mean_word_length_raw = mean(nchar(str_squish(str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
+    dplyr::ungroup()
+
+
+  #pull all utterances into one string then split them by word into a vector - this might be by ALL Dyads!!!
+  #total_raw <- paste(read_data_frame$rawtext, collapse = " ")
+  #total_raw_s <- str_squish(str_split_1(total_raw, " "))
 
   dfclean <- read_data_frame %>%
     dplyr::mutate(cleantext = clean(rawtext)) %>%  #run clean function on text, making a new column
-    dplyr::select(!rawtext)# remove old raw text and grouping column
-  #pull all cleaned utterances into a single string then split into a vector by word
-  total_clean <- paste(dfclean$cleantext, collapse = " ")
-  total_clean_s <- str_squish(str_split_1(total_clean, " "))
+    dplyr::select(!rawtext) %>%
+    dplyr::group_by(event_id, speaker_names_raw) %>% #group and take clean word count and length
+    dplyr::mutate(an_wordcount_clean = length(str_squish(str_split_1(paste(cleantext, collapse = " "), " "))),
+                  an_mean_word_length_clean = mean(nchar(str_squish(str_split_1(paste(cleantext, collapse = " "), " ")))),
+                  an_word_removed_clean = an_wordcount_raw - an_wordcount_clean) %>%
+    dplyr::ungroup()
+
 
   dfclean_sep <- tidyr::separate_rows(dfclean, cleantext) # create row for each word in clean text
 
@@ -98,12 +101,7 @@ clean_dyads <- function(read_ts_df) {
     #new stuff for testing the word count analytic fun
     dplyr::group_by(event_id) %>% #add a turn count per dyad, which counts by speaker change
     dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
-    ungroup() %>%
-    dplyr::mutate(an_wordcount_raw = length(total_raw_s),
-                  an_wordcount_clean = length(total_clean_s),
-                  an_word_removed_clean = an_wordcount_raw - an_wordcount_clean,
-                  an_mean_word_length_raw = mean(nchar(total_raw_s)),
-                  an_mean_word_length_clean = mean(nchar(total_clean_s)))
+    ungroup()
 
   return(dfclean_filtered)
 }
