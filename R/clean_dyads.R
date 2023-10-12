@@ -26,7 +26,7 @@ clean_dyads <- function(read_ts_df) {
   s_remove <- c("Unknown", "unknown", "Speaker", "speaker", "Other", "other", "E", "e", "Experimenter", "experimenter", "Assistant", "assistant")
   #removes rows from the transcript that have the speaker as specified in the remove
   if (any(read_ts_df$speaker_names_raw %in% s_remove) == TRUE){ #conditional in case no matches
-    read_ts_df <- read_ts_df[-which(read_ts_df$speaker_names_raw %in% s_remove)]
+    read_ts_df <- read_ts_df[-which(read_ts_df$speaker_names_raw %in% s_remove),]
   }
 
   #set event_id  and speaker names as factors
