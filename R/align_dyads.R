@@ -15,6 +15,8 @@
 #' @importFrom tidyverse summarise
 #' @importFrom tidyverse summarise(across())
 #' @importFrom tidyselect any_of
+#' @importFrom stringr str_split_1
+#' @importFrom stringr str_squish
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
