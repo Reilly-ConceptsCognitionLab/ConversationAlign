@@ -14,7 +14,6 @@
 #' @importFrom tidyverse group_by
 #' @importFrom tidyverse summarise
 #' @importFrom tidyverse summarise(across())
-#' @importFrom data.table :=
 #' @importFrom tidyselect any_of
 #' @export align_dyads
 
