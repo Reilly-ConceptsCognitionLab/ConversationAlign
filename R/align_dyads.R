@@ -14,6 +14,7 @@
 #' @importFrom tidyverse group_by
 #' @importFrom tidyverse summarise
 #' @importFrom tidyverse summarise(across())
+#' @importFrom data.table :=
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
