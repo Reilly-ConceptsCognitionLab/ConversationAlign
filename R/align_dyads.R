@@ -15,6 +15,7 @@
 #' @importFrom tidyverse summarise
 #' @importFrom tidyverse summarise(across())
 #' @importFrom data.table :=
+#' @importFrom tidyselect any_of
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
@@ -44,6 +45,7 @@ align_dyads <- function(clean_ts_df) {
     df_aligned <- data.frame(df_aligned)
     df_aligned <- df_aligned[complete.cases(df_aligned[, c(which(colnames(df_aligned) %in% myvars))]),]     # remove rows with words that couldn't be aligned
 
+
     df_aligned_an <- df_aligned %>%
       group_by(event_id, speaker_names_raw) %>%
       mutate(an_wordcount_align = length(str_squish(str_split_1(paste(cleantext, collapse = " "), " "))),
@@ -54,14 +56,14 @@ align_dyads <- function(clean_ts_df) {
     #group on event id and add a turn count column that sequences each uninterrupted utterance
     df_aligned_turn <- df_aligned_an %>%
       dplyr::group_by(event_id) %>%
-      dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
-      ungroup()
+      dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1)
 
     #add an exchange count variable, which is one turn from each speaker
     df_aligned_turn$exchangecount <- ceiling(df_aligned_turn$turncount / 2)
     #rearrange the columns to be more readable
     df_aligned_ec <- df_aligned_turn %>%
-      select(event_id, speaker_names_raw, exchangecount, turncount, cleantext, contains(var_aligners), time, everything())
+      select(tidyselect::any_of(c("event_id", "speaker_names_raw", "exchangecount", "turncount", "cleantext", "time")),
+             contains(var_aligners), everything())
     df_aligned_ec
   })
   ts_aligned_df_total <- bind_rows(ts_aligned_list)
