@@ -9,18 +9,20 @@
 #' @importFrom dplyr full_join
 #' @importFrom dplyr left_join
 #' @importFrom dplyr mutate
-#' @importFrom tidytable consecutive_id
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr ungroup
+#' @importFrom tidytable consecutive_id
 #' @importFrom tidyverse group_by
 #' @importFrom tidyverse summarise
 #' @importFrom tidyverse summarise(across())
 #' @importFrom tidyselect any_of
+#' @importFrom tidyselect contains
+#' @importFrom tidyselect everything
 #' @importFrom stringr str_split_1
 #' @importFrom stringr str_squish
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
-  print("this is a package update test")
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
   myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -34,7 +36,7 @@ align_dyads <- function(clean_ts_df) {
                         title = writeLines("Select the variables you would like to align your conversation transcripts on.\nPlease do not select more than three variables."),
                         graphics = FALSE)
   var_selected <- lookup_db %>% #select desired columns from lookup_db
-    select(matches("^word$"), contains(myvars))
+    dplyr::select(matches("^word$"), contains(myvars))
   #create variable containing the column names of each variable to be aligned
   var_aligners <- colnames(var_selected)[-grep("^word$", colnames(lookup_db), ignore.case = TRUE)]
 
@@ -49,11 +51,11 @@ align_dyads <- function(clean_ts_df) {
 
 
     df_aligned_an <- df_aligned %>%
-      group_by(event_id, speaker_names_raw) %>%
-      mutate(an_wordcount_align = length(str_squish(str_split_1(paste(cleantext, collapse = " "), " "))),
-             an_mean_word_length_align = mean(nchar(str_squish(str_split_1(paste(cleantext, collapse = " "), " ")))),
-             an_word_removed_align = an_wordcount_clean - an_wordcount_align) %>%
-      ungroup()
+      dplyr::group_by(event_id, speaker_names_raw) %>%
+      dplyr::mutate(an_wordcount_align = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
+                    an_mean_word_length_align = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
+                    an_word_removed_align = an_wordcount_clean - an_wordcount_align) %>%
+      dplyr::ungroup()
 
     #group on event id and add a turn count column that sequences each uninterrupted utterance
     df_aligned_turn <- df_aligned_an %>%
@@ -64,11 +66,11 @@ align_dyads <- function(clean_ts_df) {
     df_aligned_turn$exchangecount <- ceiling(df_aligned_turn$turncount / 2)
     #rearrange the columns to be more readable
     df_aligned_ec <- df_aligned_turn %>%
-      select(tidyselect::any_of(c("event_id", "speaker_names_raw", "exchangecount", "turncount", "cleantext", "time")),
-             contains(var_aligners), everything())
+      dplyr::select(tidyselect::any_of(c("event_id", "speaker_names_raw", "exchangecount", "turncount", "cleantext", "time")),
+                    tidyselect::contains(var_aligners), tidyselect::everything())
     df_aligned_ec
   })
-  ts_aligned_df_total <- bind_rows(ts_aligned_list)
+  ts_aligned_df_total <- dplyr::bind_rows(ts_aligned_list)
 
   #DEFINE THE METADATA ALIGN FUNCTION
   align_metadata <- function(aligned_ts_df) {
@@ -85,9 +87,9 @@ align_dyads <- function(clean_ts_df) {
         coloutput <- data.frame(speaker_names_raw = speakervec,
                                 speaker_group_var_random = sapply(speakervec, function(y) {
                                   names(speakervec)[match(y, speakervec)]}))
-        x <- x %>% left_join(coloutput, by=c("speaker_names_raw")) #binds code to aligned data frame
+        x <- x %>% dplyr::left_join(coloutput, by=c("speaker_names_raw")) #binds code to aligned data frame
       })
-      randomly <- bind_rows(randomly) #binds all the doc data frame into one
+      randomly <- dplyr::bind_rows(randomly) #binds all the doc data frame into one
       return(randomly)
     }
     #if input is empty, returns the aligned data frame with no demographics
