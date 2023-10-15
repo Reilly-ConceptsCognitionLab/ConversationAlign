@@ -9,13 +9,26 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr group_by
 #' @importFrom dplyr ungroup
-#' @importFrom tidyr pivot_wider
-#' @importFrom tidyr pivot_longer
 #' @importFrom dplyr filter
 #' @importFrom dplyr left_join
 #' @importFrom dplyr arrange
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr bind_cols
+#' @importFrom dplyr arrange
+#' @importFrom dplyr rename_with
+#' @importFrom dplyr rename_at
+#' @importFrom dplyr vars
+#' @importFrom dplyr across
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr drop_na
+#' @importFrom tidyselct starts_with
+#' @importFrom tidyselct ends_with
+#' @importFrom tidyselect contains
+#' @importFrom tidyselect everything
+#' @importFrom tidyverse summarize(across())
+#' @importFrom stringr str_replace
+#' @importFrom stringr str_c
 #' @importFrom DescTools AUC
 #' @importFrom stats cor.test
 #' @importFrom zoo na.approx
@@ -35,20 +48,21 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
                           "lex_senses_polysemy", "lex_wordfreqlg10_raw", "sem_arousal",
                           "sem_concreteness", "sem_diversity", "sem_neighbors")
 
-    align_var <- colnames(select(aligned_ts_df, starts_with(align_dimensions) & ends_with(align_dimensions)))
+    align_var <- colnames(dplyr::select(aligned_ts_df, starts_with(align_dimensions) & ends_with(align_dimensions)))
     #mutates new mean columns for each aligned variable, adds a speaker pair variable, and preserves all columns
     df_averaged_long <- aligned_ts_df %>%
       dplyr::group_by(event_id, speaker_names_raw) %>% #group by speaker and dyad
       dplyr::mutate(across(starts_with(align_var), mean, .names = "mean_{col}")) %>%
-      group_by(event_id, .add = FALSE) %>% #add a column of concatenated speaker names by transcript
-      mutate(speaker_pair = paste(sort(unique(speaker_names_raw)), collapse = "---")) %>%
-      ungroup()
+      dplyr::group_by(event_id, .add = FALSE) %>% #add a column of concatenated speaker names by transcript
+      dplyr::mutate(speaker_pair = paste(sort(unique(speaker_names_raw)), collapse = "---")) %>%
+      dplyr::ungroup()
     return(df_averaged_long)
 
   }
   #END DEFINE MAIN EFFECT FUNCTION
+
+  #DEFINE DIFFERENCE TIME SERIES FUNCTION
   find_diff_ts <- function(aligned_df = aligned_ts_df){
-    #define the built in variables that we can align with
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
                           "aff_encouragement", "aff_excitement", "aff_guilt", "aff_happiness",
@@ -65,22 +79,21 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
     df_list_speakvar <- lapply(df_list, function(df){
       svec <- unique(as.character(df$speaker_names_raw))
       df <- df %>%
-        mutate(speaker_var = ifelse(as.character(speaker_names_raw) == svec[1], "S1", "S2"),
-               speaker_pair = paste(sort(svec), collapse = "---"))
+        dplyr::mutate(speaker_var = ifelse(as.character(speaker_names_raw) == svec[1], "S1", "S2"),
+                      speaker_pair = paste(sort(svec), collapse = "---"))
     })
 
-    df_speakvar <- bind_rows(df_list_speakvar)
+    df_speakvar <- dplyr::bind_rows(df_list_speakvar)
 
-    # pivot wider by speaker code
     df_wide <- df_speakvar %>%
-      group_by(event_id, exchangecount, speaker_var) %>%
-      dplyr::summarize(across(contains(align_var), mean),
-                       #speaker_var = first(speaker_var),
+      dplyr::group_by(event_id, exchangecount, speaker_names_raw) %>%
+      dplyr::summarize(across(contains(align_var), first),
+                       speaker_var = first(speaker_var),
                        speaker_pair = first(speaker_pair),
                        .groups = "drop") %>%
-      pivot_wider(names_from = c("speaker_var"), values_from = any_of(align_dimensions))
+      tidyr::pivot_wider(names_from = c("speaker_var"), values_from = any_of(align_dimensions))
 
-    # wrangle
+    # wrangle into two seperate dataframes by speaker
     speaker1 <- df_wide %>% dplyr::select(c("event_id", "exchangecount", "speaker_pair") | c(ends_with("_S1"))) %>% drop_na()
     speaker2 <- df_wide %>% dplyr::select(c("event_id", "exchangecount") | c(ends_with("_S2"))) %>% drop_na()
     widedf <- merge(speaker1, speaker2, by=c("event_id", "exchangecount")) %>%
@@ -94,15 +107,12 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
     }
 
     longdf <- widedf %>%
-      pivot_longer(cols = c(ends_with("_S1") | ends_with("_S2")), names_to = c("dimension", "speaker_names_raw"), names_pattern = "(.*)_([^_]+)$", values_to = "score") %>%
-      pivot_wider(names_from = dimension, values_from = score) %>%
+      tidyr::pivot_longer(cols = c(ends_with("_S1") | ends_with("_S2")), names_to = c("dimension", "speaker_names_raw"), names_pattern = "(.*)_([^_]+)$", values_to = "score") %>%
+      tidyr::pivot_wider(names_from = dimension, values_from = score) %>%
       filter(speaker_names_raw == "S1") %>%
       select(-speaker_names_raw)
     return(longdf)
   }
-  #DEFINE ABSOLUTE DIFFERENCE TIME SERIES FUNCTION:
-
-
   #END DEFINE ABOSOLUTE DIFFERENE TIME SERIES FUNCTION
 
   #DEFINE time SERIES RESCALER
@@ -137,11 +147,9 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       #if the ts has 3 or fewer exchange counts it shouldn't  be resampled, so will report NA
       if (max(ts_select$exchangecount) <= 2){
         final_ts <- ts_select %>%
-          mutate(event_id = unique(x$event_id),
-                 speaker_pair = unique(x$speaker_pair))
-        #data.frame(exchangecount = seq(from = 0, to = nrow(ts_select) - 1),
-        #event_id = unique(x$event_id),
-        #speaker_pair = unique(x$speaker_pair))
+          dplyr::mutate(event_id = unique(x$event_id),
+                        speaker_pair = unique(x$speaker_pair))
+
         final_ts[,colnames(final_ts) %in% align_dimensions] <- NA
         final_ts
       }
@@ -224,11 +232,11 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
           }
 
           agg_int <- ts_select %>%
-            mutate(Grouper = grouper_counter) %>%
-            group_by(Grouper) %>% #create and group by the integer needed to downscale
-            summarise(across(contains(colnames(x)), mean), #aggregate measurements by group
-                      .groups = "drop") %>%
-            select(!Grouper)
+            dplyr::mutate(Grouper = grouper_counter) %>%
+            dplyr::group_by(Grouper) %>% #create and group by the integer needed to downscale
+            dplyr::summarise(across(contains(colnames(x)), mean), #aggregate measurements by group
+                             .groups = "drop") %>%
+            dplyr::select(!Grouper)
 
           if (nrow(agg_int) == resample_n + 1) {
             rescale_final <- agg_int
@@ -256,9 +264,9 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
         } #end of down scaling section
 
         final_ts <- rescale_final %>%
-          mutate(exchangecount = seq(from = 0, to = resample_n), #create exchange count column
-                 event_id = unique(x$event_id),
-                 speaker_pair = unique(x$speaker_pair))
+          dplyr::mutate(exchangecount = seq(from = 0, to = resample_n), #create exchange count column
+                        event_id = unique(x$event_id),
+                        speaker_pair = unique(x$speaker_pair))
         #bind all new columns together into one data frame with an exchange count
         final_ts <- data.frame(final_ts)
       }
@@ -297,12 +305,6 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       computed_df_list <- resample_time_series(df_list = computed_df_list, resample_n = resample_n)
     }
     else if (resample_yes_or_no == FALSE) {
-      #if no resampling is desired, make exc start from zero
-      # computed_df_list <- lapply(computed_df_list, function(df_select){
-      #   df_select$exchangecount <-  seq(from = 0, to = nrow(df_select)-1)
-      #   df_select <- data.frame(df_select)
-      #})
-      #^^^ should check if that is necessary ^^^
       resample_n <- 3 #if not resampling sets the var to 3 so that dyads with less than that will get NA
     }
     else {
@@ -310,7 +312,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
     }
 
     #create a separate df of id variables
-    id_cols <- dplyr::bind_rows(lapply(computed_df_list, function(df){
+    id_cols <- bind_rows(lapply(computed_df_list, function(df){
       unique(df[,c("event_id", "speaker_pair")])
     }))
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
@@ -385,51 +387,50 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
         tidyr::pivot_wider(names_from = c(speaker_names_raw),
                            values_from = align_var) %>%
         dplyr::select(event_id, exchangecount, contains(align_var))
-      #dplyr::select(-c(starts_with("m_"), starts_with("analytics_")))
 
       # wrangle - remove NA rows produced from pivoting and then merge into real wide df (one exc per row)
-      speaker1 <- df_wide %>% dplyr::select(c('event_id', 'exchangecount') | c(ends_with("_S1"))) %>% drop_na()
-      speaker2 <- df_wide %>% dplyr::select(c('event_id', 'exchangecount') | c(ends_with("_S2"))) %>% drop_na()
+      speaker1 <- df_wide %>% dplyr::select(c('event_id', 'exchangecount') | c(ends_with("_S1"))) %>% tidyr::drop_na()
+      speaker2 <- df_wide %>% dplyr::select(c('event_id', 'exchangecount') | c(ends_with("_S2"))) %>% tidyr::drop_na()
       all <- merge(speaker1, speaker2, by=c('event_id', 'exchangecount'))
       all <- all %>% dplyr::arrange(event_id, exchangecount)
       # conditionally pass over scorr calculation and instead fill with NA if time series has 3 or less time points
       if (nrow(all) <= 3) {
         dyad_sc <- all %>%
-          pivot_longer(cols = c(ends_with("S1") | ends_with("S2")),
-                       names_to = c("dimension", "speaker_names_raw"),
-                       names_pattern = "(.*)_([^_]+)$",
-                       values_to = "score") %>%
-          mutate(score = NA,
-                 speaker_names_raw = replace(speaker_names_raw,
-                                             which(speaker_names_raw == "S1"), as.character(speakervec)[1]),
-                 speaker_names_raw = replace(speaker_names_raw,
-                                             which(speaker_names_raw == "S2"),
-                                             as.character(speakervec)[2]),
-                 speaker_names_raw = as.factor(speaker_names_raw)) %>%
-          pivot_wider(names_from = dimension, values_from = score)
+          tidyr::pivot_longer(cols = c(ends_with("S1") | ends_with("S2")),
+                              names_to = c("dimension", "speaker_names_raw"),
+                              names_pattern = "(.*)_([^_]+)$",
+                              values_to = "score") %>%
+          dplyr::mutate(score = NA,
+                        speaker_names_raw = replace(speaker_names_raw,
+                                                    which(speaker_names_raw == "S1"), as.character(speakervec)[1]),
+                        speaker_names_raw = replace(speaker_names_raw,
+                                                    which(speaker_names_raw == "S2"),
+                                                    as.character(speakervec)[2]),
+                        speaker_names_raw = as.factor(speaker_names_raw)) %>%
+          tidyr::pivot_wider(names_from = dimension, values_from = score)
         #create two transient variables from the align dimension
 
-        rho_cols <- dyad_sc %>% select(contains(align_var))
+        rho_cols <- dyad_sc %>% dplyr::select(contains(align_var))
         pval_cols <- rho_cols
 
         rho_cols <- rho_cols %>%
-          rename_with(~str_c("S_rho_", .), .cols = everything())
+          rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
         #mutate(across(contains(align_var), dplyr::na_if(., is.numeric(.)), .names = "S_rho_{.col}")
         pval_cols <- pval_cols %>%
           rename_with(~str_c("S_pval_", .), .cols = everything())
         #mutate(across(contains(align_var), ifelse(is.na(align_var) == F, NA, NA)), .names = "S_pval_{.col}")
         dyad_sc <- dyad_sc %>%
           select(-c(exchangecount, contains(align_var)))
-        dyad_sc <- bind_cols(list(dyad_sc, rho_cols, pval_cols)) #bind rho and pval cols together
+        dyad_sc <- dplyr::bind_cols(list(dyad_sc, rho_cols, pval_cols)) #bind rho and pval cols together
         dyad_sc
       }
       else {
         #convert all dimension columns to numeric
         all[,colnames(all) %in% align_var] <- as.numeric(all[,colnames(all) %in% align_var])
-        x_vars <- all %>% select(c('event_id') | c(ends_with("_S1"))) %>%
-          rename_at(vars(matches("_S1")), ~str_replace(., "_S1", ""))
+        x_vars <- all %>% dplyr::select(c('event_id') | c(ends_with("_S1"))) %>%
+          dplyr::rename_at(vars(matches("_S1")), ~stringr::str_replace(., "_S1", ""))
         y_vars <- all %>% select(c('event_id') | c(ends_with("_S2"))) %>%
-          rename_at(vars(matches("_S2")), ~str_replace(., "_S2", ""))
+          dplyr::rename_at(vars(matches("_S2")), ~stringr::str_replace(., "_S2", ""))
 
         #Separate lapply for spearmans correlation
         dyad_dim_sc_list <- lapply(align_var, function(dim){
@@ -441,7 +442,6 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
           #add speaker column only if it is the first iteration
           colnames(sc_results_df) <- paste(colnames(sc_results_df), dim, sep = "_")
           if (match(dim, align_var) == 1) {
-            #sc_results_df$speaker_names_raw  <- c("S1", "S2")
             sc_results_df$speaker_names_raw <- speakervec
           }
           sc_results_df
