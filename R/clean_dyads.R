@@ -24,6 +24,7 @@
 clean_dyads <- function(read_ts_df) {
   #specify a group of speaker names that should be automatically removed from the transcript
   s_remove <- c("Unknown", "unknown", "Speaker", "speaker", "Other", "other", "E", "e", "Experimenter", "experimenter", "Assistant", "assistant")
+
   #removes rows from the transcript that have the speaker as specified in the remove
   if (any(read_ts_df$speaker_names_raw %in% s_remove) == TRUE){ #conditional in case no matches
     read_ts_df <- read_ts_df[-which(read_ts_df$speaker_names_raw %in% s_remove),]
@@ -50,6 +51,7 @@ clean_dyads <- function(read_ts_df) {
     })
   }
 
+
   clean <- function(x) {
     x <- tolower(x) #to lower
     x <- gsub("\"", " ", x)
@@ -75,21 +77,17 @@ clean_dyads <- function(read_ts_df) {
   #code that adds word count and mean word length by dyad by speaker
   read_data_frame <- read_ts_df %>%
     dplyr::group_by(event_id, speaker_names_raw) %>% #group and take word count and length
-    dplyr::mutate(an_wordcount_raw = length(str_squish(str_split_1(paste(rawtext, collapse = " "), " "))),
-                  an_mean_word_length_raw = mean(nchar(str_squish(str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
+    dplyr::mutate(an_wordcount_raw = length(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))),
+                  an_mean_word_length_raw = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
     dplyr::ungroup()
 
-
-  #pull all utterances into one string then split them by word into a vector - this might be by ALL Dyads!!!
-  #total_raw <- paste(read_data_frame$rawtext, collapse = " ")
-  #total_raw_s <- str_squish(str_split_1(total_raw, " "))
 
   dfclean <- read_data_frame %>%
     dplyr::mutate(cleantext = clean(rawtext)) %>%  #run clean function on text, making a new column
     dplyr::select(!rawtext) %>%
     dplyr::group_by(event_id, speaker_names_raw) %>% #group and take clean word count and length
-    dplyr::mutate(an_wordcount_clean = length(str_squish(str_split_1(paste(cleantext, collapse = " "), " "))),
-                  an_mean_word_length_clean = mean(nchar(str_squish(str_split_1(paste(cleantext, collapse = " "), " ")))),
+    dplyr::mutate(an_wordcount_clean = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
+                  an_mean_word_length_clean = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
                   an_word_removed_clean = an_wordcount_raw - an_wordcount_clean) %>%
     dplyr::ungroup()
 
