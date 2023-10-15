@@ -385,7 +385,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       df_wide <- df %>%
         group_by(event_id, exchangecount, speaker_names_raw) %>%
         dplyr::summarize(across(contains(align_var), mean)) %>%
-        dplyr::ungroup %>%
+        dplyr::ungroup() %>%
         tidyr::pivot_wider(names_from = speaker_names_raw,
                            values_from = align_var) %>%
         dplyr::select(event_id, exchangecount, contains(align_var))

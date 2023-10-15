@@ -7,7 +7,6 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr bind_rows
-#' @importFrom data.table setattr
 #' @export read_dyads
 
 
