@@ -381,21 +381,12 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       df$speaker_names_raw <- gsub(speakervec[1], names(speakervec)[1], df$speaker_names_raw)
       df$speaker_names_raw <- gsub(speakervec[2], names(speakervec)[2], df$speaker_names_raw)
 
-      print(df)
-      #only in the package version - something goes wrong here were the whole df becomes a single row w/ just dims
-      temp_df_wide1 <- df %>%
-        group_by(event_id, exchangecount, speaker_names_raw)
-
-      print(temp_df_wide1)
-
-      temp_df_wide2 <- temp_df_wide1 %>%
-        dplyr::summarize(across(contains(align_var), mean)) %>%
-        ungroup()
-
-      print(temp_df_wide2)
-
-      df_wide <- temp_df_wide2 %>%
-      tidyr::pivot_wider(names_from = tidyselect::contains("speaker_names_raw"),
+      #create a wide data frame with each row containing both speakers' turn aggregated scores
+      df_wide <- df %>%
+        dplyr::group_by(event_id, exchangecount, speaker_names_raw, .add = FALSE) %>%
+        dplyr::summarize(across(contains(align_var), mean),
+                         .group = "drop") %>%
+        tidyr::pivot_wider(names_from = tidyselect::contains("speaker_names_raw"),
                            values_from = align_var) %>%
         dplyr::select(event_id, exchangecount, contains(align_var))
 
