@@ -109,8 +109,8 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
     longdf <- widedf %>%
       tidyr::pivot_longer(cols = c(ends_with("_S1") | ends_with("_S2")), names_to = c("dimension", "speaker_names_raw"), names_pattern = "(.*)_([^_]+)$", values_to = "score") %>%
       tidyr::pivot_wider(names_from = dimension, values_from = score) %>%
-      filter(speaker_names_raw == "S1") %>%
-      select(-speaker_names_raw)
+      dplyr::filter(speaker_names_raw == "S1") %>%
+      dplyr::select(-speaker_names_raw)
     return(longdf)
   }
   #END DEFINE ABOSOLUTE DIFFERENE TIME SERIES FUNCTION
