@@ -380,6 +380,8 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       df$speaker_names_raw <- gsub(speakervec[1], names(speakervec)[1], df$speaker_names_raw)
       df$speaker_names_raw <- gsub(speakervec[2], names(speakervec)[2], df$speaker_names_raw)
 
+      print(df)
+
       df_wide <- df %>%
         group_by(event_id, exchangecount, speaker_names_raw) %>%
         dplyr::summarize(across(contains(align_var), mean),
