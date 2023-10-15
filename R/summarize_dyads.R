@@ -18,6 +18,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom DescTools AUC
 #' @importFrom stats cor.test
+#' @importFrom zoo na.approx
 #' @export summarize_dyads
 
 
