@@ -51,10 +51,10 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
     align_var <- colnames(dplyr::select(aligned_ts_df, starts_with(align_dimensions) & ends_with(align_dimensions)))
     #mutates new mean columns for each aligned variable, adds a speaker pair variable, and preserves all columns
     df_averaged_long <- aligned_ts_df %>%
-      dplyr::group_by(event_id, speaker_names_raw) %>% #group by speaker and dyad
-      dplyr::mutate(across(starts_with(align_var), mean, .names = "mean_{col}")) %>%
-      dplyr::group_by(event_id, .add = FALSE) %>% #add a column of concatenated speaker names by transcript
+      dplyr::group_by(event_id) %>% #add a column of concatenated speaker names by transcript
       dplyr::mutate(speaker_pair = paste(sort(unique(speaker_names_raw)), collapse = "---")) %>%
+      dplyr::group_by(speaker_names_raw, .add = TRUE) %>% #group by speaker and dyad
+      dplyr::mutate(dplyr::across(tidyselect::starts_with(align_var), mean, .names = "mean_{col}")) %>%
       dplyr::ungroup()
     return(df_averaged_long)
 
@@ -80,8 +80,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       svec <- unique(as.character(df$speaker_names_raw))
       df <- df %>%
         dplyr::mutate(speaker_var = ifelse(as.character(speaker_names_raw) == svec[1], "S1", "S2"),
-                      speaker_pair = paste(sort(svec), collapse = "---")) %>%
-        ungroup() #added this to test the adding grouping varibale message
+                      speaker_pair = paste(sort(svec), collapse = "---"))
     })
 
     df_speakvar <- dplyr::bind_rows(df_list_speakvar)
@@ -291,7 +290,8 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
         min_exc_max <- computed_df %>%
           dplyr::group_by(event_id) %>%
           dplyr::mutate(exc_max = max(exchangecount)) %>%
-          dplyr::summarize(exc_max = first(exc_max), .groups = "drop") %>%
+          dplyr::summarize(exc_max = first(exc_max),
+                           .groups = "drop") %>%
           dplyr::select(exc_max)
 
         #take the minimum of the max exchange count by dyad variable after converting to a vector
@@ -463,9 +463,13 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
   main_effect_df <- find_main_effect_dyads(aligned_ts_df = aligned_ts_df,
                                            aggregate_the_data = aggregate_the_data)
 
+  print(main_effect_df)
+
   auc_df <- find_auc_dyads(aligned_ts_df = aligned_ts_df,
                            resample_yes_or_no = resample_yes_or_no,
                            resample_n = resample_n)
+
+  return(auc_df)
 
   scorr_df <- spearmans_corr_dyads(aligned_ts_df = aligned_ts_df)
   #manually left join each summarize data frame together by speaker pair and transcript
