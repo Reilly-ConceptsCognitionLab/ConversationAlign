@@ -48,7 +48,9 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
                           "lex_senses_polysemy", "lex_wordfreqlg10_raw", "sem_arousal",
                           "sem_concreteness", "sem_diversity", "sem_neighbors")
 
-    align_var <- colnames(dplyr::select(aligned_ts_df, starts_with(align_dimensions) & ends_with(align_dimensions)))
+    #identify the variables from the psycholiguistic database that users have aligned on
+    align_var <- colnames(aligned_ts_df)[which(colnames(aligned_ts_df) %in% align_dimensions)]
+
     #mutates new mean columns for each aligned variable, adds a speaker pair variable, and preserves all columns
     df_averaged_long <- aligned_ts_df %>%
       dplyr::group_by(event_id) %>% #add a column of concatenated speaker names by transcript
@@ -463,13 +465,9 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
   main_effect_df <- find_main_effect_dyads(aligned_ts_df = aligned_ts_df,
                                            aggregate_the_data = aggregate_the_data)
 
-  print(main_effect_df)
-
   auc_df <- find_auc_dyads(aligned_ts_df = aligned_ts_df,
                            resample_yes_or_no = resample_yes_or_no,
                            resample_n = resample_n)
-
-  return(auc_df)
 
   scorr_df <- spearmans_corr_dyads(aligned_ts_df = aligned_ts_df)
   #manually left join each summarize data frame together by speaker pair and transcript
