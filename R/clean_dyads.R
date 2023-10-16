@@ -98,8 +98,8 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
   #code that adds word count and mean word length by dyad by speaker
   read_data_frame <- read_ts_df %>%
     dplyr::group_by(event_id, Participant_ID) %>% #group and take word count and length
-    dplyr::mutate(an_wordcount_raw = length(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))),
-                  an_mean_word_length_raw = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
+    dplyr::mutate(wordcount_raw = length(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))),
+                  mean_word_length_raw = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
     dplyr::ungroup()
 
 
