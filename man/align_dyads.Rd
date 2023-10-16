@@ -10,5 +10,5 @@ align_dyads(clean_ts_df)
 \item{clean_ts_df}{cleaned and formatted dataframe ported from the clean_dyads() step}
 }
 \description{
-Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across speakers.
+Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across Participant_IDs.
 }

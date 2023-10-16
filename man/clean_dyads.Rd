@@ -4,7 +4,7 @@
 \alias{clean_dyads}
 \title{clean_dyads}
 \usage{
-clean_dyads(read_ts_df)
+clean_dyads(read_ts_df, lemmatize = TRUE)
 }
 \arguments{
 \item{read_ts_df}{formatted dataframe ported from the read_dyads() step}
