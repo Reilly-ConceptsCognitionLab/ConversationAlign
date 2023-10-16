@@ -21,7 +21,7 @@
 #' @importFrom dplyr ungroup
 #' @export clean_dyads
 
-clean_dyads <- function(read_ts_df) {
+clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
   #specify a group of speaker names that should be automatically removed from the transcript
   s_remove <- c("Unknown", "unknown", "Speaker", "speaker", "Other", "other", "E", "e", "Experimenter", "experimenter", "Assistant", "assistant")
 
@@ -51,7 +51,7 @@ clean_dyads <- function(read_ts_df) {
     })
   }
 
-
+  if(lemmatize==TRUE) {
   clean <- function(x) {
     x <- tolower(x) #to lower
     x <- gsub("\"", " ", x)
@@ -68,7 +68,28 @@ clean_dyads <- function(read_ts_df) {
     x <- gsub("\\b[a]\\b{1}", " ", x)
     x <- tm::stripWhitespace(x)
     x <- stringr::str_squish(x)
-    x <- textstem::lemmatize_words(x)
+    x <- textstem::lemmatize_words(x) #lemmatize
+    }
+  }
+
+  if(lemmatize==FALSE) {
+    clean <- function(x) {
+      x <- tolower(x) #to lower
+      x <- gsub("\"", " ", x)
+      x <- gsub("\n", " ", x)
+      x <- gsub("`", "'", x)  # replaces tick marks with apostrophe for contractions
+      x <- gsub("can't", "can not", x)
+      x <- gsub("won't", "will not", x)
+      x <- gsub("n't", " not", x) #replace contraction with full word not
+      x <- textclean::replace_contraction(x) #replace contractions
+      x <- gsub("-", " ", x) #replace all hyphens with spaces
+      x <- tm::removeWords(x, omissions_dyads23$word)
+      x <- gsub("\\d+(st|nd|rd|th)", " ", x) #omits 6th, 23rd, ordinal numbers
+      x <- gsub("[^a-zA-Z]", " ", x) #omit non-alphabetic characters
+      x <- gsub("\\b[a]\\b{1}", " ", x)
+      x <- tm::stripWhitespace(x)
+      x <- stringr::str_squish(x)
+    }
   }
 
   read_ts_df$rawtext <- stringr::str_squish(read_ts_df$rawtext) #remove unneeded white space from text
