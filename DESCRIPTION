@@ -7,6 +7,8 @@ Authors@R: c(
     person("Virginia", "Ulichney", role = "aut"),
     person("Ben", "Sacks", role = "aut"),
     person("Anna", "Duncan", role = "ctb"),
+    person("Sarah", "Weinstein", role = "ctb"),
+    person("Tania", "Giovannetti", role = "ctb"),
     person("Chelsea", "Helion", role = "ctb"))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
 Description: This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.
