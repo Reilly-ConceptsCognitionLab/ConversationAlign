@@ -18,13 +18,17 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 ## Overview
-An R package for analyzing semantic and affective alignment between speakers in natural language transcripts. One of the primary applications of this package will be analyzing attributes of intergenerational communication.
+ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) in natural language transcripts. The inspiration for this project stemmed from our interest in analyzing intergenerational communication.
 
-![2 women having a conversation](man/figures/agepos1.jpg)
+![two people conversing](man/figures/agepos1.jpg){width=400px, height=400px}
 
+## Nuts and bolts
+ConversationAlign transforms raw language data into simultaneous time series objects spanning 40 possible dimensions (affective, lexical, and semantic). Here's an overview of how the package transforms language to time series data for computing alignment indices<br/>
+
+![overview of ConversationAlign](man/figures/overview.png){width=300px, height=500px}
 
 ## Installation
-Install the development version of ConversationAlign from [GitHub](https://github.com/) by typing the following in your console or script (make sure you have devtools installed):
+Install the development version of ConversationAlign from [GitHub](https://github.com/) by entering the following in your console or script:
 
 ``` {r, eval=F}
 install.packages("devtools")
@@ -32,7 +36,15 @@ devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 ```
 
 ## Prep your language transcripts
-Move your Otter.ai text files or CSV files into a folder.  The default folder name is 'my_transcripts'. If you want to specify your own folder name in the root directory that's fine too. You will call that path as an argument to the first function called read_dyads()
+ConversationAlign will work on txt or csv files.  It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as:<br/>
+  1) Interlocutor <br/>
+  2) Text <br/>
+  
+Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list.  ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br/>
+ 
+Move your raw transcripts into a folder. The default folder name ConversationAlign will search for on your machine is 'my_transcripts'. However, if you want to specify your own folder name that's fine too. You will call that path as an argument to the first function called read_dyads(). <br/>
+
+We recommend being very careful and deliberate about where you store your files
 
 ## Read your transcripts into R
 ### read_dyads()

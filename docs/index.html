@@ -64,15 +64,23 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>An R package for analyzing semantic and affective alignment between speakers in natural language transcripts. One of the primary applications of this package will be analyzing attributes of intergenerational communication.</p>
-<figure><img src="reference/figures/agepos1.jpg" alt="2 women having a conversation"><figcaption aria-hidden="true">
-2 women having a conversation
+<p>ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) in natural language transcripts. The inspiration for this project stemmed from our interest in analyzing intergenerational communication.</p>
+<figure><img src="reference/figures/agepos1.jpg" height="400" alt="two people conversing"><figcaption aria-hidden="true">
+two people conversing
+</figcaption></figure>
+</div>
+<div class="section level2">
+<h2 id="nuts-and-bolts">Nuts and bolts<a class="anchor" aria-label="anchor" href="#nuts-and-bolts"></a>
+</h2>
+<p>ConversationAlign transforms raw language data into simultaneous time series objects spanning 40 possible dimensions (affective, lexical, and semantic). Here’s an overview of how the package transforms language to time series data for computing alignment indices<br></p>
+<figure><img src="reference/figures/overview.png" height="500" alt="overview of ConversationAlign"><figcaption aria-hidden="true">
+overview of ConversationAlign
 </figcaption></figure>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the development version of ConversationAlign from <a href="https://github.com/" class="external-link">GitHub</a> by typing the following in your console or script (make sure you have devtools installed):</p>
+<p>Install the development version of ConversationAlign from <a href="https://github.com/" class="external-link">GitHub</a> by entering the following in your console or script:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Reilly-ConceptsCognitionLab/ConversationAlign"</span><span class="op">)</span></span></code></pre></div>
@@ -80,7 +88,10 @@
 <div class="section level2">
 <h2 id="prep-your-language-transcripts">Prep your language transcripts<a class="anchor" aria-label="anchor" href="#prep-your-language-transcripts"></a>
 </h2>
-<p>Move your Otter.ai text files or CSV files into a folder. The default folder name is ‘my_transcripts’. If you want to specify your own folder name in the root directory that’s fine too. You will call that path as an argument to the first function called read_dyads()</p>
+<p>ConversationAlign will work on txt or csv files. It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as:<br> 1) Interlocutor <br> 2) Text <br></p>
+<p>Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list. ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br></p>
+<p>Move your raw transcripts into a folder. The default folder name ConversationAlign will search for on your machine is ‘my_transcripts’. However, if you want to specify your own folder name that’s fine too. You will call that path as an argument to the first function called read_dyads(). <br></p>
+<p>We recommend being very careful and deliberate about where you store your files</p>
 </div>
 <div class="section level2">
 <h2 id="read-your-transcripts-into-r">Read your transcripts into R<a class="anchor" aria-label="anchor" href="#read-your-transcripts-into-r"></a>
