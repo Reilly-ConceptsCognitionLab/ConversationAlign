@@ -44,7 +44,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
       current_line <- line_counter + 1 #move to next speaker
     }
     #create df
-    transcript_df <- data.frame(speaker_names_raw = speaker,
+    transcript_df <- data.frame(Participant_ID = speaker,
                                 time = time,
                                 rawtext = text,
                                 stringsAsFactors = FALSE)
@@ -100,8 +100,14 @@ read_dyads <- function(folder_name = "my_transcripts") {
         if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Participant$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Interlocutor$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Patient$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Person$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Partner$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Source$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
             (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^Turn$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
 
           #tests for column named time - if not present it adds a time column filled with NAs
@@ -116,26 +122,32 @@ read_dyads <- function(folder_name = "my_transcripts") {
           #correct the speaker and text names to our conventions
           colnames(x_read_csv)[which(grepl("speaker", colnames(x_read_csv), ignore.case = T) |
                                        grepl("PID", colnames(x_read_csv), ignore.case = T) |
-                                       grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "speaker_names_raw"
+                                       grepl("interlocutor", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("patient", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("person", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("partner", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("source", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
 
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("Turn", colnames(x_read_csv), ignore.case = T) |
                                        grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "rawtext"
 
           x_read_csv <- data.frame(x_read_csv)
-          #remove all columns that not identified as speaker, time, or Text
-          #x_read_csv <- x_read_csv[, colnames(x_read_csv) %in%
-          #c("speaker_names_raw", "time", "rawtext")]
           x_final <- x_read_csv
         }
-        #else {
+
         col_check <- x_read_csv[, colnames(x_read_csv) %in%
-                                  c("speaker_names_raw", "rawtext", "time")]
+                                  c("Participant_ID", "rawtext", "time")]
         if (ncol(col_check) != 3) { #if there are less than three columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
                      as.character(match(x, file_list_csv)), #also states the transcript
-                     " correctly. Make sure that each transcript includes a column named 'speaker', 'participant', 'PID', or 'speaker_names_raw' and a column named 'utterance' or 'text'. If you wish to include a time column please title it 'time' or 'start'.",
+                     " correctly. Make sure that each transcript includes a column marking who is producing text in each row.
+                     When you are preparing your language transcripts, please make sure this column is named one of the following: 'interlocutor', 'person', 'partner', 'source', 'speaker', 'participant', 'PID', or 'speaker_names_raw'.
+                     Please make sure your a column containing raw language transcriptions is named 'utterance', 'turn', or 'text'.
+                     If you wish to include a time column please title it 'time' or 'start'.",
                      sep = ""), call. = FALSE)
-          #}
+
         }
         x_final
       })
@@ -157,7 +169,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
 
   alldf <- bind_rows(all_list) #binds the rows  of each list into one data frame
   alldf$event_id <- as.factor(alldf$event_id)
-  alldf$speaker_names_raw <- as.factor(alldf$speaker_names_raw)
+  alldf$Participant_ID <- as.factor(alldf$Participant_ID)
   return(alldf)
-  #outputs a data frame containing every dyad with columns: event_id, speaker_names_raw, time, and rawtext
+  #outputs a data frame containing every dyad with columns: event_id, Participant_ID, time, and rawtext
 }
