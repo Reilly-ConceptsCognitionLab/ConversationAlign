@@ -1,6 +1,6 @@
 #' align_dyads
 #'
-#' Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across speakers.
+#' Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across Participant_IDs.
 #'
 #' @name align_dyads
 #' @param clean_ts_df cleaned and formatted dataframe ported from the clean_dyads() step
@@ -49,7 +49,7 @@ align_dyads <- function(clean_ts_df) {
 
 
     df_aligned_an <- df_aligned %>%
-      dplyr::group_by(event_id, speaker_names_raw) %>%
+      dplyr::group_by(event_id, Participant_ID) %>%
       dplyr::mutate(an_wordcount_align = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
                     an_mean_word_length_align = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
                     an_word_removed_align = an_wordcount_clean - an_wordcount_align) %>%
@@ -58,13 +58,13 @@ align_dyads <- function(clean_ts_df) {
     #group on event id and add a turn count column that sequences each uninterrupted utterance
     df_aligned_turn <- df_aligned_an %>%
       dplyr::group_by(event_id) %>%
-      dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1)
+      dplyr::mutate(turncount = dplyr::consecutive_id(Participant_ID), .before = 1)
 
-    #add an exchange count variable, which is one turn from each speaker
+    #add an exchange count variable, which is one turn from each interlocutor
     df_aligned_turn$exchangecount <- ceiling(df_aligned_turn$turncount / 2)
     #rearrange the columns to be more readable
     df_aligned_ec <- df_aligned_turn %>%
-      dplyr::select(tidyselect::any_of(c("event_id", "speaker_names_raw", "exchangecount", "turncount", "cleantext", "time")),
+      dplyr::select(tidyselect::any_of(c("event_id", "Participant_ID", "exchangecount", "turncount", "cleantext", "time")),
                     tidyselect::contains(var_aligners), tidyselect::everything())
     df_aligned_ec
   })
@@ -73,19 +73,19 @@ align_dyads <- function(clean_ts_df) {
   #DEFINE THE METADATA ALIGN FUNCTION
   align_metadata <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by speaker and event ID, input the file path to the metadata csv file.\nIf you do not wish to align metadata do not enter anything.\nEnter 'random' to randomly assign a variable to each speaker in each dyad."))
+    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the file path to the metadata csv file.\nIf you do not wish to align metadata do not enter anything.\nEnter 'random' to randomly assign a variable to each interlocutor in each dyad."))
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_meta_filepath) == "random") {
       randomly <- lapply(split(aligned_ts_df, aligned_ts_df$event_id), function(x){ #iterates over each doc
         x <- data.frame(x)
-        #creates vector of each speaker with random indexes and assigns a alphanumeric sequence name
-        speakervec <- sample(unique(x[,grep("speaker_names_raw", colnames(x), ignore.case = T)]))
+        #creates vector of each interlocutor with random indexes and assigns a alphanumeric sequence name
+        speakervec <- sample(unique(x[,grep("Participant_ID", colnames(x), ignore.case = T)]))
         names(speakervec) <- paste("S", 1:length(speakervec), sep = "")
-        #creates a data frame with just speaker names and assigned code
-        coloutput <- data.frame(speaker_names_raw = speakervec,
+        #creates a data frame with just interlocutor names and assigned code
+        coloutput <- data.frame(Participant_ID = speakervec,
                                 speaker_group_var_random = sapply(speakervec, function(y) {
                                   names(speakervec)[match(y, speakervec)]}))
-        x <- x %>% dplyr::left_join(coloutput, by=c("speaker_names_raw")) #binds code to aligned data frame
+        x <- x %>% dplyr::left_join(coloutput, by=c("Participant_ID")) #binds code to aligned data frame
       })
       randomly <- dplyr::bind_rows(randomly) #binds all the doc data frame into one
       return(randomly)
@@ -110,21 +110,21 @@ align_dyads <- function(clean_ts_df) {
       metadata_selected <- metadata[,colnames(metadata) %in% subset_metadata] #select specified columns
       colnames(metadata_selected) <- tolower(colnames(metadata_selected))
       #select dimensions that aren't used to align on
-      meta_dims <- which(!colnames(metadata_selected) %in% c("event_id", "speaker"))
+      meta_dims <- which(!colnames(metadata_selected) %in% c("event_id", "Participant_ID"))
       #make all dimensions that aren't alingers factors
       metadata_selected[,meta_dims] <- lapply(metadata_selected[,meta_dims], factor)
       colnames(metadata_selected)[meta_dims] <- paste("m", tolower(colnames(metadata_selected)[meta_dims]), sep = "_")
 
       #join metadata to aligned data frame by event id and PID
       metadata_aligned_df <- dplyr::left_join(aligned_ts_df, metadata_selected,
-                                              by=c("event_id", "speaker_names_raw" = "speaker"))
+                                              by=c("event_id", "Participant_ID" = "Participant_ID"))
       return(metadata_aligned_df)
     }
   }
   #END DEFINING METADATA ALIGN FUNCTION
   output <- align_metadata(aligned_ts_df = ts_aligned_df_total) #run demoraphic aligner on aligned data frame
-  if (is.factor(output$speaker_names_raw) == FALSE & is.factor(output$event_id) == FALSE) {
-    output$speaker_names_raw <- as.factor(output$speaker_names_raw)
+  if (is.factor(output$Participant_ID) == FALSE & is.factor(output$event_id) == FALSE) {
+    output$Participant_ID <- as.factor(output$Participant_ID)
     output$event_id <- as.factor(output$event_id)
   }
   return(output)
