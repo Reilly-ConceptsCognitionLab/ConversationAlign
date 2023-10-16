@@ -41,12 +41,19 @@ devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 <br/>
 <br/>
 
+# Before you start
+ConversationAlign takes natural language transcripts between pairs of interlocutors. The package can handle Otter.ai formatted files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns containing (1) identifiers for the interlocutors in the interaction (e.g., speaker names, random participant IDs) and (2) raw text from their interaction. The order of these two columns in your transcript does not matter.<br/>
+
+Some users may be interested in analyzing distinguishable dyads, wherein members of interlocutor pairs are consistently differentiated by a meaningful characteristic (e.g., student-teacher, parent-child, boss-employee, etc.). Dyads are considered distinguishable if their members can *all* be differentiated in this way, but are considered indistinguishable if interlocutors in at least one dyad share this characteristic (e.g., parent-parent). If you do have a distinguishable grouping variable, you can either prepare a separate file with other metadata (e.g., grouping variable, age, neuropsychological assessment scores) and merge it with your finalized dataframe processed through ConversationAlign, or you can include it in your original raw transcripts and it will be retained. <br/>
+
 ## Prep your language transcripts
-ConversationAlign will work on txt or csv files.  It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as follows using one of these options. The order of your columns does not matter:<br/>
+ConversationAlign will work on .txt or .csv files. The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as follows using one of these options (case-insensitive). The order of your columns does not matter:<br/>
   1) Interlocutor, Speaker, or Participant<br/>
   2) Text, Utterance, or Turn <br/>
   
-Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list.  ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. 
+![Example of input transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/tswift-ellen-raw.png){width=800px, height=200px}
+  
+If working with multiple transcripts, each dyadic conversation transcript should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list.  ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. 
 <br/>
 <br/>
  
