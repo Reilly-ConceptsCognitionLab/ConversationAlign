@@ -26,12 +26,12 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
   s_remove <- c("Unknown", "unknown", "Speaker", "speaker", "Other", "other", "E", "e", "Experimenter", "experimenter", "Assistant", "assistant")
 
   #removes rows from the transcript that have the speaker as specified in the remove
-  if (any(read_ts_df$speaker_names_raw %in% s_remove) == TRUE){ #conditional in case no matches
-    read_ts_df <- read_ts_df[-which(read_ts_df$speaker_names_raw %in% s_remove),]
+  if (any(read_ts_df$Participant_ID %in% s_remove) == TRUE){ #conditional in case no matches
+    read_ts_df <- read_ts_df[-which(read_ts_df$Participant_ID %in% s_remove),]
   }
 
   #set event_id  and speaker names as factors
-  read_ts_df$speaker_names_raw <- as.factor(read_ts_df$speaker_names_raw) #convert variables to factor
+  read_ts_df$Participant_ID <- as.factor(read_ts_df$Participant_ID) #convert variables to factor
   read_ts_df$event_id <- as.factor(read_ts_df$event_id)
 
   if (any(grepl("time", colnames(read_ts_df), ignore.case = TRUE)) == TRUE){
@@ -97,7 +97,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
 
   #code that adds word count and mean word length by dyad by speaker
   read_data_frame <- read_ts_df %>%
-    dplyr::group_by(event_id, speaker_names_raw) %>% #group and take word count and length
+    dplyr::group_by(event_id, Participant_ID) %>% #group and take word count and length
     dplyr::mutate(an_wordcount_raw = length(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))),
                   an_mean_word_length_raw = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
     dplyr::ungroup()
@@ -106,7 +106,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
   dfclean <- read_data_frame %>%
     dplyr::mutate(cleantext = clean(rawtext)) %>%  #run clean function on text, making a new column
     dplyr::select(!rawtext) %>%
-    dplyr::group_by(event_id, speaker_names_raw) %>% #group and take clean word count and length
+    dplyr::group_by(event_id, Participant_ID) %>% #group and take clean word count and length
     dplyr::mutate(an_wordcount_clean = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
                   an_mean_word_length_clean = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
                   an_word_removed_clean = an_wordcount_raw - an_wordcount_clean) %>%
@@ -119,7 +119,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
     dplyr::filter(cleantext != "") %>%
     #new stuff for testing the word count analytic fun
     dplyr::group_by(event_id) %>% #add a turn count per dyad, which counts by speaker change
-    dplyr::mutate(turncount = dplyr::consecutive_id(speaker_names_raw), .before = 1) %>%
+    dplyr::mutate(turncount = dplyr::consecutive_id(Participant_ID), .before = 1) %>%
     ungroup()
 
   return(dfclean_filtered)
