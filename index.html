@@ -73,7 +73,7 @@ two people conversing
 <h2 id="nuts-and-bolts">Nuts and bolts<a class="anchor" aria-label="anchor" href="#nuts-and-bolts"></a>
 </h2>
 <p>ConversationAlign transforms raw language data into simultaneous time series objects spanning 40 possible dimensions (affective, lexical, and semantic). Here’s an overview of how the package transforms language to time series data for computing alignment indices<br></p>
-<figure><img src="reference/figures/overview.png" height="500" alt="overview of ConversationAlign"><figcaption aria-hidden="true">
+<figure><img src="reference/figures/overview.png" height="700" alt="overview of ConversationAlign"><figcaption aria-hidden="true">
 overview of ConversationAlign
 </figcaption></figure>
 </div>
@@ -84,12 +84,13 @@ overview of ConversationAlign
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Reilly-ConceptsCognitionLab/ConversationAlign"</span><span class="op">)</span></span></code></pre></div>
+<p><br><br></p>
 </div>
 <div class="section level2">
 <h2 id="prep-your-language-transcripts">Prep your language transcripts<a class="anchor" aria-label="anchor" href="#prep-your-language-transcripts"></a>
 </h2>
 <p>ConversationAlign will work on txt or csv files. It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as:<br> 1) Interlocutor <br> 2) Text <br></p>
-<p>Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list. ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br></p>
+<p>Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list. ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br><br></p>
 <p>Move your raw transcripts into a folder. The default folder name ConversationAlign will search for on your machine is ‘my_transcripts’. However, if you want to specify your own folder name that’s fine too. You will call that path as an argument to the first function called read_dyads(). <br><br></p>
 </div>
 <div class="section level2">
@@ -98,25 +99,47 @@ overview of ConversationAlign
 <div class="section level3">
 <h3 id="read_dyads">read_dyads()<a class="anchor" aria-label="anchor" href="#read_dyads"></a>
 </h3>
-<p>This function will read all your files and concatenate them into a single dataframe, appending document IDs. You can call this dataframe whatever you like. read_dyads will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of ‘my_transcripts’ as a staging area for loading data into ConversationAlign.</p>
+<p>This function will read all your files and concatenate them into a single dataframe, appending document IDs. You can call this dataframe whatever you like. read_dyads will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of ‘my_transcripts’ as a staging area for loading data into ConversationAlign. <br></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#if you want to specify a different folder, supply your own path</span></span>
 <span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="st">"/my_custompath"</span><span class="op">)</span></span></code></pre></div>
+<p><br></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="clean-your-transcripts-clean_dyads">Clean your transcripts: clean_dyads<a class="anchor" aria-label="anchor" href="#clean-your-transcripts-clean_dyads"></a>
 </h2>
-<p>clean_dyas uses regular expressions to clean and format your data. The function also omits stopwords using a custom stopword list, and it lemmatizes (converts all words to their dictionary entries) unless you tell it not to (lemmatize=T is the default). Run ‘clean_dyads’ on the object you just assembled by running the ‘read_dyads’ function in the last step.</p>
+<p>‘clean_dyads’ uses regular expressions to clean and format your data. The function also omits stopwords using a custom stopword list, and it lemmatizes (converts all words to their dictionary entries) unless you tell it not to (lemmatize=T is the default). Run ‘clean_dyads’ on the object you just assembled by running the ‘read_dyads’ function in the last step. <br></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span><span class="op">)</span> <span class="co">#default is lemmatize=T</span></span>
+<span><span class="co">#If you do NOT want your language sample lemmatized, change the lemmatize argument to F</span></span>
+<span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span>, lemmatize<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<p><br></p>
 </div>
 <div class="section level2">
-<h2 id="align-your-transcripts">Align your transcripts<a class="anchor" aria-label="anchor" href="#align-your-transcripts"></a>
+<h2 id="align-your-transcripts-align_dyads">Align your transcripts: align_dyads<a class="anchor" aria-label="anchor" href="#align-your-transcripts-align_dyads"></a>
 </h2>
-<p>Prompts user to specify one or more variables to align on from a lookup database (lookup_db) reflecting published word norms from numermous sources (e.g., afffectvec, Kuperman norms, Brysbaert norms, etc.). Yokes data to each word then structures a dataframe by speaker and exchange across each dyad. <br></p>
-<p>myvars &lt;- select.list(c(“admiration”, “anger”, “animosity”, “anticipation”, “anxiety”, “aoa”, “awe”, “boredom”, “calmness”, “closeness”, “comfort”, “compatibility”, “concreteness”, “confusion”, “contempt”, “disgust”, “distance”, “dominance”, “doubt”, “empathy”, “encouragement”, “excitement”, “fear”, “friendliness”, “gratitude”, “happiness”, “hostility”, “interest”, “joy”, “lg10wf”, “love”, “n_letters”, “relieved”, “sadness”, “satisfaction”, “stress”, “surprise”, “tension”, “trust”, “valence”</p>
+<p>This is where a lot of the magic happens. align_dyads will take the cleaned dataframe you created in the last step and yoke values to every word by indexing a lookup database. This database was populated with published word norms from numermous sources (e.g., afffectvec, Kuperman norms, Brysbaert norms, etc.). Yokes data to each word then structures a dataframe by speaker and exchange across each dyad. <br></p>
+<p>You will be prompted to select one of more variables to yoke data to that will be used in later steps to compute alignment indices. Here are your choices: <br></p>
+<ol style="list-style-type: decimal">
+<li>anger</li>
+<li>anxiety</li>
+<li>boredom</li>
+<li>closeness</li>
+<li>confusion</li>
+<li>dominance</li>
+<li>doubt</li>
+<li>empathy</li>
+<li>encouragement</li>
+<li>excitement</li>
+<li>guilt</li>
+<li>happiness</li>
+<li>hope</li>
+<li>hostility</li>
+<li>politeness</li>
+<li>sadness “aff_stress”, “aff_surprise”, “aff_trust”, “aff_valence”, “lex_age_acquisition”, “lex_letter_count_raw”, “lex_morphemecount_raw”, “lex_prevalence”, “lex_senses_polysemy”, “lex_wordfreqlg10_raw”, “sem_arousal”, “sem_concreteness”, “sem_diversity”, “sem_neighbors”</li>
+</ol>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>align_dyads <span class="ot">&lt;-</span> <span class="cf">function</span>(clean_ts_df) {</span></code></pre></div>
 </div>
 <div class="section level2">
