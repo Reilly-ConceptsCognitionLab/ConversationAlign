@@ -18,7 +18,11 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 ## Overview
-ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) in natural language transcripts. The inspiration for this project stemmed from our interest in analyzing intergenerational communication.
+ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) engaged in dyads (two partner conversations).  ConversationAlign will work on one or more natural language transcripts of the following file types: <br/>
+
+1) txt (text files)
+2) csv (comma separated values)
+3) otter.ai transcripts saved as txt files
 
 ![two people conversing](man/figures/agepos1.jpg){width=400px, height=400px}
 
@@ -38,9 +42,9 @@ devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 <br/>
 
 ## Prep your language transcripts
-ConversationAlign will work on txt or csv files.  It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as:<br/>
-  1) Interlocutor <br/>
-  2) Text <br/>
+ConversationAlign will work on txt or csv files.  It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as follows using one of these options. The order of your columns does not matter:<br/>
+  1) Interlocutor, Speaker, or Participant<br/>
+  2) Text, Utterance, or Turn <br/>
   
 Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list.  ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. 
 <br/>

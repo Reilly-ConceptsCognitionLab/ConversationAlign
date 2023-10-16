@@ -9,9 +9,13 @@
 ## Overview
 
 ConversationAlign is an R package for analyzing alignment between
-interlocutors (conversation partners) in natural language transcripts.
-The inspiration for this project stemmed from our interest in analyzing
-intergenerational communication.
+interlocutors (conversation partners) engaged in dyads (two partner
+conversations). ConversationAlign will work on one or more natural
+language transcripts of the following file types: <br/>
+
+1)  txt (text files)
+2)  csv (comma separated values)
+3)  otter.ai transcripts saved as txt files
 
 <figure>
 <img src="man/figures/agepos1.jpg" height="400"
@@ -54,7 +58,9 @@ preferred format as long as your transcript has at least two columns
 (their order in your transcript does not matter). The first (header) row
 of your transcript must designate the interlocutor (person producing the
 output) and the text. When prepping your raw transcripts, be careful to
-mark these columns as:<br/> 1) Interlocutor <br/> 2) Text <br/>
+mark these columns as follows using one of these options. The order of
+your columns does not matter:<br/> 1) Interlocutor, Speaker, or
+Participant<br/> 2) Text, Utterance, or Turn <br/>
 
 Each conversation dyad should be saved as a separate file (e.g.,
 MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign
@@ -122,29 +128,18 @@ You will be prompted to select one of more variables to yoke data to
 that will be used in later steps to compute alignment indices. Here are
 your choices: <br/>
 
-1.  anger
-2.  anxiety
-3.  boredom
-4.  closeness
-5.  confusion
-6.  dominance
-7.  doubt
-8.  empathy
-9.  encouragement
-10. excitement
-11. guilt
-12. happiness
-13. hope
-14. hostility
-15. politeness
-16. sadness “aff_stress”, “aff_surprise”, “aff_trust”, “aff_valence”,
-    “lex_age_acquisition”, “lex_letter_count_raw”,
-    “lex_morphemecount_raw”, “lex_prevalence”, “lex_senses_polysemy”,
-    “lex_wordfreqlg10_raw”, “sem_arousal”, “sem_concreteness”,
-    “sem_diversity”, “sem_neighbors”
+anger, anxiety, boredom, closeness, confusion, dominance, doubt,
+empathy, encouragement, excitement, guilt, happiness, hope, hostility,
+politeness, sadness, stress, surprise, trust, valence, age of
+acquisition, word length (by letters), morphemes per turn, prevalence
+(how many people know this word), number of word senses (polysemy), word
+frequency (lg10), arousal, concreteness, semantic diversity, semantic
+neighbors <br/>
+
+Run align_dyads on the cleaned dyads you created in the last function.
 
 ``` r
-align_dyads <- function(clean_ts_df) {
+MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 ```
 
 ## Summarize transcripts

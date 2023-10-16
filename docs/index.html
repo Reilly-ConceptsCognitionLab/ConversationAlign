@@ -64,7 +64,12 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) in natural language transcripts. The inspiration for this project stemmed from our interest in analyzing intergenerational communication.</p>
+<p>ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) engaged in dyads (two partner conversations). ConversationAlign will work on one or more natural language transcripts of the following file types: <br></p>
+<ol style="list-style-type: decimal">
+<li>txt (text files)</li>
+<li>csv (comma separated values)</li>
+<li>otter.ai transcripts saved as txt files</li>
+</ol>
 <figure><img src="reference/figures/agepos1.jpg" height="400" alt="two people conversing"><figcaption aria-hidden="true">
 two people conversing
 </figcaption></figure>
@@ -89,7 +94,7 @@ overview of ConversationAlign
 <div class="section level2">
 <h2 id="prep-your-language-transcripts">Prep your language transcripts<a class="anchor" aria-label="anchor" href="#prep-your-language-transcripts"></a>
 </h2>
-<p>ConversationAlign will work on txt or csv files. It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as:<br> 1) Interlocutor <br> 2) Text <br></p>
+<p>ConversationAlign will work on txt or csv files. It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as follows using one of these options. The order of your columns does not matter:<br> 1) Interlocutor, Speaker, or Participant<br> 2) Text, Utterance, or Turn <br></p>
 <p>Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list. ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br><br></p>
 <p>Move your raw transcripts into a folder. The default folder name ConversationAlign will search for on your machine is ‘my_transcripts’. However, if you want to specify your own folder name that’s fine too. You will call that path as an argument to the first function called read_dyads(). <br><br></p>
 </div>
@@ -122,25 +127,10 @@ overview of ConversationAlign
 </h2>
 <p>This is where a lot of the magic happens. align_dyads will take the cleaned dataframe you created in the last step and yoke values to every word by indexing a lookup database. This database was populated with published word norms from numermous sources (e.g., afffectvec, Kuperman norms, Brysbaert norms, etc.). Yokes data to each word then structures a dataframe by speaker and exchange across each dyad. <br></p>
 <p>You will be prompted to select one of more variables to yoke data to that will be used in later steps to compute alignment indices. Here are your choices: <br></p>
-<ol style="list-style-type: decimal">
-<li>anger</li>
-<li>anxiety</li>
-<li>boredom</li>
-<li>closeness</li>
-<li>confusion</li>
-<li>dominance</li>
-<li>doubt</li>
-<li>empathy</li>
-<li>encouragement</li>
-<li>excitement</li>
-<li>guilt</li>
-<li>happiness</li>
-<li>hope</li>
-<li>hostility</li>
-<li>politeness</li>
-<li>sadness “aff_stress”, “aff_surprise”, “aff_trust”, “aff_valence”, “lex_age_acquisition”, “lex_letter_count_raw”, “lex_morphemecount_raw”, “lex_prevalence”, “lex_senses_polysemy”, “lex_wordfreqlg10_raw”, “sem_arousal”, “sem_concreteness”, “sem_diversity”, “sem_neighbors”</li>
-</ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>align_dyads <span class="ot">&lt;-</span> <span class="cf">function</span>(clean_ts_df) {</span></code></pre></div>
+<p>anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, semantic neighbors <br></p>
+<p>Run align_dyads on the cleaned dyads you created in the last function.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MyAlignedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_dyads.html">align_dyads</a></span><span class="op">(</span><span class="va">MyCleanLangSamples</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="summarize-transcripts">Summarize transcripts<a class="anchor" aria-label="anchor" href="#summarize-transcripts"></a>
