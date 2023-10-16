@@ -10,7 +10,7 @@
 #' @importFrom tm removeWords
 #' @importFrom stringr str_squish
 #' @importFrom tm stripWhitespace
-#' @importFrom textstem lemmatize_words
+#' @importFrom textstem lemmatize_strings
 #' @importFrom tidyverse rowwise
 #' @importFrom tidyverse mutate
 #' @importFrom tidyverse str_split_1
@@ -68,7 +68,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
     x <- gsub("\\b[a]\\b{1}", " ", x)
     x <- tm::stripWhitespace(x)
     x <- stringr::str_squish(x)
-    x <- textstem::lemmatize_words(x) #lemmatize
+    x <- textstem::lemmatize_strings(x) #lemmatize
     }
   }
 
