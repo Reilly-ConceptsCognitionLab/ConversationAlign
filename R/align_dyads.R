@@ -50,9 +50,9 @@ align_dyads <- function(clean_ts_df) {
 
     df_aligned_an <- df_aligned %>%
       dplyr::group_by(event_id, Participant_ID) %>%
-      dplyr::mutate(an_wordcount_align = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
-                    an_mean_word_length_align = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
-                    an_word_removed_align = an_wordcount_clean - an_wordcount_align) %>%
+      dplyr::mutate(wordcount_align = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
+                    mean_word_length_align = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
+                    word_removed_align = wordcount_clean - wordcount_align) %>%
       dplyr::ungroup()
 
     #group on event id and add a turn count column that sequences each uninterrupted utterance

@@ -107,9 +107,9 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
     dplyr::mutate(cleantext = clean(rawtext)) %>%  #run clean function on text, making a new column
     dplyr::select(!rawtext) %>%
     dplyr::group_by(event_id, Participant_ID) %>% #group and take clean word count and length
-    dplyr::mutate(an_wordcount_clean = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
-                  an_mean_word_length_clean = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
-                  an_word_removed_clean = an_wordcount_raw - an_wordcount_clean) %>%
+    dplyr::mutate(wordcount_clean = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
+                  mean_word_length_clean = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
+                  word_removed_clean = wordcount_raw - wordcount_clean) %>%
     dplyr::ungroup()
 
 
