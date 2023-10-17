@@ -64,23 +64,23 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) engaged in dyads (two partner conversations). ConversationAlign will work on one or more natural language transcripts of the following file types: <br></p>
-<ol style="list-style-type: decimal">
-<li>txt (text files)</li>
-<li>csv (comma separated values)</li>
-<li>otter.ai transcripts saved as txt files</li>
-</ol>
-<figure><img src="reference/figures/agepos1.jpg" height="400" alt="two people conversing"><figcaption aria-hidden="true">
-two people conversing
-</figcaption></figure>
+<p><img src="reference/figures/convo.jpeg" height="300" alt="two people conversing"> ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) engaged in dyads (two partner conversations). ConversationAlign will work on one or more natural language transcripts of the following file types: txt (text files), csv (comma separated values), otter.ai transcripts saved as txt files.</p>
 </div>
 <div class="section level2">
 <h2 id="nuts-and-bolts">Nuts and bolts<a class="anchor" aria-label="anchor" href="#nuts-and-bolts"></a>
 </h2>
-<p>ConversationAlign transforms raw language data into simultaneous time series objects spanning 40 possible dimensions (affective, lexical, and semantic). Here’s an overview of how the package transforms language to time series data for computing alignment indices<br></p>
-<figure><img src="reference/figures/overview.png" height="700" alt="overview of ConversationAlign"><figcaption aria-hidden="true">
-overview of ConversationAlign
-</figcaption></figure>
+<p><img src="reference/figures/overview.png" height="500" alt="overview of ConversationAlign"> ConversationAlign transforms raw language data into simultaneous time series objects spanning 40 possible dimensions (affective, lexical, and semantic). Here’s an overview of how the package transforms language to time series data for computing alignment indices<br></p>
+</div>
+<div class="section level2">
+<h2 id="caveats-things-you-must-be-careful-about">Caveats: Things you must be careful about!<a class="anchor" aria-label="anchor" href="#caveats-things-you-must-be-careful-about"></a>
+</h2>
+<p>Any analysis of language transcripts comes with assumptions and potential bias. For example, there are some instances where a researcher might care about morphemes and grammatical elements such as ‘the’, ‘a’, ‘and’. The default for ConversationAlign is to omit these as stopwords and to average across all open class words (e.g., nouns, verbs) in each turn by interlocutor. There are some specific cases where this can all go wrong. Here’s what you need to consider: <br><br> 1) Stopwords: The package omits stopwords. LINK here to the stopword list if you would like to inspect this list. We included greetings and idioms in the omissions list. <br></p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Lemmatization: The package will lemmatize your language transcripts by default. Lemmatization transforms inflected forms (e.g., standing, stands) into their root or dictionary entry (e.g., stand). This helps for yoking offline values (e.g., happiness, concreteness) to each word – also what NLP folks refer to as term aggregation. However, sometimes you might NOT want to lemmatize. You can easily change this option as an argument lemmatize=F to the clean_dyads function below. <br></p></li>
+<li><p>Sample Size Issue 1 – The program derives correlations and AUC for each dyad as metrics of alignment. If there are 40 exchanges (80 turns) between conversation partners, the R value will be computed over 40 data points. For conversations less than about 30 turns, you should not trust the R values that ConversationAlign outputs. <br></p></li>
+<li><p>Sample Size Issue 2 – ConversationAlign works by yoking values from a lookup database to each word in your language transcsript. Some variables have lots of values characterizing many English words. Other variables (e.g., age of acquisition) only cover about 13k words. When a word in your transcript does not have a ‘match’ in the lookup datase, ConversationAlign will return an NA which will not go into the average of the words for that interlouctor and turn. This can be dangerous when there are many missing values. Beware! <br></p></li>
+<li><p>ConversationAlign is a caveman in its complexity. It matches a value to each word as if that word is an island. Phenomena like polysemy (e.g., bank) and the modulation of one word by an intensifier (e.g., very terrible) are not handled. This is a problem for many of the affective measures but not for lexical variables like word length. <br></p></li>
+</ol>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -89,13 +89,21 @@ overview of ConversationAlign
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Reilly-ConceptsCognitionLab/ConversationAlign"</span><span class="op">)</span></span></code></pre></div>
-<p><br><br></p>
+<p><br></p>
 </div>
+</div>
+<div class="section level1">
+<h1 id="before-you-start">Before you start<a class="anchor" aria-label="anchor" href="#before-you-start"></a>
+</h1>
+<p>ConversationAlign takes natural language transcripts between pairs of interlocutors. The package can handle Otter.ai formatted files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns containing (1) identifiers for the interlocutors in the interaction (e.g., speaker names, random participant IDs) and (2) raw text from their interaction. The order of these two columns in your transcript does not matter.<br></p>
+<p>Some users may be interested in analyzing distinguishable dyads, wherein members of interlocutor pairs are consistently differentiated by a meaningful characteristic (e.g., student-teacher, parent-child, boss-employee, etc.). Dyads are considered distinguishable if their members can <em>all</em> be differentiated in this way, but are considered indistinguishable if interlocutors in at least one dyad share this characteristic (e.g., parent-parent). If you do have a distinguishable grouping variable, you can either prepare a separate file with other metadata (e.g., grouping variable, age, neuropsychological assessment scores) and merge it with your finalized dataframe processed through ConversationAlign, or you can include it in your original raw transcripts and it will be retained. <br></p>
 <div class="section level2">
 <h2 id="prep-your-language-transcripts">Prep your language transcripts<a class="anchor" aria-label="anchor" href="#prep-your-language-transcripts"></a>
 </h2>
-<p>ConversationAlign will work on txt or csv files. It can handle Otter.ai formmated files, but it can also handle a home brew of your own preferred format as long as your transcript has at least two columns (their order in your transcript does not matter). The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as follows using one of these options. The order of your columns does not matter:<br> 1) Interlocutor, Speaker, or Participant<br> 2) Text, Utterance, or Turn <br></p>
-<p>Each conversation dyad should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list. ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br><br></p>
+<p>ConversationAlign will work on .txt or .csv files. The first (header) row of your transcript must designate the interlocutor (person producing the output) and the text. When prepping your raw transcripts, be careful to mark these columns as follows using one of these options (case-insensitive). The order of your columns does not matter:<br> 1) Interlocutor, Speaker, or Participant<br> 2) Text, Utterance, or Turn <br></p>
+<figure><img src="reference/figures/tswift-ellen-raw.png" height="200" alt="Example of input transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><figcaption aria-hidden="true">
+Example of input transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013
+</figcaption></figure><p>If working with multiple transcripts, each dyadic conversation transcript should be saved as a separate file (e.g., MaryJoe_FirstDateTalk.txt). This is important for how ConversationAlign will read your data into R, append document IDs, and split each dyad into a separate list. ConversationAlign runs many operations on each dyad and ultimately binds those data into a summary dataframe. ConversationAlign marks each conversation with a unique event_id populated from its filename (be deliberate about naming!). All other metadata (e.g., age, timestamps, grouping variables) in your language transcripts will be retained. <br><br></p>
 <p>Move your raw transcripts into a folder. The default folder name ConversationAlign will search for on your machine is ‘my_transcripts’. However, if you want to specify your own folder name that’s fine too. You will call that path as an argument to the first function called read_dyads(). <br><br></p>
 </div>
 <div class="section level2">
@@ -144,6 +152,7 @@ overview of ConversationAlign
 <p>Contact <a href="mailto:jamie_reilly@temple.edu" class="email">jamie_reilly@temple.edu</a> for feedback and assistance.</p>
 </div>
 </div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
