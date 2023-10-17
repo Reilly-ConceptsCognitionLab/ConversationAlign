@@ -406,30 +406,26 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
                               values_to = "score") %>%
           dplyr::mutate(score = NA,
                         Participant_ID = replace(Participant_ID,
-                                                    which(Participant_ID == "S1"), as.character(participantvec)[1]),
+                                                 which(Participant_ID == "S1"), as.character(participantvec)[1]),
                         Participant_ID = replace(Participant_ID,
-                                                    which(Participant_ID == "S2"),
-                                                    as.character(participantvec)[2]),
+                                                 which(Participant_ID == "S2"),
+                                                 as.character(participantvec)[2]),
                         Participant_ID = as.factor(Participant_ID)) %>%
           tidyr::pivot_wider(names_from = dimension, values_from = score)
         #create two transient variables from the align dimension
 
         rho_cols <- dyad_sc %>% dplyr::select(contains(align_var))
-        pval_cols <- rho_cols
-
+        #add column prefixes to the rho columns
         rho_cols <- rho_cols %>%
-          rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
-        #mutate(across(contains(align_var), dplyr::na_if(., is.numeric(.)), .names = "S_rho_{.col}")
-        pval_cols <- pval_cols %>%
-          rename_with(~str_c("S_pval_", .), .cols = everything())
-        #mutate(across(contains(align_var), ifelse(is.na(align_var) == F, NA, NA)), .names = "S_pval_{.col}")
+          dplyr::rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
+        #bind the empty rho columns to dyad identifiers so that it can be bound to to total data frame.
         dyad_sc <- dyad_sc %>%
           select(-c(exchangecount, contains(align_var)))
-        dyad_sc <- dplyr::bind_cols(list(dyad_sc, rho_cols, pval_cols)) #bind rho and pval cols together
+        dyad_sc <- dplyr::bind_cols(list(dyad_sc, rho_cols)) #bind rho and pval cols together
         dyad_sc
       }
       else {
-        #convert all dimension columns to numeric
+        #convert all dimension columns to numeric and remove speaker suffixes
         all[,colnames(all) %in% align_var] <- as.numeric(all[,colnames(all) %in% align_var])
         x_vars <- all %>% dplyr::select(c('event_id') | c(ends_with("_S1"))) %>%
           dplyr::rename_at(vars(matches("_S1")), ~stringr::str_replace(., "_S1", ""))
@@ -442,7 +438,8 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
           dim_y_vars <- y_vars[,colnames(y_vars) %in% dim]
           #run spearman corr and format rho and p value into a data frame
           sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman", exact = F)
-          sc_results_df <- data.frame(S_rho = rep(sc_results$estimate, 2), S_pval = rep(sc_results$p.value, 2))
+          sc_results_df <- data.frame(S_rho = rep(sc_results$estimate, 2))
+          #S_pval = rep(sc_results$p.value, 2)) - removing this
           #add participant column only if it is the first iteration
           colnames(sc_results_df) <- paste(colnames(sc_results_df), dim, sep = "_")
           if (match(dim, align_var) == 1) {
