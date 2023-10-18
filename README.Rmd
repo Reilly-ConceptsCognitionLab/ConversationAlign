@@ -79,15 +79,17 @@ Move all your raw transcripts into the same folder. The default folder name Conv
 
 # Read your transcripts into R
 ## read_dyads()
-This function will read all your files and concatenate them into a single dataframe, appending document IDs.  You can call this dataframe whatever you like.  read_dyads will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of 'my_transcripts' as a staging area for loading data into ConversationAlign.
-<br/>
+This function will read all your files and concatenate them into a single dataframe, appending document IDs.  You can call this dataframe whatever you like.  read_dyads will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of 'my_transcripts' as a staging area for loading data into ConversationAlign. <br/>
 
+<br/>
 ```{r, eval=F}
 MyRawLangSamples <- read_dyads()
 #if you want to specify a different folder, supply your own path
 MyRawLangSamples <- read_dyads("/my_custompath")
 ```
 <br/>
+
+![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=800px, height=200px} <br/>
 
 # Clean your transcripts
 ## clean_dyads()
@@ -102,7 +104,7 @@ MyCleanLangSamples <- clean_dyads(MyRawLangSamples, lemmatize=FALSE)
 ```
 <br/>
 
-![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=800px, height=200px} <br/>
+![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example3_ts_edg.jpeg){width=800px, height=200px} <br/>
 
 # Align your transcripts
 ## align_dyads()
@@ -124,6 +126,8 @@ Run align_dyads on the cleaned dyads object you created using the clean_dyads fu
 MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 ```
 <br/>
+
+![Example of aligned transcripts with metics for anger, anxiety, and boredom (via AffectVec) from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example4_ts_edg.jpeg){width=800px, height=200px} <br/>
 
 # Summarize transcripts
 ## summarize_dyads()
