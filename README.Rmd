@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 ConversationAlign is an R package for analyzing alignment between interlocutors (conversation partners) engaged in dyadic conversations (two-person conversations).  ConversationAlign will work on one or more natural language transcripts of the following file types: txt (text files), csv (comma separated values files), otter.ai transcripts saved as txt files.
 
 ## Last updated: `r Sys.Date()`
-Please note that ConversationAlign is still in development. *Please use with caution until this note has been updated to reflect that the package's first version is finalized for use.*
+*Please note that ConversationAlign is currently still in development. Please use with caution for now.*
 
 ## Nuts and bolts
 ![overview of ConversationAlign](man/figures/overview.png){width=200px, height=500px} 
