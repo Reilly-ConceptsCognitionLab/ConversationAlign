@@ -93,12 +93,9 @@ this can all go wrong. Here’s what you need to consider: <br/>
     prior, ConversationAlign works by yoking values from a lookup
     database to each word in your language transcript. Most affective
     measures come from the database, AffectVec (Raji & deMelo, 2020,
-    DOI: 10.1145/3366423.3380068). In general terms, the AffectVec is a
-    database created using machine learning techniques that generate
-    word embeddings, which are vector representations of words in
-    continuous vector space, based on their co-occurrence patterns. As
-    such, ConversationAlign may provide you with affective values that
-    may not be consistent with human ratings of affective intensity in a
+    DOI: 10.1145/3366423.3380068). AffectVec is a database created using
+    machine learning techniques that generate word embeddings, so may
+    not be consistent with human ratings of affective intensity in a
     provided text. It is worth carefully considering and reading about
     methods used to create the AffectVec database prior to interpreting
     any of these affective measures, particularly in scientific
