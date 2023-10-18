@@ -21,10 +21,8 @@ natural language transcripts of the following file types: txt (text
 files), csv (comma separated values files), otter.ai transcripts saved
 as txt files.
 
-## Last updated: 2023-10-18
-
-*Please note that ConversationAlign is currently still in development.
-Please use with caution for now.*
+*Please note that ConversationAlign is currently still in development.*
+Please use with caution for now. Last updated: 2023-10-18
 
 ## Nuts and bolts
 
