@@ -6,6 +6,9 @@
 \usage{
 align_dyads(clean_ts_df)
 }
+\arguments{
+\item{clean_ts_df}{a dataframe cleaned and formatted during the read_dyads() function}
+}
 \value{
 a dataframe one-word-per-row format with variables of interest appended
 }

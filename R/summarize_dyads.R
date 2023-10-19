@@ -3,11 +3,18 @@
 #' appends AUC and Spearman Rank Correlation indices to each dyad (event_id) using a resampling algoirthm that defaults to the minimum number of exchanges across all documents entered
 #'
 #' @name summarize_dyads
-#' @return dataframe
+#' @param dataframe produced in the align_dyads function
 #' @importFrom magrittr %>%
-#' @importFrom dplyr select
-#' @importFrom dplyr bind_rows
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr drop_na
+#' @importFrom tidyselect starts_with
+#' @importFrom tidyselect ends_with
+#' @importFrom tidyselect contains
+#' @importFrom tidyselect everything
+#' @importFrom dplyr summarise
 #' @importFrom dplyr mutate
+#' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr filter
@@ -20,14 +27,6 @@
 #' @importFrom dplyr rename_at
 #' @importFrom dplyr vars
 #' @importFrom dplyr across
-#' @importFrom tidyr pivot_wider
-#' @importFrom tidyr pivot_longer
-#' @importFrom tidyr drop_na
-#' @importFrom tidyselect starts_with
-#' @importFrom tidyselect ends_with
-#' @importFrom tidyselect contains
-#' @importFrom tidyselect everything
-#' @importFrom tidyverse summarize(across())
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_c
 #' @importFrom DescTools AUC
@@ -90,7 +89,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
 
     df_wide <- df_speakvar %>%
       dplyr::group_by(event_id, exchangecount, Participant_ID) %>%
-      dplyr::summarize(across(contains(align_var), first),
+      dplyr::summarise(dplyr::across(contains(align_var), first),
                        participant_var = first(participant_var),
                        participant_pair = first(participant_pair),
                        .groups = "drop") %>%
@@ -100,7 +99,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
     participant1 <- df_wide %>% dplyr::select(c("event_id", "exchangecount", "participant_pair") | c(ends_with("_S1"))) %>% drop_na()
     participant2 <- df_wide %>% dplyr::select(c("event_id", "exchangecount") | c(ends_with("_S2"))) %>% drop_na()
     widedf <- merge(participant1, participant2, by=c("event_id", "exchangecount")) %>%
-      arrange(event_id, exchangecount)
+      dplyr::arrange(event_id, exchangecount)
 
     #iterate over each aligned dimension, selecting only the scores for that dimension and pulling a difference value and subbing it in for the actual values
     for (dimension in align_var){
@@ -174,7 +173,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
           newdf <- data.frame(exchangecount = 0:max(ts_select$exchangecount))
           interpol_integer <- newdf %>%
             dplyr::left_join(ts_select, by=("exchangecount")) %>%
-            dplyr::select(!exchangecount)#bind measured values to the sequence
+            dplyr::select(!exchangecount) #bind measured values to the sequence
 
           interpol_integer[,1:ncol(interpol_integer)] <- lapply(interpol_integer[,1:ncol(interpol_integer)], function(col_select){
             col_select <- zoo::na.approx(col_select)
@@ -209,7 +208,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
                 y
               }
             })
-            interpol_added <- bind_rows(interpol_list_added) #binds the data frame list together
+            interpol_added <- dplyr::bind_rows(interpol_list_added) #binds the data frame list together
 
             #if last row is NA, interpolation will not work, so it switches last two rows
             if (is.na(tail(interpol_added[,2], 1)) == TRUE) {
@@ -237,7 +236,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
           agg_int <- ts_select %>%
             dplyr::mutate(Grouper = grouper_counter) %>%
             dplyr::group_by(Grouper) %>% #create and group by the integer needed to downscale
-            dplyr::summarise(across(contains(colnames(x)), mean), #aggregate measurements by group
+            dplyr::summarise(dplyr::across(contains(colnames(x)), mean), #aggregate measurements by group
                              .groups = "drop") %>%
             dplyr::select(!Grouper)
 
@@ -293,7 +292,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
         min_exc_max <- computed_df %>%
           dplyr::group_by(event_id) %>%
           dplyr::mutate(exc_max = max(exchangecount)) %>%
-          dplyr::summarize(exc_max = first(exc_max),
+          dplyr::summarise(exc_max = first(exc_max),
                            .groups = "drop") %>%
           dplyr::select(exc_max)
 
@@ -316,7 +315,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
     }
 
     #create a separate df of id variables
-    id_cols <- bind_rows(lapply(computed_df_list, function(df){
+    id_cols <- dplyr::bind_rows(lapply(computed_df_list, function(df){
       unique(df[,c("event_id", "participant_pair")])
     }))
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
@@ -348,13 +347,13 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
           doc_domain_auc_df <- data.frame(domain_auc) #make data frame of AUC, replicated once
         }
       })
-      all_doc_domain_auc_df <- bind_rows(single_doc_auc) #bind all docs AUCs for emotion into one column
+      all_doc_domain_auc_df <- dplyr::bind_rows(single_doc_auc) #bind all docs AUCs for emotion into one column
       colnames(all_doc_domain_auc_df) <- paste("auc", dimension, sep = "_") # add auc as colname prefix
       all_doc_domain_auc_df
 
     })
 
-    all_domain_df <- bind_cols(domain_auc_list, id_cols) #bind all columns of AUCs into one data frame
+    all_domain_df <- dplyr::bind_cols(domain_auc_list, id_cols) #bind all columns of AUCs into one data frame
     return(all_domain_df)
   }
   #END DEFINE FIND DYAD AREA UNDER THE CURVE FUNCTION
@@ -387,7 +386,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
       #create a wide data frame with each row containing both participants' turn aggregated scores
       df_wide <- df %>%
         dplyr::group_by(event_id, exchangecount, Participant_ID, .add = FALSE) %>%
-        dplyr::summarize(across(contains(align_var), mean),
+        dplyr::summarise(dplyr::across(contains(align_var), mean),
                          .group = "drop") %>%
         tidyr::pivot_wider(names_from = tidyselect::contains("Participant_ID"),
                            values_from = align_var) %>%
@@ -418,7 +417,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
         rho_cols <- dyad_sc %>% dplyr::select(contains(align_var))
         #add column prefixes to the rho columns
         rho_cols <- rho_cols %>%
-          dplyr::rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
+         dplyr::rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
         #bind the empty rho columns to dyad identifiers so that it can be bound to to total data frame.
         dyad_sc <- dyad_sc %>%
           select(-c(exchangecount, contains(align_var)))
@@ -429,9 +428,9 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
         #convert all dimension columns to numeric and remove speaker suffixes
         all[,colnames(all) %in% align_var] <- as.numeric(all[,colnames(all) %in% align_var])
         x_vars <- all %>% dplyr::select(c('event_id') | c(ends_with("_S1"))) %>%
-          dplyr::rename_at(vars(matches("_S1")), ~stringr::str_replace(., "_S1", ""))
+          dplyr::rename_at(dplyr::vars(matches("_S1")), ~stringr::str_replace(., "_S1", ""))
         y_vars <- all %>% select(c('event_id') | c(ends_with("_S2"))) %>%
-          dplyr::rename_at(vars(matches("_S2")), ~stringr::str_replace(., "_S2", ""))
+          dplyr::rename_at(dplyr::vars(matches("_S2")), ~stringr::str_replace(., "_S2", ""))
 
         #Separate lapply for spearmans correlation
         dyad_dim_sc_list <- lapply(align_var, function(dim){
@@ -450,11 +449,11 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
         })
 
         #bind and add event id to spearman correlation df
-        dyad_sc <- bind_cols(dyad_dim_sc_list, event_id = unique(df$event_id))
+        dyad_sc <- dplyr::bind_cols(dyad_dim_sc_list, event_id = unique(df$event_id))
       }
       dyad_sc
     })
-    all_dyad_df <- bind_rows(output_df_list)
+    all_dyad_df <- dplyr::bind_rows(output_df_list)
     return(all_dyad_df)
   }
   #END DEFINE SPEARMAN'S CORRELATION FUNCTION

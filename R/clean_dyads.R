@@ -2,24 +2,25 @@
 #'
 #' Cleans and Formats raw language transcripts, removing stopwords and formatting dataframe for alignment steps
 #' @name clean_dyads
-#' @param read_ts_df
+#' @param dataframe produced from the read_dyads() function
 #' @return dataframe with stopwords omitted, lemmatized words one per row
-#' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr filter
+#' @importFrom dplyr group_by
+#' @importFrom dplyr consecutive_id
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr rowwise
+#' @importFrom dplyr mutate
+#' @importFrom magrittr %>%
 #' @importFrom textclean replace_contraction
 #' @importFrom tm removeWords
 #' @importFrom stringr str_squish
 #' @importFrom tm stripWhitespace
 #' @importFrom textstem lemmatize_strings
-#' @importFrom tidyverse rowwise
-#' @importFrom tidyverse mutate
-#' @importFrom tidyverse str_split_1
-#' @importFrom tidyverse str_split
+#' @importFrom stringr str_split_1
+#' @importFrom stringr str_split
 #' @importFrom stringi stri_remove_empty
 #' @importFrom tidyr separate_rows
-#' @importFrom dplyr group_by
-#' @importFrom dplyr ungroup
 #' @export clean_dyads
 
 clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
@@ -121,7 +122,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
     #new stuff for testing the word count analytic fun
     dplyr::group_by(event_id) %>% #add a turn count per dyad, which counts by speaker change
     dplyr::mutate(turncount = dplyr::consecutive_id(Participant_ID), .before = 1) %>%
-    ungroup()
+    dplyr::ungroup()
 
   return(dfclean_filtered)
 }

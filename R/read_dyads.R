@@ -3,7 +3,7 @@
 #' Reads pre-formatted conversation transcripts from txt or csv on user's machine; user supplies directory path (e.g., "my_transcripts") to local folder as argument to function call
 #'
 #' @name read_dyads
-#' @param folder_name
+#' @param folder_name folder of conversation transcripts in csv or txt format
 #' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'; these are split into separate lists for discrete operations in later steps
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
@@ -168,7 +168,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
     stop("No files found. Please make sure you are providing the local path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
 
-  alldf <- bind_rows(all_list) #binds the rows  of each list into one data frame
+  alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
   alldf$event_id <- as.factor(alldf$event_id)
   alldf$Participant_ID <- as.factor(alldf$Participant_ID)
   return(alldf)

@@ -6,6 +6,9 @@
 \usage{
 clean_dyads(read_ts_df, lemmatize = TRUE)
 }
+\arguments{
+\item{dataframe}{produced from the read_dyads() function}
+}
 \value{
 dataframe with stopwords omitted, lemmatized words one per row
 }

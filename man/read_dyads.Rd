@@ -6,6 +6,9 @@
 \usage{
 read_dyads(folder_name = "my_transcripts")
 }
+\arguments{
+\item{folder_name}{folder of conversation transcripts in csv or txt format}
+}
 \value{
 a concatenated dataframe with each language transcript saved as a separate 'event_id'; these are split into separate lists for discrete operations in later steps
 }
