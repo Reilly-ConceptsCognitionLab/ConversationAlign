@@ -35,7 +35,7 @@
 #' @export summarize_dyads
 
 
-summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n = "min") {
+summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
   #DEFINE FIND MAIN EFFECT FUNCTION
   find_main_effect_dyads <- function(aligned_ts_df, aggregate_the_data = TRUE) {
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
@@ -118,7 +118,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
   #END DEFINE ABOSOLUTE DIFFERENE TIME SERIES FUNCTION
 
   #DEFINE time SERIES RESCALER
-  resample_time_series <- function(df_list, resample_n = "min") {
+  resample_time_series <- function(df_list, threshold = "min") {
 
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -157,7 +157,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
       }
       else{
         #computes how many points must be calculated from each currently present point
-        scale_ratio <- resample_n / max(ts_select$exchangecount)
+        scale_ratio <- threshold / max(ts_select$exchangecount)
 
         #if the transcript is the desired length already
         if (scale_ratio == 1) {
@@ -179,12 +179,12 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
             col_select <- zoo::na.approx(col_select)
           })
 
-          if (nrow(interpol_integer) == resample_n +1) {
+          if (nrow(interpol_integer) == threshold +1) {
             rescale_final <- interpol_integer
           }
           else {
             #compute a decimal to select n number of points to fill
-            point_diff <- resample_n - (nrow(interpol_integer) - 1)
+            point_diff <- threshold - (nrow(interpol_integer) - 1)
             #creates a new factor variable to split the data frame - rounds down to evenly separate rows into n group
             splitter <- floor(nrow(interpol_integer) / point_diff)
             #binds a sequence to the data frame that sections rows into groups by splitter
@@ -240,13 +240,13 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
                              .groups = "drop") %>%
             dplyr::select(!Grouper)
 
-          if (nrow(agg_int) == resample_n + 1) {
+          if (nrow(agg_int) == threshold + 1) {
             rescale_final <- agg_int
             rescale_final
           }
           else {
             #compute the number of points to remove after aggregating by lowest integer ratio
-            point_diff <- (nrow(agg_int) - 1) - resample_n
+            point_diff <- (nrow(agg_int) - 1) - threshold
             #creates a new factor variable to distribute where aggregation occurs
             splitter <- (nrow(agg_int) - 1) / point_diff
             #evenly split indexes for aggregation across the time series
@@ -266,7 +266,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
         } #end of down scaling section
 
         final_ts <- rescale_final %>%
-          dplyr::mutate(exchangecount = seq(from = 0, to = resample_n), #create exchange count column
+          dplyr::mutate(exchangecount = seq(from = 0, to = threshold), #create exchange count column
                         event_id = unique(x$event_id),
                         participant_pair = unique(x$participant_pair))
         #bind all new columns together into one data frame with an exchange count
@@ -279,15 +279,15 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
   #END DEFINE time SERIES RESCALER
 
   #DEFINE FIND DYAD AREA UNDER THE CURVE FUNCTION
-  find_auc_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n = "min") {
+  find_auc_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
     #run the difference time series function on the aligned dataframe
     computed_df <- find_diff_ts(aligned_df = aligned_ts_df) #convert to difference time series
     computed_df <- computed_df %>% droplevels()
     computed_df_list <- split(computed_df, f = computed_df$event_id)
     #conditionally resample every time series based on the given argument
-    if (resample_yes_or_no == TRUE) {
+    if (resample == TRUE) {
       #check if argument for resampling is set to min:
-      if (resample_n == "min"){
+      if (threshold == "min"){
         #mutate the max exchangecount for each dyad and then select only that variable
         min_exc_max <- computed_df %>%
           dplyr::group_by(event_id) %>%
@@ -299,19 +299,19 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
         #take the minimum of the max exchange count by dyad variable after converting to a vector
         min_exc <- min(min_exc_max$exc_max)
         #set this new min exchangecount to resample n
-        resample_n <- min_exc
+        threshold <- min_exc
       }
       #if resample n is not min default string or an integer (number, not type) throw an error
-      else if (is.numeric(resample_n) == FALSE || resample_n %% 1 != 0) {
-        stop("resample_n argument must be default 'min' string value or an integer")
+      else if (is.numeric(threshold) == FALSE || threshold %% 1 != 0) {
+        stop("threshold argument must be default 'min' string value or an integer")
       }
-      computed_df_list <- resample_time_series(df_list = computed_df_list, resample_n = resample_n)
+      computed_df_list <- resample_time_series(df_list = computed_df_list, threshold = threshold)
     }
-    else if (resample_yes_or_no == FALSE) {
-      resample_n <- 3 #if not resampling sets the var to 3 so that dyads with less than that will get NA
+    else if (resample == FALSE) {
+      threshold <- 3 #if not resampling sets the var to 3 so that dyads with less than that will get NA
     }
     else {
-      stop("Argument resample_yes_or_no must be logical")
+      stop("Argument resample must be logical")
     }
 
     #create a separate df of id variables
@@ -336,7 +336,7 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
         domain_ts <- aligned_ts_df %>%
           dplyr::select(exchangecount, contains(dimension)) #select only desired emotion and time count
         # conditionally skip AUC calculation for a dyad if it has fewer exchangecounts than what was sampled to. If resampling is turned off it will set to fill those with less than 3 exchangecounts (done by setting n = 3)
-        if (max(domain_ts$exchangecount) < resample_n){
+        if (max(domain_ts$exchangecount) < threshold){
           #create a single row, single column dataframe with one empty value to fill in the AUC
           doc_domain_auc_df <- data.frame(domain_auc = NA)
           doc_domain_auc_df
@@ -463,8 +463,8 @@ summarize_dyads <- function(aligned_ts_df, resample_yes_or_no = TRUE, resample_n
                                            aggregate_the_data = aggregate_the_data)
 
   auc_df <- find_auc_dyads(aligned_ts_df = aligned_ts_df,
-                           resample_yes_or_no = resample_yes_or_no,
-                           resample_n = resample_n)
+                           resample = resample,
+                           threshold = threshold)
 
   scorr_df <- spearmans_corr_dyads(aligned_ts_df = aligned_ts_df)
   #manually left join each summarize data frame together by participant pair and transcript
