@@ -6,8 +6,8 @@
 \usage{
 clean_dyads(read_ts_df, lemmatize = TRUE)
 }
-\arguments{
-\item{read_ts_df}{formatted dataframe ported from the read_dyads() step}
+\value{
+dataframe with stopwords omitted, lemmatized words one per row
 }
 \description{
 Cleans and Formats raw language transcripts, removing stopwords and formatting dataframe for alignment steps

@@ -3,6 +3,7 @@
 #' appends AUC and Spearman Rank Correlation indices to each dyad (event_id) using a resampling algoirthm that defaults to the minimum number of exchanges across all documents entered
 #'
 #' @name summarize_dyads
+#' @return dataframe
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr bind_rows
@@ -22,8 +23,8 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyr drop_na
-#' @importFrom tidyselct starts_with
-#' @importFrom tidyselct ends_with
+#' @importFrom tidyselect starts_with
+#' @importFrom tidyselect ends_with
 #' @importFrom tidyselect contains
 #' @importFrom tidyselect everything
 #' @importFrom tidyverse summarize(across())

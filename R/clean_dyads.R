@@ -2,7 +2,8 @@
 #'
 #' Cleans and Formats raw language transcripts, removing stopwords and formatting dataframe for alignment steps
 #' @name clean_dyads
-#' @param read_ts_df formatted dataframe ported from the read_dyads() step
+#' @param read_ts_df
+#' @return dataframe with stopwords omitted, lemmatized words one per row
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr filter

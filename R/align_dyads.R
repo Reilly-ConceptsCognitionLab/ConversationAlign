@@ -3,7 +3,8 @@
 #' Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across Participant_IDs.
 #'
 #' @name align_dyads
-#' @param clean_ts_df cleaned and formatted dataframe ported from the clean_dyads() step
+#' @param clean_ts_df
+#' @return a dataframe one-word-per-row format with variables of interest appended
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr full_join

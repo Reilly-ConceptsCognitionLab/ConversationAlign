@@ -6,8 +6,8 @@
 \usage{
 align_dyads(clean_ts_df)
 }
-\arguments{
-\item{clean_ts_df}{cleaned and formatted dataframe ported from the clean_dyads() step}
+\value{
+a dataframe one-word-per-row format with variables of interest appended
 }
 \description{
 Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across Participant_IDs.
