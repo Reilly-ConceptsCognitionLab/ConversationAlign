@@ -4,7 +4,7 @@
 \alias{summarize_dyads}
 \title{summarize_dyads}
 \usage{
-summarize_dyads(aligned_ts_df, resample_yes_or_no = TRUE, resample_n = "min")
+summarize_dyads(aligned_ts_df, resample = TRUE, threshold = "min")
 }
 \description{
 appends AUC and Spearman Rank Correlation indices to each dyad (event_id) using a resampling algoirthm that defaults to the minimum number of exchanges across all documents entered

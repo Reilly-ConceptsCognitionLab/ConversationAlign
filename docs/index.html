@@ -59,13 +59,13 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="conversationalign">ConversationAlign<a class="anchor" aria-label="anchor" href="#conversationalign"></a>
 </h1></div>
-<p>October 2023: <strong>ConversationAlign works but is still under development!</strong> <br> Proceed with caution. Cross-reference each processing stage against your original transcripts. <br> Email <a href="mailto:jamie_reilly@temple.edu" class="email">jamie_reilly@temple.edu</a> before jumping in. He will help you! <br></p>
-<p><img src="reference/figures/convo.jpeg" height="300" alt="two people conversing"><br></p>
+<p><img src="reference/figures/convo.jpeg" width="70%" height="60%" style="float:right; padding:5px"></p>
+<p>ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. <br><br><span style="color:red;">October 2023: ConversationAlign is working, and we have repaired most of the bugs. However, we recommend for now that you check with one of the authors or maintainers of the package before running any largescale analyses. We can talk you through any potential hiccups or roadblocks given the nature of your particular data.</span> <br><br></p>
 </div>
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h1>
-<p>ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. Here’s a schematic of the guts of the program… <br></p>
+<p>Here’s a schematic of the guts of the program…</p>
 <figure><img src="reference/figures/overview.png" height="600" alt="overview of ConversationAlign"><figcaption aria-hidden="true">
 overview of ConversationAlign
 </figcaption></figure>
@@ -104,7 +104,7 @@ overview of ConversationAlign
 <span><span class="co">#if you want to specify a different folder, supply your own path</span></span>
 <span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="st">"/my_custompath"</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
-<p><img src="reference/figures/example2_ts_edg.jpeg" height="200" alt="Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<p><img src="reference/figures/example2_ts_edg.jpeg" height="600" alt="Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
 </div>
 </div>
 <div class="section level1">
@@ -120,8 +120,7 @@ overview of ConversationAlign
 <code class="sourceCode R"><span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span><span class="op">)</span> <span class="co">#default is lemmatize=TRUE</span></span>
 <span><span class="co">#If you do NOT want your language sample lemmatized, change the lemmatize argument to F or FALSE</span></span>
 <span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span>, lemmatize<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><br></p>
-<p><img src="reference/figures/example3_ts_edg.jpeg" height="200" alt="Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<p><img src="reference/figures/example3_ts_edg.jpeg" height="400" alt="Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
 </div>
 </div>
 <div class="section level1">
@@ -134,10 +133,13 @@ overview of ConversationAlign
 <p>You will be prompted to select one of more variables (and up to three) to yoke data to that will be used in later steps to compute alignment indices. You will be shown a menu wherein you can select up to three variables to be yoked to your text. Following the menu steps, enter the number of each variable you would like with a space separating values (e.g., “10 14 19”). <br></p>
 <p>Here are your choices: <br></p>
 <p>anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br></p>
-<p><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> After you select the variables you would like yoked to your text, you will be asked whether there is any metadata you would like yoked to your data You can supply the filepath of a csv file containing metadata that will be merged to the aligned data at this juncture, or click “Enter” to skip this step. Run align_dyads on the cleaned dyads object you created using the clean_dyads function.<br></p>
+<p>Inspect each variable and learn about its scale and derivation here: <br><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> <br><br></p>
+<p>ConversationAlign will prompt you to append any metadata you would like to add. This joins information from a separate file (e.g., neuropsych scores, ages, etc). Just give ConversationAlign a filepath to your CSV data or click “Enter” to skip this step. A metadata file might look like this:</p>
+<p>METADATA IMAGE HERE <br></p>
+<p>Run align_dyads on the cleaned dyads object you created using the clean_dyads function.<br></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyAlignedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_dyads.html">align_dyads</a></span><span class="op">(</span><span class="va">MyCleanLangSamples</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/example4_ts_edg.jpeg" height="200" alt="Example of aligned transcripts with metics for anger, anxiety, and boredom (via AffectVec) from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<p><img src="reference/figures/example4_ts_edg.jpeg" height="200" alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
 </div>
 </div>
 <div class="section level1">
@@ -146,11 +148,12 @@ overview of ConversationAlign
 <div class="section level2">
 <h2 id="summarize_dyads">summarize_dyads()<a class="anchor" aria-label="anchor" href="#summarize_dyads"></a>
 </h2>
-<p>Lastly, using the object produced by the prior align step, you can obtain metrics of linguistic alignment between interlocutors on variables yoked to your text during “align”. From this step, you will gain metrics for (1) means for each variable per interlocutor per turn (beginning with prefix “mean_”), (2) the area under the curve (beginning with prefix “auc_”) per variable per dyad per exchange, and (3) Spearman’s correlation coefficient (beginning with prefix (“S_rho_”) per variable per dyad per exchange. The means are of each variable usage are calculated per interlocutor per turn for each dimension within each dyad, and is calculated using the “mean” function from the “base” package in R (R Core Team, 2023). AUC denotes the area beneath the curve of the absolute difference between speakers’ expression on each variable over exchanges during their interaction across all exchanges within each dyad, and is calculated using the “AUC” function from the “DescTools” package in R (Signorell et al., <a href="https://andrisignorell.github.io/DescTools/" class="external-link uri">https://andrisignorell.github.io/DescTools/</a>). Spearman’s correlation coefficient provides a metric of the overall association between two interlocutors’ scores on each variable in their language over their exchanges, and is calculated using the “cor.test(method =”spearman”)” function from the “stats” package in R (R Core Team, 2023). This means that within dyads, each interlocutor will have independent means for each variable, but both interlocutors should have the same AUC and Spearman’s correlation coefficient as one another. <br></p>
-<p><br></p>
+<p>This last step will append two metrics of alignment to each dyad (AUC and Spearman R) for every variable of interest you specified. For example, summarize_dyads will append AUC and Spearman values for hostility (if that’s what you’re interested in) to MaryandMikeFirstDate. <br><br> Link here to read more about what AUC and Spearman mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD</p>
+<p>AUC will appear in the dataframe with a prefix “auc_”. Spearman’s correlation coefficient will appear with a prefix (“S_rho_”) per variable per dyad. <br></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">MySummarizedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span><span class="op">)</span></span></code></pre></div>
-<p><br></p>
+<code class="sourceCode R"><span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span><span class="op">)</span> <span class="co">#base function defaults to computing AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) </span></span>
+<span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="co">#turns off resampling and computes AUC on the orignal dyads. This makes it very difficult to compare AUC for dyads of different lengths</span></span>
+<span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample<span class="op">=</span><span class="cn">T</span>, threshold<span class="op">=</span><span class="fl">40</span><span class="op">)</span> <span class="co">#specifies your own threshold for resampling your dyads to. All dyads will be resampled to this threshold</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level1">
@@ -161,9 +164,9 @@ overview of ConversationAlign
 </h2>
 <p>Any analysis of language comes with assumptions and potential bias. For example, there are some instances where a researcher might care about morphemes and grammatical elements such as ‘the’, ‘a’, ‘and’, etc.. The default for ConversationAlign is to omit these as stopwords and to average across all open class words (e.g., nouns, verbs) in each turn by interlocutor. There are some specific cases where this can all go wrong. Here’s what you need to consider: <br></p>
 <ol style="list-style-type: decimal">
-<li><p>Stopwords: The package omits stopwords. <a href="https://osf.io/atf5q/" class="external-link">See the stopword list here</a> if you would like to inspect this list. We included greetings, idioms, filler words, numerals, and pronouns in the omissions list. <br></p></li>
-<li><p>Lemmatization: The package will lemmatize your language transcripts by default. Lemmatization transforms inflected forms (e.g., standing, stands) into their root or dictionary entry (e.g., stand). This helps for yoking offline values (e.g., happiness, concreteness) to each word and also entails what NLP folks refer to as ‘term aggregation’. However, sometimes you might NOT want to lemmatize. You can easily change this option by using the argument, “lemmatize=FALSE,” to the clean_dyads function below. <br></p></li>
-<li><p>Sample Size Issue 1– exchange count: The program derives correlations and AUC for each dyad as metrics of alignment. If there are 40 exchanges (80 turns) between conversation partners, the R value will be computed over 40 data points. For conversations less than about 30 turns, you should not trust the R values that ConversationAlign outputs. <br></p></li>
+<li><p><span style="color:red;">Stopwords </span>: The package omits stopwords. <a href="https://osf.io/atf5q/" class="external-link">See the stopword list here</a> if you would like to inspect this list. We included greetings, idioms, filler words, numerals, and pronouns in the omissions list. <br></p></li>
+<li><p><span style="color:red;">Lemmatization </span>: The package will lemmatize your language transcripts by default. Lemmatization transforms inflected forms (e.g., standing, stands) into their root or dictionary entry (e.g., stand). This helps for yoking offline values (e.g., happiness, concreteness) to each word and also entails what NLP folks refer to as ‘term aggregation’. However, sometimes you might NOT want to lemmatize. You can easily change this option by using the argument, “lemmatize=FALSE,” to the clean_dyads function below. <br></p></li>
+<li><p><span style="color:red;">Sample Size Issue 1: exchange count</span>: The program derives correlations and AUC for each dyad as metrics of alignment. If there are 40 exchanges (80 turns) between conversation partners, the R value will be computed over 40 data points. For conversations less than about 30 turns, you should not trust the R values that ConversationAlign outputs. <br></p></li>
 <li><p><span style="color:red;">Sample Size Issue 2 </span>: matching to lookup database: ConversationAlign works by yoking values from a lookup database to each word in your language transcript. Some variables have lots of values characterizing many English words. Other variables (e.g., age of acquisition) only cover about 30k words. When a word in your transcript does not have a ‘match’ in the lookup datase, ConversationAlign will return an NA which will not go into the average of the words for that interlocutor and turn. This can be dangerous when there are many missing values. Beware! <br></p></li>
 <li><p><span style="color:red;">Compositionality </span>: ConversationAlign is a caveman in its complexity. It matches a value to each word as if that word is an island. Phenomena like polysemy (e.g., bank) and the modulation of one word by an intensifier (e.g., very terrible) are not handled. This is a problem for many of the affective measures but not for lexical variables like word length. <br></p></li>
 <li><p><span style="color:red;"> Resampling for AUC </span>: summarize_dyads will output AUC values quantifying the distance between interlocutors on any dimension you specify. AUC will vary depending on the length of the dyad. Therefore, it is often necessary to resample (downsample) your dyads so that they are all of an equivalent length. This will get very wonky and uninterpretable for very short exchanges.</p></li>
