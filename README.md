@@ -15,8 +15,8 @@ spanning 30 possible dimensions via an embedded lookup database. <br/>
 working, and we have repaired most of the bugs. However, we recommend
 for now that you check with one of the authors or maintainers of the
 package before running any largescale analyses. We can talk you through
-any potential hiccups or roadblocks given the nature of your particular
-data.</span> <br/> <br/>
+any potential hiccups or roadblocks given the idiosyncratic nature of
+your particular data.</span> <br/>
 
 # Overview
 
