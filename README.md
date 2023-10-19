@@ -3,111 +3,64 @@
 
 # ConversationAlign
 
-<!-- badges: start -->
-<!-- badges: end -->
+October 2023: **ConversationAlign works but is still under
+development!** <br/> Proceed with caution. Cross-reference each
+processing stage against your original transcripts. <br/> Email
+<jamie_reilly@temple.edu> before jumping in. He will help you! <br/>
 
-## Overview
-
-<figure>
 <img src="man/figures/convo.jpeg" height="300"
-alt="two people conversing" />
-<figcaption aria-hidden="true">two people conversing</figcaption>
-</figure>
+alt="two people conversing" /> <br/>
 
-ConversationAlign is an R package for analyzing alignment between
-interlocutors (conversation partners) engaged in dyadic conversations
-(two-person conversations). ConversationAlign will work on one or more
-natural language transcripts of the following file types: txt (text
-files), csv (comma separated values files), otter.ai transcripts saved
-as txt files.
+# Overview
 
-*Please note that ConversationAlign is currently still in development.*
-Please use with caution for now. Last updated: 2023-10-18
-
-## Nuts and bolts
+ConversationAlign analyzes alignment between interlocutors (conversation
+partners) engaged in two-person conversations. ConversationAlign works
+on language transcripts. It can handle text files (.txt) or comma
+separated value (.csv) spreadsheet style files. ConversationAlign
+transforms raw language data into simultaneous time series objects
+spanning 30 possible dimensions via an embedded lookup database. Here’s
+a schematic of the guts of the program… <br/>
 
 <figure>
-<img src="man/figures/overview.png" height="500"
+<img src="man/figures/overview.png" height="600"
 alt="overview of ConversationAlign" />
 <figcaption aria-hidden="true">overview of
 ConversationAlign</figcaption>
 </figure>
 
-ConversationAlign transforms raw language data into simultaneous time
-series objects spanning 40 possible dimensions (affective, lexical, and
-semantic psycholinguistic variables). Here’s an overview of how the
-package transforms language to time series data for computing alignment
-indices. <br/>
+# Before starting: Prep your data
 
-## Caveats: Things you must be careful about!
+ConversationAlign can handle a home brew of your own preferred format.
+However, your transcripts must have the following header columns at a
+bare minimum: <br/> 1) Participant identifier (named Interlocutor’,
+‘Speaker’, or ‘Participant’) <br/> 2) Text (named ‘Text’, ‘Utterance’,
+or ‘Turn’) <br/>
 
-Any analysis of language transcripts comes with assumptions and
-potential bias. For example, there are some instances where a researcher
-might care about morphemes and grammatical elements such as ‘the’, ‘a’,
-‘and’, etc.. The default for ConversationAlign is to omit these as
-stopwords and to average across all open class words (e.g., nouns,
-verbs) in each turn by interlocutor. There are some specific cases where
-this can all go wrong. Here’s what you need to consider: <br/>
+The order of your columns does not matter. Any other data in your
+transcripts (e.g., metadata, timestamps, grouping variables) will be
+retained. Here’s an example of a transcript that will work. Don’t worry
+about stripping punctuation. We will do that for you. <br/>
 
-1.  Stopwords: The package omits stopwords. [See the stopword list
-    here](https://osf.io/atf5q/) if you would like to inspect this list.
-    We included greetings, idioms, filler words, numerals, and pronouns
-    in the omissions list. <br/>
+<img src="man/figures/example1_ts_edg.jpeg" height="200"
+alt="Example transcript from Taylor Swift-Ellen DeGeneres Interview, 2013" />
+<br/>
 
-2.  Lemmatization: The package will lemmatize your language transcripts
-    by default. Lemmatization transforms inflected forms (e.g.,
-    standing, stands) into their root or dictionary entry (e.g., stand).
-    This helps for yoking offline values (e.g., happiness, concreteness)
-    to each word and also entails what NLP folks refer to as ‘term
-    aggregation’. However, sometimes you might NOT want to lemmatize.
-    You can easily change this option by using the argument,
-    “lemmatize=FALSE,” to the clean_dyads function below. <br/>
+Considerations in prepping your language transcripts for
+ConversationAlign: <br/>
 
-3.  Sample Size Issue 1– exchange count: The program derives
-    correlations and AUC for each dyad as metrics of alignment. If there
-    are 40 exchanges (80 turns) between conversation partners, the R
-    value will be computed over 40 data points. For conversations less
-    than about 30 turns, you should not trust the R values that
-    ConversationAlign outputs. <br/>
+1)  Save each conversation transcript as a separate file (e.g.,
+    MaryJoe_FirstDateTalk.txt)
+2)  Be careful/deliberate about your filenaming convention. The filename
+    for each conversation will become its event ID in the dataframe
+3)  Move all your language transcripts to be analyzed into one folder
+    (e.g., “my_transcripts”) in the same directory you are running your
+    R script.
+4)  If you have metadata (e.g., age, timestamps, grouping variables),
+    you can either append this to your original transcript or merge the
+    metdata as a separate file. This is a useful option when you have
+    many individual difference and demographic details.
 
-4.  Sample Size Issue 2 – matching to lookup database: ConversationAlign
-    works by yoking values from a lookup database to each word in your
-    language transcript. Some variables have lots of values
-    characterizing many English words. Other variables (e.g., age of
-    acquisition) only cover about 13k words. When a word in your
-    transcript does not have a ‘match’ in the lookup datase,
-    ConversationAlign will return an NA which will not go into the
-    average of the words for that interlocutor and turn. This can be
-    dangerous when there are many missing values. Beware! <br/>
-
-5.  Insensitivity to surrounding words: ConversationAlign is a caveman
-    in its complexity. It matches a value to each word as if that word
-    is an island. Phenomena like polysemy (e.g., bank) and the
-    modulation of one word by an intensifier (e.g., very terrible) are
-    not handled. This is a problem for many of the affective measures
-    but not for lexical variables like word length. <br/>
-
-6.  Interpretation (particularly for affective measures): As noted
-    prior, ConversationAlign works by yoking values from a lookup
-    database to each word in your language transcript. Most affective
-    measures come from the database, AffectVec (Raji & deMelo, 2020,
-    DOI: 10.1145/3366423.3380068). AffectVec is a database created using
-    machine learning techniques that generate word embeddings, so may
-    not be consistent with human ratings of affective intensity in a
-    provided text. It is worth carefully considering and reading about
-    methods used to create the AffectVec database prior to interpreting
-    any of these affective measures, particularly in scientific
-    research. <br/>
-
-7.  Potential for reflection of human bias: As with many other machine
-    learning/artificial intelligence techniques, the methods used to
-    create the psycholinguistic database measures which comprise the
-    ConversationAlign lookup database may generate word embedding values
-    that reflect human biases in their calculation (see Caliskan,
-    Bryson, & Narayanan, 2017, DOI: 10.1126/science.aal4230 and Hovy &
-    Prabhumoye, 2021, DOI: 10.1111/lnc3.12432 to read more). <br/>
-
-## Installation
+# Installation
 
 Install the development version of ConversationAlign from
 [GitHub](https://github.com/) by entering the following in your console
@@ -118,77 +71,17 @@ install.packages("devtools")
 devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 ```
 
-<br/>
-
-# Before you start
-
-ConversationAlign takes natural language transcripts between pairs of
-interlocutors. The package can handle Otter.ai formatted files, but it
-can also handle a home brew of your own preferred format as long as your
-transcript has at least two columns containing (1) identifiers for the
-interlocutors in the interaction (e.g., speaker names, random
-participant IDs) and (2) raw text from their interaction. The order of
-these two columns in your transcript does not matter.<br/>
-
-Some users may be interested in analyzing distinguishable dyads, wherein
-members of interlocutor pairs are consistently differentiated by a
-meaningful characteristic (e.g., student-teacher, parent-child,
-boss-employee, etc.). Dyads are considered distinguishable if their
-members can *all* be differentiated in this way, but are considered
-indistinguishable if interlocutors in at least one dyad share this
-characteristic (e.g., parent-parent). If you do have a distinguishable
-grouping variable, you can either prepare a separate file with other
-metadata (e.g., grouping variable, age, neuropsychological assessment
-scores) and merge it with your finalized dataframe processed through
-ConversationAlign (this will be prompted at the align_dyads step), or
-you can include it in your original raw transcripts and it will be
-retained. <br/>
-
-## Prep your language transcripts
-
-ConversationAlign will work on .txt or .csv files. The first (header)
-row of your transcript must designate the interlocutor (person producing
-the output) and the text. When prepping your raw transcripts, be careful
-to mark these columns as follows using one of these options
-(case-insensitive). The order of your columns does not matter:<br/> 1)
-‘Interlocutor’, ‘Speaker’, or ‘Participant’<br/> 2) ‘Text’, ‘Utterance’,
-or ‘Turn’ <br/>
-
-<img src="man/figures/example1_ts_edg.jpeg" height="200"
-alt="Example of input transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013" />
-<br/>
-
-If working with multiple transcripts, each dyadic conversation
-transcript should be saved as a separate file (e.g.,
-MaryJoe_FirstDateTalk.txt and MaryJoe_SecondDateTalk.txt). This is
-important for how ConversationAlign will read your data into R, append
-document IDs, and split each dyad into a separate list.
-ConversationAlign runs many operations on each dyad and ultimately binds
-those data into a summary dataframe. ConversationAlign marks each
-conversation with a unique event_id populated from its filename (be
-deliberate about naming!). All other metadata (e.g., age, timestamps,
-grouping variables) in your language transcripts will be retained. <br/>
-<br/>
-
-Move all your raw transcripts into the same folder. The default folder
-name ConversationAlign will search for on your machine is
-‘my_transcripts’. However, if you want to specify your own folder name
-that’s fine too. You will call that path as an argument to the first
-function called read_dyads(). <br/> <br/>
-
 # Read your transcripts into R
 
 ## read_dyads()
 
 This function will read all your files and concatenate them into a
 single dataframe, appending document IDs. You can call this dataframe
-whatever you like. read_dyads will default to reading all csv and txt
+whatever you like. ‘read_dyads’ will default to reading all csv and txt
 files in a folder called my_transcripts. Just remember that when you are
 finished processing a set of transcripts, make sure to move them out of
 that folder. You can think of ‘my_transcripts’ as a staging area for
 loading data into ConversationAlign. <br/>
-
-<br/>
 
 ``` r
 MyRawLangSamples <- read_dyads()
@@ -206,21 +99,23 @@ alt="Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 20
 
 ## clean_dyads()
 
-‘clean_dyads’ uses regular expressions to clean and format your data.
-Specifically, the function puts all words into lowercase, replaces tick
-marks with apostrophes for contractions, replaces contractions with
-complete words (e.g., “can’t” becomes “cannot”), replaces hyphens with
-spaces, omits numeric characters (e.g., “3rd”, “5th”), and removes
-extraneous white space (e.g., ” ” becomes ” “). The function also omits
-stopwords using a custom stopword list, and it lemmatizes (converts all
-words to their dictionary entries, so”standing”, “stood”, “stands”, and
-“stand” all become “stand”) unless you specify otherwise (lemmatize=TRUE
-is the default). Run ‘clean_dyads’ on the object you just assembled by
-running the ‘read_dyads’ function in the last step. The clean_dyads
-function also provides metrics for wordlength, wordcount, and words
-removed during the clean step. <br/>
+‘clean_dyads’ uses numerous regex to clean and format the data your just
+read into R in the previous step. Although there are many cleaning
+steps, here are the big ones: 1) to lowercase 2) omit stopwords 3)
+replace contractions (e.g., ‘you’re’ to ‘you are’) 4) tick marks to
+apostrophes 5) hypens to spaces 6) omits numerals 7) omits/squishes
+extraneous white space 8) lemmatization <br/>
 
-<br/>
+ConversationAlign calls the textstem package as a dependency to
+lemmatize your language transcript. This converts morphologiocal
+derivatives to their root forms. The default is lemmatize=T. Sometimes
+you want to retain language output in its native form. If this is the
+case, change the argument in clean_dyads to lemmatize=F. <br/>
+
+‘clean_dyads’ outputs word count metrics pre/post cleaning by dyad and
+interlocutor. This can be useful if you are interested in whether one
+person just doesn’t produce many words or produces a great deal of empty
+utterances.<br/>
 
 ``` r
 MyCleanLangSamples <- clean_dyads(MyRawLangSamples) #default is lemmatize=TRUE
@@ -240,15 +135,10 @@ alt="Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview,
 
 This is where a lot of the magic happens. align_dyads will take the
 cleaned dataframe you created in the last step and yoke values to every
-word by indexing a lookup database. This database was populated with
-published word norms from numerous sources (AffectVec for affective
-measures beginning with the prefix “aff\_”, Raji & deMelo, 2020, DOI:
-10.1145/3366423.3380068; Kuperman norms and Brysbaert norms for semantic
-and lexical measures respectively beginning with the prefixes “sem\_”
-and “lex\_”, etc.). The “align” step yokes data to each word in the
-cleaned transcript text then structures a dataframe by speaker
-(“Participant_ID”), exchange (“exchangecount”), and turn (“turncount”)
-across each dyad (“event_id”). <br/>
+word by indexing a lookup database. The “align” step yokes data to each
+word in the cleaned transcript text then structures a dataframe by
+speaker (“Participant_ID”), exchange (“exchangecount”), and turn
+(“turncount”) across each dyad (“event_id”). <br/>
 
 You will be prompted to select one of more variables (and up to three)
 to yoke data to that will be used in later steps to compute alignment
@@ -267,22 +157,17 @@ acquisition, word length (by letters), morphemes per turn, prevalence
 frequency (lg10), arousal, concreteness, semantic diversity, and
 semantic neighbors. <br/>
 
+<https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf>
 After you select the variables you would like yoked to your text, you
 will be asked whether there is any metadata you would like yoked to your
 data You can supply the filepath of a csv file containing metadata that
 will be merged to the aligned data at this juncture, or click “Enter” to
-skip this step. <br/>
-
-Run align_dyads on the cleaned dyads object you created using the
-clean_dyads function.<br/>
-
-<br/>
+skip this step. Run align_dyads on the cleaned dyads object you created
+using the clean_dyads function.<br/>
 
 ``` r
 MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 ```
-
-<br/>
 
 <img src="man/figures/example4_ts_edg.jpeg" height="200"
 alt="Example of aligned transcripts with metics for anger, anxiety, and boredom (via AffectVec) from Taylor Swift-Ellen DeGeneres Interview, 2013" />
@@ -323,6 +208,64 @@ MySummarizedDyads <- summarize_dyads(MyAlignedDyads)
 ```
 
 <br/>
+
+# Caveat emptor
+
+## Things you must be careful about
+
+Any analysis of language comes with assumptions and potential bias. For
+example, there are some instances where a researcher might care about
+morphemes and grammatical elements such as ‘the’, ‘a’, ‘and’, etc.. The
+default for ConversationAlign is to omit these as stopwords and to
+average across all open class words (e.g., nouns, verbs) in each turn by
+interlocutor. There are some specific cases where this can all go wrong.
+Here’s what you need to consider: <br/>
+
+1.  Stopwords: The package omits stopwords. [See the stopword list
+    here](https://osf.io/atf5q/) if you would like to inspect this list.
+    We included greetings, idioms, filler words, numerals, and pronouns
+    in the omissions list. <br/>
+
+2.  Lemmatization: The package will lemmatize your language transcripts
+    by default. Lemmatization transforms inflected forms (e.g.,
+    standing, stands) into their root or dictionary entry (e.g., stand).
+    This helps for yoking offline values (e.g., happiness, concreteness)
+    to each word and also entails what NLP folks refer to as ‘term
+    aggregation’. However, sometimes you might NOT want to lemmatize.
+    You can easily change this option by using the argument,
+    “lemmatize=FALSE,” to the clean_dyads function below. <br/>
+
+3.  Sample Size Issue 1– exchange count: The program derives
+    correlations and AUC for each dyad as metrics of alignment. If there
+    are 40 exchanges (80 turns) between conversation partners, the R
+    value will be computed over 40 data points. For conversations less
+    than about 30 turns, you should not trust the R values that
+    ConversationAlign outputs. <br/>
+
+4.  <span style="color:red;">Sample Size Issue 2 </span>: matching to
+    lookup database: ConversationAlign works by yoking values from a
+    lookup database to each word in your language transcript. Some
+    variables have lots of values characterizing many English words.
+    Other variables (e.g., age of acquisition) only cover about 30k
+    words. When a word in your transcript does not have a ‘match’ in the
+    lookup datase, ConversationAlign will return an NA which will not go
+    into the average of the words for that interlocutor and turn. This
+    can be dangerous when there are many missing values. Beware! <br/>
+
+5.  <span style="color:red;">Compositionality </span>: ConversationAlign
+    is a caveman in its complexity. It matches a value to each word as
+    if that word is an island. Phenomena like polysemy (e.g., bank) and
+    the modulation of one word by an intensifier (e.g., very terrible)
+    are not handled. This is a problem for many of the affective
+    measures but not for lexical variables like word length. <br/>
+
+6.  <span style="color:red;"> Resampling for AUC </span>:
+    summarize_dyads will output AUC values quantifying the distance
+    between interlocutors on any dimension you specify. AUC will vary
+    depending on the length of the dyad. Therefore, it is often
+    necessary to resample (downsample) your dyads so that they are all
+    of an equivalent length. This will get very wonky and
+    uninterpretable for very short exchanges.
 
 # Get in touch!
 
