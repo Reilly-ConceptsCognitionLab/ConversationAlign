@@ -1,1 +1,6 @@
-exportPattern("^[[:alpha:]]+")
+export(read_dyads)
+export(clean_dyads)
+export(summarize_dyads)
+export(align_dyads)
+importFrom("stats", "complete.cases", "cor.test")
+importFrom("utils", "read.csv", "select.list", "tail")
