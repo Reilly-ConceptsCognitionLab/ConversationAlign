@@ -9,6 +9,9 @@ read_dyads(folder_name = "my_transcripts")
 \arguments{
 \item{folder_name}{user can specify a folder name and directory for where their language transcripts will be read from, default is 'my-transcripts' in root}
 }
+\value{
+a concatenated dataframe with each language transcript saved as a separate 'event_id'; these are split into separate lists for discrete operations in later steps
+}
 \description{
 Reads pre-formatted conversation transcripts from txt or csv on user's machine; user supplies directory path (e.g., "my_transcripts") to local folder as argument to function call
 }

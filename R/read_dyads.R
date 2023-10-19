@@ -4,6 +4,7 @@
 #'
 #' @name read_dyads
 #' @param folder_name user can specify a folder name and directory for where their language transcripts will be read from, default is 'my-transcripts' in root
+#' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'; these are split into separate lists for discrete operations in later steps
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr bind_rows
