@@ -3,6 +3,11 @@
 
 # ConversationAlign
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 <img src="man/figures/convo.jpeg" width="70%" height="60%" style="float:right; padding:5px" style="display: block; margin: auto auto auto 0;" />
 
 ConversationAlign analyzes alignment between interlocutors (conversation

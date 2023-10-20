@@ -1,7 +1,6 @@
 ---
 output: github_document
 ---
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
@@ -15,6 +14,10 @@ knitr::opts_chunk$set(
 ```
 
 # ConversationAlign
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 ```{r, echo=F, out.width='70%', out.height='60%', out.extra='style="float:right; padding:5px"'}
 knitr::include_graphics("man/figures/convo.jpeg")
 ```
