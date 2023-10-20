@@ -32,7 +32,7 @@ align_dyads <- function(clean_ts_df) {
                           "lex_morphemecount_raw", "lex_prevalence", "lex_senses_polysemy",
                           "lex_wordfreqlg10_raw", "sem_arousal", "sem_concreteness",
                           "sem_diversity", "sem_neighbors"), preselect = NULL, multiple = TRUE,
-                        title = writeLines("Select the variables you would like to align your conversation transcripts on.\nPlease do not select more than three variables."),
+                        title = writeLines("Select any number of variables you would like to align your conversation transcripts on."),
                         graphics = FALSE)
   var_selected <- lookup_db %>% #select desired columns from lookup_db
     dplyr::select(matches("^word$"), contains(myvars))
@@ -74,7 +74,7 @@ align_dyads <- function(clean_ts_df) {
   #DEFINE THE METADATA ALIGN FUNCTION
   align_metadata <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the file path to the metadata csv file.\nIf you do not wish to align metadata do not enter anything.\nEnter 'random' to randomly assign a variable to each interlocutor in each dyad."))
+    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the file path to the metadata csv file.\nIf you do not wish to align metadata press enter \nEnter 'random' to randomly assign a variable to each interlocutor in each dyad."))
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_meta_filepath) == "random") {
       randomly <- lapply(split(aligned_ts_df, aligned_ts_df$event_id), function(x){ #iterates over each doc
