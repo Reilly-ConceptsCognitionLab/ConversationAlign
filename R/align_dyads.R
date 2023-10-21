@@ -102,7 +102,7 @@ align_dyads <- function(clean_ts_df) {
       #allows the user to specify which columns they want to subset
       subset_metadata <- select.list(c(colnames(metadata), "Select all columns"),
                                      preselect = NULL, multiple = TRUE,
-                                     title = "Select the columns you would like to subset. The 'Participant_ID' and 'event_ID' column must be included.",
+                                     title = "Select the columns you would like to subset. The 'Participant_ID' and 'event_ID' (case sensitive) columns must be included.",
                                      graphics = FALSE)
       #if the select all option is chosen, selects every column
       if (any(grepl("Select all columns", subset_metadata)) == TRUE) {
