@@ -165,7 +165,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
 
   #throws an error if no files are found
   if (length(all_list) == 0) {
-    stop("No files found. Please make sure you are providing the local path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
+    stop("No files found. Please make sure you are providing the local or absolute file path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
 
   alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
