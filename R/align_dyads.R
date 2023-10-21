@@ -74,7 +74,7 @@ align_dyads <- function(clean_ts_df) {
   #DEFINE THE METADATA ALIGN FUNCTION
   align_metadata <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the absolute or relative file path to the metadata csv file.\nThe file path should not be in quotes (e.g. my_data/metadata.csv)\nIf you do not wish to align metadata press enter \nEnter 'random' to randomly assign a variable to each interlocutor in each dyad."))
+    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the absolute or relative file path to the metadata csv file.\nThe file path should not be in quotes (e.g. my_data/metadata.csv)\nThe csv file must contain column names 'Participant_ID' and 'event_id' (case sensitive) or it will not align\nIf you do not wish to align metadata press enter \nEnter 'random' to randomly assign a variable to each interlocutor in each dyad."))
     #if user inputs 'random', randomly assigns groups across transcripts
     if (str_to_lower(ask_meta_filepath) == "random") {
       randomly <- lapply(split(aligned_ts_df, aligned_ts_df$event_id), function(x){ #iterates over each doc
@@ -102,7 +102,7 @@ align_dyads <- function(clean_ts_df) {
       #allows the user to specify which columns they want to subset
       subset_metadata <- select.list(c(colnames(metadata), "Select all columns"),
                                      preselect = NULL, multiple = TRUE,
-                                     title = "Select the columns you would like to subset. The participant ID and event ID column must be included.",
+                                     title = "Select the columns you would like to subset. The 'Participant_ID' and 'event_ID' column must be included.",
                                      graphics = FALSE)
       #if the select all option is chosen, selects every column
       if (any(grepl("Select all columns", subset_metadata)) == TRUE) {
