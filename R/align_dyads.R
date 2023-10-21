@@ -109,12 +109,10 @@ align_dyads <- function(clean_ts_df) {
         subset_metadata <- colnames(metadata)
       }
       metadata_selected <- metadata[,colnames(metadata) %in% subset_metadata] #select specified columns
-      colnames(metadata_selected) <- tolower(colnames(metadata_selected))
       #select dimensions that aren't used to align on
       meta_dims <- which(!colnames(metadata_selected) %in% c("event_id", "Participant_ID"))
       #make all dimensions that aren't alingers factors
       metadata_selected[,meta_dims] <- lapply(metadata_selected[,meta_dims], factor)
-      colnames(metadata_selected)[meta_dims] <- paste("m", tolower(colnames(metadata_selected)[meta_dims]), sep = "_")
 
       #join metadata to aligned data frame by event id and PID
       metadata_aligned_df <- dplyr::left_join(aligned_ts_df, metadata_selected,
