@@ -74,45 +74,36 @@ align_dyads <- function(clean_ts_df) {
   #DEFINE THE METADATA ALIGN FUNCTION
   align_metadata <- function(aligned_ts_df) {
     #allow user to input the file path to demographic data, randomly assign groups, or not align groups
-    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the absolute or relative file path to the metadata csv file.\nThe file path should not be in quotes (e.g. my_data/metadata.csv)\nThe csv file must contain column names 'Participant_ID' and 'event_id' or it will not align\nIf you do not wish to align metadata press enter \nEnter 'random' to randomly assign a variable to each interlocutor in each dyad."))
-    #if user inputs 'random', randomly assigns groups across transcripts
-    if (str_to_lower(ask_meta_filepath) == "random") {
-      randomly <- lapply(split(aligned_ts_df, aligned_ts_df$event_id), function(x){ #iterates over each doc
-        x <- data.frame(x)
-        #creates vector of each interlocutor with random indexes and assigns a alphanumeric sequence name
-        speakervec <- sample(unique(x[,grep("Participant_ID", colnames(x), ignore.case = T)]))
-        names(speakervec) <- paste("S", 1:length(speakervec), sep = "")
-        #creates a data frame with just interlocutor names and assigned code
-        coloutput <- data.frame(Participant_ID = speakervec,
-                                speaker_group_var_random = sapply(speakervec, function(y) {
-                                  names(speakervec)[match(y, speakervec)]}))
-        x <- x %>% dplyr::left_join(coloutput, by=c("Participant_ID")) #binds code to aligned data frame
-      })
-      randomly <- dplyr::bind_rows(randomly) #binds all the doc data frame into one
-      return(randomly)
-    }
+    ask_meta_filepath <- readline(writeLines("If you would like to align metadata by interlocutor and event ID, input the absolute or relative file path to the metadata csv file.\nThe file path should not be in quotes (e.g. my_data/metadata.csv)\nThe csv file must contain column names 'Participant_ID' and 'event_id' or it will not align\nIf you do not wish to align metadata press enter."))
     #if input is empty, returns the aligned data frame with no demographics
-    else if (ask_meta_filepath == "") {
+    if (ask_meta_filepath == "") {
       return(aligned_ts_df)
     }
     #if file path is entered:
     else {
       #reads in a csv file of demographic information associated with participant IDs.
       metadata <- data.frame(read.csv(ask_meta_filepath))
-      #allows the user to specify which columns they want to subset
+
+      #check for event and participant column names and replace with correct cases if incorrect
+      colnames(metadata)[grep("^event_id$", colnames(metadata), ignore.case = T)] <- "event_id"
+      colnames(metadata)[grep("^Participant_ID$", colnames(metadata), ignore.case = T)] <- "Participant_ID"
+
+      #check that there are correctly named participant and event id column headers, and throw an error if not
+      if (any(any(grepl("^event_id$", colnames(metadata), ignore.case = F)),
+              any(grepl("^Participant_ID$", colnames(metadata), ignore.case = F))) == FALSE) {
+        stop("cannot find column header 'Participant_ID' and or 'event_id' in metadata file; the file must contain both")
+      }
+
+      #allows the user to specify which columns they want to subset - preselecting event and participant id
       subset_metadata <- select.list(c(colnames(metadata), "Select all columns"),
-                                     preselect = NULL, multiple = TRUE,
-                                     title = "Select the columns you would like to subset. The 'Participant_ID' and 'event_ID' column must be included.",
+                                     preselect = c("event_id", "Participant_ID"), multiple = TRUE,
+                                     title = "Select the columns you would like to subset. 'Participant_ID' and 'event_id' columns are preselected.",
                                      graphics = FALSE)
       #if the select all option is chosen, selects every column
       if (any(grepl("Select all columns", subset_metadata)) == TRUE) {
         subset_metadata <- colnames(metadata)
       }
       metadata_selected <- metadata[,colnames(metadata) %in% subset_metadata] #select specified columns
-
-      #check for event and participant column names and replace with correct cases if incorrect
-      colnames(metadata_selected)[grep("^event_id$", colnames(metadata_selected), ignore.case = T)] <- "event_id"
-      colnames(metadata_selected)[grep("^Participant_ID$", colnames(metadata_selected), ignore.case = T)] <- "Participant_ID"
 
       #select dimensions that aren't used to align on
       meta_dims <- which(!colnames(metadata_selected) %in% c("event_id", "Participant_ID"))
