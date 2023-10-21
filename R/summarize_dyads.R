@@ -36,6 +36,9 @@
 
 
 summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
+  #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
+  aligned_ts_df <- droplevels(aligned_ts_df)
+
   #initial check for transcripts that do not have two interlocutors
   check_pnum <- aligned_ts_df %>%
     dplyr::group_by(event_id) %>%
