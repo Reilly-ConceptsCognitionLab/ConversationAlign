@@ -131,7 +131,6 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                        grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
 
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
-                                       grepl("Turn", colnames(x_read_csv), ignore.case = T) |
                                        grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "rawtext"
 
           x_read_csv <- data.frame(x_read_csv)
