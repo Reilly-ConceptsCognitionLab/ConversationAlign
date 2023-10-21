@@ -161,8 +161,7 @@ acquisition, word length (by letters), morphemes per turn, prevalence
 frequency (lg10), arousal, concreteness, semantic diversity, and
 semantic neighbors. <br/>
 
-Inspect each variable and learn about its scale and derivation here:
-<br/>
+Variable key here: <br/>
 <https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf>
 <br/> <br/>
 
@@ -184,6 +183,10 @@ MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 <img src="man/figures/example4_ts_edg.jpeg" height="200"
 alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013" />
 <br/>
+
+# Appending metadata
+
+TBD
 
 # Summarize transcripts
 
@@ -265,6 +268,25 @@ Here’s what you need to consider: <br/>
     necessary to resample (downsample) your dyads so that they are all
     of an equivalent length. This will get very wonky and
     uninterpretable for very short exchanges.
+
+# Background
+
+Here are some documents describing how we derived our stopword list and
+lookup databases.
+
+Our OSF site for this method paper is here: <https://osf.io/atf5q/>
+
+Read more about how we created the internal lookup_database for
+ConversationAlign here:
+<https://reilly-lab.github.io/ConversationAlign_LookupDb_Methods.pdf>
+
+Read more about the variables we have included to align on by linking
+here:
+<https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf>
+
+You can read more about the nature of the stopword list and view it
+here:
+<https://reilly-lab.github.io/ConversationAlign_StopwordsDb_Methods.pdf>
 
 # Get in touch!
 

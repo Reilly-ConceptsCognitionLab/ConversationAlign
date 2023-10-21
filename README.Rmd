@@ -22,7 +22,6 @@ knitr::opts_chunk$set(
 knitr::include_graphics("man/figures/convo.jpeg")
 ```
 
-
 ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations.  ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. 
 <br/>
 <br/>
@@ -104,7 +103,7 @@ Here are your choices: <br/>
 
 anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br/>
 
-Inspect each variable and learn about its scale and derivation here: <br/>
+Variable key here: <br/>
 https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf <br/>
 <br/>
 
@@ -119,6 +118,10 @@ MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 ```
 
 ![Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example4_ts_edg.jpeg){width=800px, height=200px} <br/>
+
+# Appending metadata
+TBD
+
 
 # Summarize transcripts
 ## summarize_dyads()
@@ -149,6 +152,21 @@ Any analysis of language comes with assumptions and potential bias. For example,
 5. <span style="color:red;">Compositionality </span>: ConversationAlign is a caveman in its complexity. It matches a value to each word as if that word is an island. Phenomena like polysemy (e.g., bank) and the modulation of one word by an intensifier (e.g., very terrible) are not handled. This is a problem for many of the affective measures but not for lexical variables like word length. <br/>
 
 6. <span style="color:red;"> Resampling for AUC </span>:  summarize_dyads will output AUC values quantifying the distance between interlocutors on any dimension you specify. AUC will vary depending on the length of the dyad. Therefore, it is often necessary to resample (downsample) your dyads so that they are all of an equivalent length.  This will get very wonky and uninterpretable for very short exchanges. 
+
+# Background
+Here are some documents describing how we derived our stopword list and lookup databases.
+
+Our OSF site for this method paper is here:  https://osf.io/atf5q/
+
+Read more about how we created the internal lookup_database for ConversationAlign here:
+https://reilly-lab.github.io/ConversationAlign_LookupDb_Methods.pdf
+
+Read more about the variables we have included to align on by linking here:
+https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf
+
+You can read more about the nature of the stopword list and view it here:
+https://reilly-lab.github.io/ConversationAlign_StopwordsDb_Methods.pdf
+
 
 # Get in touch!
 Contact <jamie_reilly@temple.edu> for feedback and assistance.
