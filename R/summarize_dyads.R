@@ -36,6 +36,19 @@
 
 
 summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
+  #initial check for transcripts that do not have two interlocutors
+  check_pnum <- aligned_ts_df %>%
+    dplyr::group_by(event_id) %>%
+    dplyr::summarize(p_count = length(unique(Participant_ID)),
+                     .groups = "drop") #generate dataframe with number of interlocutors in each transcript
+
+  err_ts_vec <- check_pnum$event_id[which(check_pnum$p_count != 2)]
+  #check if any transcripts were identified and throw an error with the specific transcripts
+  if (length(err_ts_vec) != 0) {
+    stop("summarize_dyads requires that all transcripts have exactly two interlocutors.\ntranscripts with less than or greater than 2 interlocutors:\n",
+         paste(err_ts_vec, collapse = "\n"))
+  }
+
   #DEFINE FIND MAIN EFFECT FUNCTION
   find_main_effect_dyads <- function(aligned_ts_df, aggregate_the_data = TRUE) {
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
@@ -417,7 +430,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
         rho_cols <- dyad_sc %>% dplyr::select(contains(align_var))
         #add column prefixes to the rho columns
         rho_cols <- rho_cols %>%
-         dplyr::rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
+          dplyr::rename_with(~stringr::str_c("S_rho_", .), .cols = tidyselect::everything())
         #bind the empty rho columns to dyad identifiers so that it can be bound to to total data frame.
         dyad_sc <- dyad_sc %>%
           select(-c(exchangecount, contains(align_var)))
