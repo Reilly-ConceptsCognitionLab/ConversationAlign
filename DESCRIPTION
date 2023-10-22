@@ -17,17 +17,22 @@ Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 2.10),
+    DescTools,
     dplyr (>= 0.4.3),
+    here,
     magrittr,
     tidyverse,
     stringi,
-    knitr,
+    stringr,
     textstem,
-    here,
-    tm,
     textclean,
     tidytable,
-    stringr
+    tm,
+    tidyr,
+    tidyselect,
+    utils,
+    stats,
+    zoo
 Suggests: 
     knitr,
     rmarkdown,

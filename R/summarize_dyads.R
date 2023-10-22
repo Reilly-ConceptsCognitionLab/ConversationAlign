@@ -4,14 +4,7 @@
 #'
 #' @name summarize_dyads
 #' @param dataframe produced in the align_dyads function
-#' @importFrom magrittr %>%
-#' @importFrom tidyr pivot_wider
-#' @importFrom tidyr pivot_longer
-#' @importFrom tidyr drop_na
-#' @importFrom tidyselect starts_with
-#' @importFrom tidyselect ends_with
-#' @importFrom tidyselect contains
-#' @importFrom tidyselect everything
+#' @importFrom DescTools AUC
 #' @importFrom dplyr summarise
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -29,7 +22,15 @@
 #' @importFrom dplyr across
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_c
-#' @importFrom DescTools AUC
+#' @importFrom magrittr %>%
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr drop_na
+#' @importFrom tidyselect starts_with
+#' @importFrom tidyselect ends_with
+#' @importFrom tidyselect contains
+#' @importFrom tidyselect everything
+#' @importFrom utils tail
 #' @importFrom stats cor.test
 #' @importFrom zoo na.approx
 #' @export summarize_dyads

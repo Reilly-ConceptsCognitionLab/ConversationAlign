@@ -74,6 +74,7 @@
 rmarkdown::html_vignette vignette: &gt; % % % —</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign" class="external-link">ConversationAlign</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: DescTools</span></span>
 <span><span class="co">#&gt; Loading required package: dplyr</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
@@ -83,6 +84,8 @@ rmarkdown::html_vignette vignette: &gt; % % % —</p>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="co">#&gt; Loading required package: here</span></span>
+<span><span class="co">#&gt; here() starts at /Users/jamie_reilly/Library/CloudStorage/OneDrive-TempleUniversity/Reilly_RData/ConversationAlign</span></span>
 <span><span class="co">#&gt; Loading required package: magrittr</span></span>
 <span><span class="co">#&gt; Loading required package: tidyverse</span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
@@ -97,8 +100,6 @@ rmarkdown::html_vignette vignette: &gt; % % % —</p>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">purrr</span>::<span style="color: #00BB00;">set_names()</span> masks <span style="color: #0000BB;">magrittr</span>::set_names()</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span>
 <span><span class="co">#&gt; Loading required package: stringi</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: knitr</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Loading required package: textstem</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -122,32 +123,6 @@ rmarkdown::html_vignette vignette: &gt; % % % —</p>
 <span><span class="co">#&gt; The following object is masked from 'package:readr':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     tokenize</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: here</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; here() starts at /Users/jamie_reilly/Library/CloudStorage/OneDrive-TempleUniversity/Reilly_RData/ConversationAlign</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: tm</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: NLP</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'NLP'</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:ggplot2':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     annotate</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'tm'</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:koRpus':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     readTagged</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Loading required package: textclean</span></span>
@@ -207,6 +182,11 @@ rmarkdown::html_vignette vignette: &gt; % % % —</p>
 <span><span class="co">#&gt;     transmute, tribble, ungroup</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:DescTools':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     %like%</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     dt, filter, lag</span></span>
@@ -214,7 +194,42 @@ rmarkdown::html_vignette vignette: &gt; % % % —</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     %in%</span></span></code></pre></div>
+<span><span class="co">#&gt;     %in%</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Loading required package: tm</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Loading required package: NLP</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'NLP'</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:ggplot2':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     annotate</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'tm'</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:koRpus':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     readTagged</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Loading required package: tidyselect</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Loading required package: zoo</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'zoo'</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     as.Date, as.Date.numeric</span></span></code></pre></div>
   </main>
 </div>
 

@@ -19,6 +19,9 @@
 #' @importFrom dplyr consecutive_id
 #' @importFrom stringr str_split_1
 #' @importFrom stringr str_squish
+#' @importFrom stats complete.cases
+#' @importFrom utils read.csv
+#' @importFrom utils select.list
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
@@ -82,7 +85,7 @@ align_dyads <- function(clean_ts_df) {
     #if file path is entered:
     else {
       #reads in a csv file of demographic information associated with participant IDs.
-      metadata <- data.frame(read.csv(ask_meta_filepath))
+      metadata <- data.frame(utils::read.csv(ask_meta_filepath))
 
       #check for event and participant column names and replace with correct cases if incorrect
       colnames(metadata)[grep("^event_id$", colnames(metadata), ignore.case = T)] <- "event_id"
@@ -95,7 +98,7 @@ align_dyads <- function(clean_ts_df) {
       }
 
       #allows the user to specify which columns they want to subset - preselecting event and participant id
-      subset_metadata <- select.list(c(colnames(metadata), "Select all columns"),
+      subset_metadata <- utils::select.list(c(colnames(metadata), "Select all columns"),
                                      preselect = c("event_id", "Participant_ID"), multiple = TRUE,
                                      title = "Select the columns you would like to subset. 'Participant_ID' and 'event_id' columns are preselected.",
                                      graphics = FALSE)
