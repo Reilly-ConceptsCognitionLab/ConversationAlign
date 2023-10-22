@@ -59,8 +59,10 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="conversationalign">ConversationAlign<a class="anchor" aria-label="anchor" href="#conversationalign"></a>
 </h1></div>
+<!-- badges: start -->
+
 <p><img src="reference/figures/convo.jpeg" width="70%" height="60%" style="float:right; padding:5px"></p>
-<p>ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. <br><br><span style="color:red;">October 2023: ConversationAlign is working, and we have repaired most of the bugs. However, we recommend for now that you check with one of the authors or maintainers of the package before running any largescale analyses. We can talk you through any potential hiccups or roadblocks given the nature of your particular data.</span> <br><br></p>
+<p>ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. <br><br><span style="color:red;">October 2023: ConversationAlign is working, and we have repaired most of the bugs. However, we recommend for now that you check with one of the authors or maintainers of the package before running any largescale analyses. We can talk you through any potential hiccups or roadblocks given the idiosyncratic nature of your particular data.</span> <br></p>
 </div>
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -133,7 +135,7 @@ overview of ConversationAlign
 <p>You will be prompted to select one of more variables (and up to three) to yoke data to that will be used in later steps to compute alignment indices. You will be shown a menu wherein you can select up to three variables to be yoked to your text. Following the menu steps, enter the number of each variable you would like with a space separating values (e.g., “10 14 19”). <br></p>
 <p>Here are your choices: <br></p>
 <p>anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br></p>
-<p>Inspect each variable and learn about its scale and derivation here: <br><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> <br><br></p>
+<p>Variable key here: <br><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> <br><br></p>
 <p>ConversationAlign will prompt you to append any metadata you would like to add. This joins information from a separate file (e.g., neuropsych scores, ages, etc). Just give ConversationAlign a filepath to your CSV data or click “Enter” to skip this step. A metadata file might look like this:</p>
 <p>METADATA IMAGE HERE <br></p>
 <p>Run align_dyads on the cleaned dyads object you created using the clean_dyads function.<br></p>
@@ -141,6 +143,11 @@ overview of ConversationAlign
 <code class="sourceCode R"><span><span class="va">MyAlignedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_dyads.html">align_dyads</a></span><span class="op">(</span><span class="va">MyCleanLangSamples</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/example4_ts_edg.jpeg" height="200" alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
 </div>
+</div>
+<div class="section level1">
+<h1 id="appending-metadata">Appending metadata<a class="anchor" aria-label="anchor" href="#appending-metadata"></a>
+</h1>
+<p>TBD</p>
 </div>
 <div class="section level1">
 <h1 id="summarize-transcripts">Summarize transcripts<a class="anchor" aria-label="anchor" href="#summarize-transcripts"></a>
@@ -174,6 +181,15 @@ overview of ConversationAlign
 </div>
 </div>
 <div class="section level1">
+<h1 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
+</h1>
+<p>Here are some documents describing how we derived our stopword list and lookup databases.</p>
+<p>Our OSF site for this method paper is here: <a href="https://osf.io/atf5q/" class="external-link uri">https://osf.io/atf5q/</a></p>
+<p>Read more about how we created the internal lookup_database for ConversationAlign here: <a href="https://reilly-lab.github.io/ConversationAlign_LookupDb_Methods.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_LookupDb_Methods.pdf</a></p>
+<p>Read more about the variables we have included to align on by linking here: <a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a></p>
+<p>You can read more about the nature of the stopword list and view it here: <a href="https://reilly-lab.github.io/ConversationAlign_StopwordsDb_Methods.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_StopwordsDb_Methods.pdf</a></p>
+</div>
+<div class="section level1">
 <h1 id="get-in-touch">Get in touch!<a class="anchor" aria-label="anchor" href="#get-in-touch"></a>
 </h1>
 <p>Contact <a href="mailto:jamie_reilly@temple.edu" class="email">jamie_reilly@temple.edu</a> for feedback and assistance.</p>
@@ -204,7 +220,12 @@ overview of ConversationAlign
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
