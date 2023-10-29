@@ -12,7 +12,7 @@ Authors@R: c(
     person("Chelsea", "Helion", role = "ctb"))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
 Description: This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.
-License: GPL (>= 3)
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Depends: 
