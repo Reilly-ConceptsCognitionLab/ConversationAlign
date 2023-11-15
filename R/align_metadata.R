@@ -40,9 +40,6 @@ align_metadata <- function(aligned_ts_df) {
   }
   metadata_selected <- metadata[,colnames(metadata) %in% subset_metadata] #select specified columns
 
-  print(metadata_selected)
-  print(aligned_ts_df)
-
   #join metadata to aligned data frame by event id and PID
   metadata_aligned_df <- dplyr::left_join(aligned_ts_df, metadata_selected,
                                           by=c("event_id", "Participant_ID"))
