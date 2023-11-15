@@ -72,7 +72,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
     df_averaged_long <- aligned_ts_df %>%
       dplyr::group_by(event_id) %>% #add a column of concatenated interlocutor names by transcript
       dplyr::mutate(participant_pair = paste(sort(unique(Participant_ID)), collapse = "---")) %>%
-      dplyr::group_by(Participant_ID, .add = TRUE) %>% #group by interlocutor and dyad
+      dplyr::group_by(turncount, .add = TRUE) %>% #group by interlocutor and dyad
       dplyr::mutate(dplyr::across(tidyselect::starts_with(align_var), mean, .names = "mean_{col}")) %>%
       dplyr::ungroup()
     return(df_averaged_long)
@@ -325,7 +325,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
       computed_df_list <- resample_time_series(df_list = computed_df_list, threshold = threshold)
     }
     else if (resample == FALSE) {
-      threshold <- 3 #if not resampling sets the var to 3 so that dyads with less than that will get NA
+      threshold <- 5 #if not resampling sets the var to 5 so that dyads with less than that will get NA
     }
     else {
       stop("Argument resample must be logical")
@@ -359,7 +359,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
           doc_domain_auc_df
         }
         else {
-          #domain_ts <- data.frame(domain_ts) #make single emotion time series a data frame
+          domain_ts <- data.frame(domain_ts) #make single emotion time series a data frame
           domain_auc <- DescTools::AUC(x = domain_ts[,1], y = domain_ts[,2]) #take AUC of time series
           doc_domain_auc_df <- data.frame(domain_auc) #make data frame of AUC, replicated once
         }
