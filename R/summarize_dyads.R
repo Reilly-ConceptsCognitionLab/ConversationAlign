@@ -36,7 +36,7 @@
 #' @export summarize_dyads
 
 
-summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
+summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
   #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
   aligned_ts_df <- droplevels(aligned_ts_df)
 
@@ -135,7 +135,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
   #END DEFINE ABOSOLUTE DIFFERENE TIME SERIES FUNCTION
 
   #DEFINE time SERIES RESCALER
-  resample_time_series <- function(df_list, threshold = "min") {
+  resample_time_series <- function(df_list, threshold) {
 
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -296,36 +296,39 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
   #END DEFINE time SERIES RESCALER
 
   #DEFINE FIND DYAD AREA UNDER THE CURVE FUNCTION
-  find_auc_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
+  find_auc_dyads <- function(aligned_ts_df, resample = TRUE) {
     #run the difference time series function on the aligned dataframe
     computed_df <- find_diff_ts(aligned_df = aligned_ts_df) #convert to difference time series
     computed_df <- computed_df %>% droplevels()
     computed_df_list <- split(computed_df, f = computed_df$event_id)
     #conditionally resample every time series based on the given argument
-    if (resample == TRUE) {
-      #check if argument for resampling is set to min:
-      if (threshold == "min"){
-        #mutate the max exchangecount for each dyad and then select only that variable
-        min_exc_max <- computed_df %>%
-          dplyr::group_by(event_id) %>%
-          dplyr::mutate(exc_max = max(exchangecount)) %>%
-          dplyr::summarise(exc_max = first(exc_max),
-                           .groups = "drop") %>%
-          dplyr::select(exc_max)
+    if (is.logical(resample) == TRUE) {
 
-        #take the minimum of the max exchange count by dyad variable after converting to a vector
-        min_exc <- min(min_exc_max$exc_max)
-        #set this new min exchangecount to resample n
-        threshold <- min_exc
+      #mutate the max exchangecount for each dyad
+      min_exc_max <- computed_df %>%
+        dplyr::group_by(event_id) %>%
+        dplyr::mutate(exc_max = max(exchangecount)) %>%
+        dplyr::summarise(exc_max = first(exc_max),
+                         .groups = "drop")
+      #take the minimum of the max exchange count by dyad variable after converting to a vector
+      min_exc <- min(min_exc_max$exc_max)
+      #set this new min exchangecount to resample n
+      threshold <- min_exc
+
+      if (resample == TRUE){
+        if (threshold < 20) {
+          warning(writeLines("the threshold for resampling is below 20 exchanges.\narea under the curve and spearman's rank correlation become less valid measures of alignment below 20 exchanges"))
+        }
+
+
+        computed_df_list <- resample_time_series(df_list = computed_df_list, threshold = threshold)
       }
-      #if resample n is not min default string or an integer (number, not type) throw an error
-      else if (is.numeric(threshold) == FALSE || threshold %% 1 != 0) {
-        stop("threshold argument must be default 'min' string value or an integer")
+      else {
+        small_dyads <- unique(min_exc_max$event_id[which(min_exc_max$exc_max < 20)])
+        warning(writeLines(paste("The following dyads are shorter than 20 exchange counts.\nMeasures of area under the curve and spearman's rank correlation become less valid below 20 exchanges", paste(small_dyads, collapse = "\n"), sep = "\n")))
+
+        threshold <- 3
       }
-      computed_df_list <- resample_time_series(df_list = computed_df_list, threshold = threshold)
-    }
-    else if (resample == FALSE) {
-      threshold <- 5 #if not resampling sets the var to 5 so that dyads with less than that will get NA
     }
     else {
       stop("Argument resample must be logical")
@@ -352,6 +355,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
       single_doc_auc <- lapply(computed_df_list, function(aligned_ts_df){ #iterate over each document
         domain_ts <- aligned_ts_df %>%
           dplyr::select(exchangecount, contains(dimension)) #select only desired emotion and time count
+
         # conditionally skip AUC calculation for a dyad if it has fewer exchangecounts than what was sampled to. If resampling is turned off it will set to fill those with less than 3 exchangecounts (done by setting n = 3)
         if (max(domain_ts$exchangecount) < threshold){
           #create a single row, single column dataframe with one empty value to fill in the AUC
@@ -478,10 +482,8 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE, threshold = "min") {
   #run each constituent summarize function
   main_effect_df <- find_main_effect_dyads(aligned_ts_df = aligned_ts_df,
                                            aggregate_the_data = aggregate_the_data)
-
   auc_df <- find_auc_dyads(aligned_ts_df = aligned_ts_df,
-                           resample = resample,
-                           threshold = threshold)
+                           resample = resample)
 
   scorr_df <- spearmans_corr_dyads(aligned_ts_df = aligned_ts_df)
   #manually left join each summarize data frame together by participant pair and transcript
