@@ -316,16 +316,16 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
       threshold <- min_exc
 
       if (resample == TRUE){
-        if (threshold < 20) {
-          warning(writeLines("the threshold for resampling is below 20 exchanges.\narea under the curve and spearman's rank correlation become less valid measures of alignment below 20 exchanges"))
+        if (threshold < 30) {
+          warning(writeLines("the threshold for resampling is below 30 exchanges.\narea under the curve and spearman's rank correlation become less valid measures of alignment below 30 exchanges"))
         }
 
 
         computed_df_list <- resample_time_series(df_list = computed_df_list, threshold = threshold)
       }
       else {
-        small_dyads <- unique(min_exc_max$event_id[which(min_exc_max$exc_max < 20)])
-        warning(writeLines(paste("The following dyads are shorter than 20 exchange counts.\nMeasures of area under the curve and spearman's rank correlation become less valid below 20 exchanges", paste(small_dyads, collapse = "\n"), sep = "\n")))
+        small_dyads <- unique(min_exc_max$event_id[which(min_exc_max$exc_max < 30)])
+        warning(writeLines(paste("The following dyads are shorter than 30 exchange counts.\nMeasures of area under the curve and spearman's rank correlation become less valid below 30 exchanges", paste(small_dyads, collapse = "\n"), sep = "\n")))
 
         threshold <- 3
       }

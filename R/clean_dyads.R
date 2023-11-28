@@ -122,7 +122,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
     dplyr::group_by(event_id) %>% #add a turn count per dyad, which counts by speaker change
     dplyr::mutate(turncount = dplyr::consecutive_id(Participant_ID), .before = 1) %>%
     dplyr::group_by(turncount, .add = TRUE) %>%
-    mutate(wordcount_clean_turn = n()) %>% # take the word count of cleaned utterances at each turn
+    dplyr::mutate(wordcount_clean_turn = length(cleantext)) %>% # take the word count of cleaned utterances at each turn
     dplyr::ungroup()
 
   return(dfclean_filtered)
