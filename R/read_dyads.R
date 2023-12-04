@@ -1,10 +1,10 @@
 #' read_dyads
 #'
-#' Reads pre-formatted conversation transcripts from txt or csv on user's machine; user supplies directory path (e.g., "my_transcripts") to local folder as argument to function call
+#' Reads pre-formatted dyadic (2 interlocutor) conversation transcripts from your machine. Transcripts must be either csv or txt format. IF you are supplying a txt file, your transcript must be formatted as an otter.ai txt file export. Your options for using csv files are more flexible. ConversationAlign minimally requires a csv file with two columns, denoting interlocutor and text. Each separate conversation transcript should be saved as a separate file. ConversationAlign will use the file names as a document ID. Within the read dyads function, set the folder_name argument as the directory path to the local folder containing your transcripts on your machine (e.g., "my_transcripts"). Please see our github page for examples of properly formatted transcripts: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
 #'
 #' @name read_dyads
 #' @param folder_name folder of conversation transcripts in csv or txt format
-#' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'; these are split into separate lists for discrete operations in later steps
+#' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr bind_rows

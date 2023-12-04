@@ -4,11 +4,11 @@
 \alias{summarize_dyads}
 \title{summarize_dyads}
 \usage{
-summarize_dyads(aligned_ts_df, resample = TRUE, threshold = "min")
+summarize_dyads(aligned_ts_df, resample = TRUE)
 }
 \arguments{
 \item{dataframe}{produced in the align_dyads function}
 }
 \description{
-appends AUC and Spearman Rank Correlation indices to each dyad (event_id) using a resampling algoirthm that defaults to the minimum number of exchanges across all documents entered
+Calculates and appends 3 measures for quantifying alignment. Appends the mean score for each dimension by turn. Calculates and Spearman's rank correlation between interlocutor time series and appends by transcript. Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Spearman's rank correlation and area under the curve become less reliable for dyads under 30 exchanges.
 }

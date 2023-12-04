@@ -1,6 +1,6 @@
 #' clean_dyads
 #'
-#' Cleans and Formats raw language transcripts, removing stopwords and formatting dataframe for alignment steps
+#' Cleans and formats language transcripts from the read stage. Removes non-alphabetic characters and stopwords. Language transcripts can be lemmatized by calling lemmatize = TRUE. Vectorizes each utterance and reports the total word count and mean word length by interlocutor in each dyad. Also reports the number of words in each turn.
 #' @name clean_dyads
 #' @param dataframe produced from the read_dyads() function
 #' @return dataframe with stopwords omitted, lemmatized words one per row
@@ -24,14 +24,6 @@
 #' @export clean_dyads
 
 clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
-  #specify a group of speaker names that should be automatically removed from the transcript
-  s_remove <- c("Unknown", "unknown", "Speaker", "speaker", "Other", "other", "E", "e", "Experimenter", "experimenter", "Assistant", "assistant")
-
-  #removes rows from the transcript that have the speaker as specified in the remove
-  if (any(read_ts_df$Participant_ID %in% s_remove) == TRUE){ #conditional in case no matches
-    read_ts_df <- read_ts_df[-which(read_ts_df$Participant_ID %in% s_remove),]
-  }
-
   #set event_id  and speaker names as factors
   read_ts_df$Participant_ID <- as.factor(read_ts_df$Participant_ID) #convert variables to factor
   read_ts_df$event_id <- as.factor(read_ts_df$event_id)

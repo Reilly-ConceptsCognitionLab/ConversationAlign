@@ -13,5 +13,5 @@ clean_dyads(read_ts_df, lemmatize = TRUE)
 dataframe with stopwords omitted, lemmatized words one per row
 }
 \description{
-Cleans and Formats raw language transcripts, removing stopwords and formatting dataframe for alignment steps
+Cleans and formats language transcripts from the read stage. Removes non-alphabetic characters and stopwords. Language transcripts can be lemmatized by calling lemmatize = TRUE. Vectorizes each utterance and reports the total word count and mean word length by interlocutor in each dyad. Also reports the number of words in each turn.
 }

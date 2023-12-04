@@ -7,11 +7,11 @@
 align_dyads(clean_ts_df)
 }
 \arguments{
-\item{clean_ts_df}{a dataframe cleaned and formatted during the read_dyads() function}
+\item{clean_ts_df}{a dataframe cleaned and formatted during the clean_dyads() function}
 }
 \value{
 a dataframe one-word-per-row format with variables of interest appended
 }
 \description{
-Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Prepares a dataframe aligned by exchange and turn across Participant_IDs.
+Yokes user-specified semantic, affective, and phonological values to each word in a cleaned language transcript. Values are aligned by each individual word, and words that are not present in the database are dropped. The number of words dropped is reported by interlocutor in each dyad. Reports an exchange count, which counts by each pair of turns.
 }
