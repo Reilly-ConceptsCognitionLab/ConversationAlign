@@ -121,7 +121,9 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
     #iterate over each aligned dimension, selecting only the scores for that dimension and pulling a difference value and subbing it in for the actual values
     for (dimension in align_var){
       both_participant_cols <- widedf %>% select(starts_with(dimension))
+
       absdiffcol <- data.frame(dimension = abs(both_participant_cols[,1] - both_participant_cols[,2]))
+
       widedf[which(colnames(widedf) %in% paste(dimension, c("S1", "S2"), sep = "_"))] <- absdiffcol
     }
 
@@ -364,7 +366,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
         }
         else {
           domain_ts <- data.frame(domain_ts) #make single emotion time series a data frame
-          domain_auc <- DescTools::AUC(x = domain_ts[,1], y = domain_ts[,2]) #take AUC of time series
+          domain_auc <- DescTools::AUC(x = domain_ts[,1], y = domain_ts[,2], method = "trapezoid") #take AUC of time series
           doc_domain_auc_df <- data.frame(domain_auc) #make data frame of AUC, replicated once
         }
       })
@@ -458,9 +460,8 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
           dim_x_vars <- x_vars[,colnames(x_vars) %in% dim]
           dim_y_vars <- y_vars[,colnames(y_vars) %in% dim]
           #run spearman corr and format rho and p value into a data frame
-          sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman", exact = F)
+          sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman")
           sc_results_df <- data.frame(S_rho = rep(sc_results$estimate, 2))
-          #S_pval = rep(sc_results$p.value, 2)) - removing this
           #add participant column only if it is the first iteration
           colnames(sc_results_df) <- paste(colnames(sc_results_df), dim, sep = "_")
           if (match(dim, align_var) == 1) {
