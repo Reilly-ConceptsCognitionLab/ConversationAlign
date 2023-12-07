@@ -106,7 +106,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
 
     df_wide <- df_speakvar %>%
       dplyr::group_by(event_id, exchangecount, Participant_ID) %>%
-      dplyr::summarise(dplyr::across(contains(align_var), first),
+      dplyr::summarise(dplyr::across(contains(align_var), mean),
                        participant_var = first(participant_var),
                        participant_pair = first(participant_pair),
                        .groups = "drop") %>%
