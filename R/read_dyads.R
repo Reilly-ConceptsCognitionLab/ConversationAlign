@@ -16,7 +16,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
 
   read_otter_transcript <- function(file_path) {
     lines <- readLines(file_path) #read otter ai file
-    #Ben added - removes otter ai watermark if it is present
+    #removes otter ai watermark if it is present
     if (any(grepl("otter.ai", lines)) == TRUE) {
       lines <- as.character(lines[-(grep("otter.ai", lines))])}
     num_lines <- length(lines) #create a var for number of lines
@@ -27,9 +27,12 @@ read_dyads <- function(folder_name = "my_transcripts") {
     #process lines of dialogue
     current_line <- 1
     while (current_line <= num_lines) {
-      speaker_time <- strsplit(lines[current_line], " ")[[1]]
+
+      first_line_vec <- strsplit(lines[current_line], " ")
+      speaker_time <- first_line_vec[[1]]
+
       speaker <- c(speaker, speaker_time[1]) #select speaker
-      #Ben added - allows for last names and also timeless transcripts
+      #checks for a colon to differentiate between time and speaker
       timeadd <- tryCatch({speaker_time[max(grep(":", speaker_time))]}, #attempts to identify a colon
                           warning = function(w){return(NA)}) #if no colon, continues without time
       time <- c(time, timeadd)
@@ -41,7 +44,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
         speech_lines <- c(speech_lines, lines[line_counter]) #add text on line to speech text vector
         line_counter <- line_counter + 1
       }
-      text <- c(text, paste(speech_lines, collapse = " ")) #append speech on line to vector as string
+      text <- append(text, paste(speech_lines, collapse = " "))
       current_line <- line_counter + 1 #move to next speaker
     }
     #create df
