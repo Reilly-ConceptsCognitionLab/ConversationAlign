@@ -460,7 +460,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
           dim_x_vars <- x_vars[,colnames(x_vars) %in% dim]
           dim_y_vars <- y_vars[,colnames(y_vars) %in% dim]
           #run spearman corr and format rho and p value into a data frame
-          sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman")
+          sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman", exact = FALSE)
           sc_results_df <- data.frame(S_rho = rep(sc_results$estimate, 2))
           #add participant column only if it is the first iteration
           colnames(sc_results_df) <- paste(colnames(sc_results_df), dim, sep = "_")
