@@ -112,7 +112,12 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
                        .groups = "drop") %>%
       tidyr::pivot_wider(names_from = c("participant_var"), values_from = any_of(align_dimensions))
 
-    # wrangle into two seperate dataframes by interlocutor
+    # if there is only one aligned variable manually add that variable name to participant columns
+    if (length(align_var) == 1){
+      colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))] = paste(align_var[1], colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))], sep = "_")
+    }
+
+    # wrangle into two separate data frames by interlocutor
     participant1 <- df_wide %>% dplyr::select(c("event_id", "exchangecount", "participant_pair") | c(ends_with("_S1"))) %>% drop_na()
     participant2 <- df_wide %>% dplyr::select(c("event_id", "exchangecount") | c(ends_with("_S2"))) %>% drop_na()
     widedf <- merge(participant1, participant2, by=c("event_id", "exchangecount")) %>%
@@ -349,8 +354,7 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
                           "lex_senses_polysemy", "lex_wordfreqlg10_raw", "sem_arousal",
                           "sem_concreteness", "sem_diversity", "sem_neighbors")
 
-
-    xdimensions <- colnames(computed_df_list[[1]][,colnames(computed_df_list[[1]]) %in% align_dimensions])
+    xdimensions <- colnames(computed_df_list[[1]])[which(colnames(computed_df_list[[1]]) %in% align_dimensions)]
 
     domain_auc_list <- lapply(xdimensions, function(dimension){ #iterate over emotion
 
@@ -373,7 +377,6 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
       all_doc_domain_auc_df <- dplyr::bind_rows(single_doc_auc) #bind all docs AUCs for emotion into one column
       colnames(all_doc_domain_auc_df) <- paste("auc", dimension, sep = "_") # add auc as colname prefix
       all_doc_domain_auc_df
-
     })
 
     all_domain_df <- dplyr::bind_cols(domain_auc_list, id_cols) #bind all columns of AUCs into one data frame
@@ -410,14 +413,22 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
       df_wide <- df %>%
         dplyr::group_by(event_id, exchangecount, Participant_ID, .add = FALSE) %>%
         dplyr::summarise(dplyr::across(contains(align_var), mean),
-                         .group = "drop") %>%
+                         .groups = "drop")%>%
         tidyr::pivot_wider(names_from = tidyselect::contains("Participant_ID"),
-                           values_from = align_var) %>%
+                           values_from = align_var) #%>%
+
+      # if there is only one aligned variable manually add that variable name to participant columns
+      if (length(align_var) == 1){
+        colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))] = paste(align_var[1], colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))], sep = "_")
+      }
+
+      df_wide <- df_wide %>%
         dplyr::select(event_id, exchangecount, contains(align_var))
 
       # wrangle - remove NA rows produced from pivoting and then merge into real wide df (one exc per row)
       participant1 <- df_wide %>% dplyr::select(c('event_id', 'exchangecount') | c(ends_with("_S1"))) %>% tidyr::drop_na()
       participant2 <- df_wide %>% dplyr::select(c('event_id', 'exchangecount') | c(ends_with("_S2"))) %>% tidyr::drop_na()
+
       all <- merge(participant1, participant2, by=c('event_id', 'exchangecount'))
       all <- all %>% dplyr::arrange(event_id, exchangecount)
       # conditionally pass over scorr calculation and instead fill with NA if time series has 3 or less time points
@@ -459,8 +470,9 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
         dyad_dim_sc_list <- lapply(align_var, function(dim){
           dim_x_vars <- x_vars[,colnames(x_vars) %in% dim]
           dim_y_vars <- y_vars[,colnames(y_vars) %in% dim]
+
           #run spearman corr and format rho and p value into a data frame
-          sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman", exact = FALSE)
+          sc_results <- cor.test(dim_x_vars, dim_y_vars, method = "spearman", exact = F)
           sc_results_df <- data.frame(S_rho = rep(sc_results$estimate, 2))
           #add participant column only if it is the first iteration
           colnames(sc_results_df) <- paste(colnames(sc_results_df), dim, sep = "_")
