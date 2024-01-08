@@ -19,6 +19,7 @@
 #' @importFrom dplyr consecutive_id
 #' @importFrom stringr str_split_1
 #' @importFrom stringr str_squish
+#' @importFrom stringi stri_count_words
 #' @importFrom stats complete.cases
 #' @importFrom utils read.csv
 #' @importFrom utils select.list
@@ -51,10 +52,9 @@ align_dyads <- function(clean_ts_df) {
     df_aligned <- data.frame(df_aligned)
     df_aligned <- df_aligned[complete.cases(df_aligned[, c(which(colnames(df_aligned) %in% myvars))]),]     # remove rows with words that couldn't be aligned
 
-
     df_aligned_an <- df_aligned %>%
       dplyr::group_by(event_id, Participant_ID) %>%
-      dplyr::mutate(wordcount_align = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
+      dplyr::mutate(wordcount_align = stringi::stri_count_words(paste(cleantext, collapse = " ")),
                     mean_word_length_align = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
                     word_removed_align = wordcount_clean - wordcount_align) %>%
       dplyr::ungroup()

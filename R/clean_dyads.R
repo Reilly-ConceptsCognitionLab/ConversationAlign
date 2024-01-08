@@ -20,6 +20,7 @@
 #' @importFrom stringr str_split_1
 #' @importFrom stringr str_split
 #' @importFrom stringi stri_remove_empty
+#' @importFrom stringi stri_count_words
 #' @importFrom tidyr separate_rows
 #' @export clean_dyads
 
@@ -46,23 +47,23 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
   }
 
   if(lemmatize==TRUE) {
-  clean <- function(x) {
-    x <- tolower(x) #to lower
-    x <- gsub("\"", " ", x)
-    x <- gsub("\n", " ", x)
-    x <- gsub("`", "'", x)  # replaces tick marks with apostrophe for contractions
-    x <- gsub("can't", "can not", x)
-    x <- gsub("won't", "will not", x)
-    x <- gsub("n't", " not", x) #replace contraction with full word not
-    x <- textclean::replace_contraction(x) #replace contractions
-    x <- gsub("-", " ", x) #replace all hyphens with spaces
-    x <- tm::removeWords(x, omissions_dyads23$word)
-    x <- gsub("\\d+(st|nd|rd|th)", " ", x) #omits 6th, 23rd, ordinal numbers
-    x <- gsub("[^a-zA-Z]", " ", x) #omit non-alphabetic characters
-    x <- gsub("\\b[a]\\b{1}", " ", x)
-    x <- tm::stripWhitespace(x)
-    x <- stringr::str_squish(x)
-    x <- textstem::lemmatize_strings(x) #lemmatize
+    clean <- function(x) {
+      x <- tolower(x) #to lower
+      x <- gsub("\"", " ", x)
+      x <- gsub("\n", " ", x)
+      x <- gsub("`", "'", x)  # replaces tick marks with apostrophe for contractions
+      x <- gsub("can't", "can not", x)
+      x <- gsub("won't", "will not", x)
+      x <- gsub("n't", " not", x) #replace contraction with full word not
+      x <- textclean::replace_contraction(x) #replace contractions
+      x <- gsub("-", " ", x) #replace all hyphens with spaces
+      x <- tm::removeWords(x, omissions_dyads23$word)
+      x <- gsub("\\d+(st|nd|rd|th)", " ", x) #omits 6th, 23rd, ordinal numbers
+      x <- gsub("[^a-zA-Z]", " ", x) #omit non-alphabetic characters
+      x <- gsub("\\b[a]\\b{1}", " ", x)
+      x <- tm::stripWhitespace(x)
+      x <- stringr::str_squish(x)
+      x <- textstem::lemmatize_strings(x) #lemmatize
     }
   }
 
@@ -92,20 +93,18 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
   #code that adds word count and mean word length by dyad by speaker
   read_data_frame <- read_ts_df %>%
     dplyr::group_by(event_id, Participant_ID) %>% #group and take word count and length
-    dplyr::mutate(wordcount_raw = length(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))),
+    dplyr::mutate(wordcount_raw = stringi::stri_count_words(paste(rawtext, collapse = " ")),
                   mean_word_length_raw = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(rawtext, collapse = " "), " "))))) %>%
     dplyr::ungroup()
-
 
   dfclean <- read_data_frame %>%
     dplyr::mutate(cleantext = clean(rawtext)) %>%  #run clean function on text, making a new column
     dplyr::select(!rawtext) %>%
     dplyr::group_by(event_id, Participant_ID) %>% #group and take clean word count and length
-    dplyr::mutate(wordcount_clean = length(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " "))),
+    dplyr::mutate(wordcount_clean = stringi::stri_count_words(paste(cleantext, collapse = " ")),
                   mean_word_length_clean = mean(nchar(stringr::str_squish(stringr::str_split_1(paste(cleantext, collapse = " "), " ")))),
                   word_removed_clean = wordcount_raw - wordcount_clean) %>%
     dplyr::ungroup()
-
 
   dfclean_sep <- tidyr::separate_rows(dfclean, cleantext) # create row for each word in clean text
 
