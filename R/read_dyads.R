@@ -20,22 +20,23 @@ read_dyads <- function(folder_name = "my_transcripts") {
       lines <- as.character(lines[-(grep("otter.ai", lines))])}
     num_lines <- length(lines) #create a var for number of lines
     speaker <- character()
-    Time <- character()
+    time <- character()
     text <- character()
 
     #process lines of dialogue
     current_line <- 1
     while (current_line <= num_lines) {
-
+      
       first_line_vec <- strsplit(lines[current_line], " ")
-      speaker_Time <- first_line_vec[[1]]
-
+      speaker_time <- first_line_vec[[1]]
       speaker <- c(speaker, speaker_time[1]) #select speaker
-      #checks for a colon to differentiate between Time and speaker
-      timeadd <- tryCatch({speaker_Time[max(grep(":", speaker_time))]}, #attempts to identify a colon
-                          warning = function(w){return(NA)}) #if no colon, continues without Time
-      time <- c(time, timeadd)
-
+    # check if time is included in mm:ss format and if so add it to the time column
+      if (any(grepl(":", speaker_time)) == TRUE) {
+        timeadd <- grep(":", speaker_time)
+      } 
+      else {timeadd <- NA}
+      
+      time <- append(time, timeadd)
       #select lines of speech
       speech_lines <- character()
       line_counter <- current_line + 1
