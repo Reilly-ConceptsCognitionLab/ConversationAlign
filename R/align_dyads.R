@@ -26,6 +26,7 @@
 #' @export align_dyads
 
 align_dyads <- function(clean_ts_df) {
+  load("data/lookup_db.rda")
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
   myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -42,20 +43,20 @@ align_dyads <- function(clean_ts_df) {
     dplyr::select(matches("^word$"), tidyselect::contains(myvars))
   #create variable containing the column names of each variable to be aligned
   var_aligners <- colnames(var_selected)[-grep("^word$", colnames(lookup_db), ignore.case = TRUE)]
-
+  
   #join measures of each variable to each word in each transcript
   df_aligned <- dplyr::left_join(clean_ts_df, var_selected, by = c("CleanText" = "word"), multiple = "first")
-
+  
   # index rows where a word could not be aligned on all dimensions and remove that word from the clean text
   df_aligned$CleanText[which(rowSums(is.na(df_aligned[,which(colnames(df_aligned) %in% var_aligners)])) == length(var_aligners))] <- ""
   # important to note here that the row is preserved, the text is subbed for an empty string
-
+  
   # group on event and turn, then take the number of words in that turn which could be aligned on
   df_aligned_wordcount <- df_aligned %>%
     dplyr::group_by(Event_ID, TurnCount) %>%
     dplyr::mutate(NWords_ByPersonTurn_CLEAN_ALIGNED = stringi::stri_count_words(paste(CleanText, collapse = " "))) %>%
     dplyr::ungroup()
-
+  
   #add an exchange count variable, which is one turn from each interlocutor
   df_aligned_wordcount$ExchangeCount <- ceiling(df_aligned_wordcount$TurnCount / 2)
   #rearrange the columns to be more readable
