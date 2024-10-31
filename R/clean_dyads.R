@@ -19,7 +19,7 @@
 #' @importFrom tidyr separate_rows
 #' @export clean_dyads
 
-clean_dyads <- function(read_ts_df, lemmatize=TRUE) {
+clean_dyads <- function(read_ts_df, lemmatize=TRUE, stop_words_df = "default") {
   default <- TRUE
   # if not default and not proper file path (aside from default), throw an error
   if (class(stop_words_df) != "character" | (!grepl(".csv", stop_words_df) & stop_words_df != "default")) {
