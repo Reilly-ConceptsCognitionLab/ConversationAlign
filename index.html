@@ -130,18 +130,11 @@ overview of ConversationAlign
 <p>Here are your choices: <br></p>
 <p>anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br></p>
 <p>Variable key here: <br><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> <br><br></p>
-<p>ConversationAlign will prompt you to append any metadata you would like to add. This joins information from a separate file (e.g., neuropsych scores, ages, etc). Just give ConversationAlign a filepath to your CSV data or click “Enter” to skip this step. A metadata file might look like this:</p>
-<p>METADATA IMAGE HERE <br></p>
 <p>Run align_dyads on the cleaned dyads object you created using the clean_dyads function.<br></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyAlignedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_dyads.html">align_dyads</a></span><span class="op">(</span><span class="va">MyCleanLangSamples</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/example4_ts_edg.jpeg" height="200" alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
 </div>
-</div>
-<div class="section level1">
-<h1 id="appending-metadata">Appending metadata<a class="anchor" aria-label="anchor" href="#appending-metadata"></a>
-</h1>
-<p>TBD</p>
 </div>
 <div class="section level1">
 <h1 id="summarize-transcripts">Summarize transcripts<a class="anchor" aria-label="anchor" href="#summarize-transcripts"></a>
