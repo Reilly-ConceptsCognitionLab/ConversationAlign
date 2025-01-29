@@ -20,6 +20,7 @@
 #' @importFrom dplyr rename_at
 #' @importFrom dplyr vars
 #' @importFrom dplyr across
+#' @importFrom dplyr first
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_c
 #' @importFrom magrittr %>%
@@ -191,8 +192,8 @@ summarize_dyads <- function(aligned_ts_df, resample = TRUE) {
     df_wide <- df_speakvar %>%
       dplyr::group_by(Event_ID, ExchangeCount, Participant_ID) %>%
       dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
-                       participant_var = first(participant_var),
-                       Participant_Pair = first(Participant_Pair),
+                       participant_var = dplyr::first(participant_var),
+                       Participant_Pair = dplyr::first(Participant_Pair),
                        .groups = "drop") %>%
       tidyr::pivot_wider(names_from = c("participant_var"), values_from = any_of(align_dimensions))
 

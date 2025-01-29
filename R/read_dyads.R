@@ -7,11 +7,11 @@
 #' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr bind_rows
-#' @export read_dyads
+#' @export
 
 read_dyads <- function(folder_name = "my_transcripts") {
   #defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
-  
+
   read_otter_transcript <- function(file_path) {
     lines <- readLines(file_path) #read otter ai file
     #removes otter ai watermark if it is present
@@ -21,20 +21,20 @@ read_dyads <- function(folder_name = "my_transcripts") {
     speaker <- character()
     time <- character()
     text <- character()
-    
+
     #process lines of dialogue
     current_line <- 1
     while (current_line <= num_lines) {
-      
+
       first_line_vec <- strsplit(lines[current_line], " ")
       speaker_time <- first_line_vec[[1]]
       speaker <- c(speaker, speaker_time[1]) #select speaker
       # check if time is included in mm:ss format and if so add it to the time column
       if (any(grepl(":", speaker_time)) == TRUE) {
         timeadd <- grep(":", speaker_time)
-      } 
+      }
       else {timeadd <- NA}
-      
+
       time <- append(time, timeadd)
       #select lines of speech
       speech_lines <- character()
@@ -54,7 +54,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
     return(transcript_df)
   }
   #END DEFINE OTTER READ TRANSCRIPT .TXT FILE FUNCTION
-  
+
   #DEFINE READ ME TXT FILE FUNCTION
   read_dyads_txt <- function(folder_name){
     if (any(grepl("*.txt$", list.files(path = folder_name, pattern = ".", full.names = TRUE, recursive = TRUE))) == TRUE) {
@@ -62,7 +62,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
       file_names_txt <- list.files(path = folder_name, pattern = ".txt$", full.names = FALSE, recursive = TRUE)
       file_names_txt <- gsub('.*/ ?(\\w+)', '\\1', file_names_txt)
       file_names_txt <- gsub(".txt$", "", file_names_txt)
-      
+
       txtdata <- lapply(file_list_txt, function(x) {
         #runs txt files names through otter reading function
         xorf <- read_otter_transcript(x)
@@ -75,14 +75,14 @@ read_dyads <- function(folder_name = "my_transcripts") {
           stop(paste("Unable to read transcript ", as.character(match(x, file_list_txt)), " as an otter transcript. Please refer to the ConversationAlign GitHub page for examples of properly formatted transcripts.", sep = ""), call. = FALSE)
         }
       })
-      
+
       #adds a doc id column to each transcript based on its name attribute
       txtdata <- lapply(file_names_txt, function(x){
         txtdata[[match(x, file_names_txt)]] <- cbind(Event_ID = rep(x, nrow(txtdata[[match(x, file_names_txt)]])), txtdata[[match(x, file_names_txt)]])})
       return(txtdata)
     }}
   #END DEFINE READ ME TXT FILE FUNCITON
-  
+
   #DEFINE READ ME CSV FILE FUNCTION
   read_dyads_csv <- function(folder_name) {
     if (any(grepl("*.csv$", list.files(path = folder_name, pattern = ".",
@@ -93,7 +93,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                    full.names = FALSE, recursive = TRUE)
       file_names_csv<- gsub('.*/ ?(\\w+)', '\\1', file_names_csv)
       file_names_csv <- gsub(".csv$", "", file_names_csv)
-      
+
       #creates a list of read in csv data frames
       csvdata <- lapply(file_list_csv, function(x){
         x_read_csv <- read.csv(x, header = TRUE)
@@ -101,7 +101,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
         sum_nas_es <- apply(x_read_csv, 2, function(y){sum(is.na(y) | y == "")})
         x_read_csv <- x_read_csv[sum_nas_es < nrow(x_read_csv)]
         x_read_csv <- data.frame(x_read_csv)
-        
+
         #check that the column names are correct
         if ((any(grepl("^speaker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^speaker_names_raw$", colnames(x_read_csv), ignore.case = T)) == TRUE |
@@ -115,7 +115,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
             (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Turn$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
-          
+
           #correct the speaker and text names to our conventions
           colnames(x_read_csv)[which(grepl("speaker", colnames(x_read_csv), ignore.case = T) |
                                        grepl("PID", colnames(x_read_csv), ignore.case = T) |
@@ -125,23 +125,23 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                        grepl("partner", colnames(x_read_csv), ignore.case = T) |
                                        grepl("source", colnames(x_read_csv), ignore.case = T) |
                                        grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
-          
+
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
                                        grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "RawText"
-          
+
           x_read_csv <- data.frame(x_read_csv)
           x_final <- x_read_csv
         }
-        
+
         col_check <- sum(colnames(x_read_csv) %in% c("Participant_ID", "RawText"))
-        
+
         if (col_check != 2) { #if there are less than three columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
                      as.character(match(x, file_list_csv)), #also states the transcript
                      " correctly. Make sure that each transcript includes a column marking who is producing text in each row.
                      When you are preparing your language transcripts, please make sure this column is named one of the following: 'interlocutor', 'person', 'partner', 'source', 'speaker', 'participant', 'PID', or 'speaker_names_raw'.
                      Please make sure your a column containing raw language transcriptions is named 'utterance', 'turn', or 'text'.", sep = ""), call. = FALSE)
-          
+
         }
         x_final
       })
@@ -155,12 +155,12 @@ read_dyads <- function(folder_name = "my_transcripts") {
   txtlist <- read_dyads_txt(folder_name)
   csvlist <- read_dyads_csv(folder_name)
   all_list <- append(txtlist, csvlist) #append the two lists into one list
-  
+
   #throws an error if no files are found
   if (length(all_list) == 0) {
     stop("No files found. Please make sure you are providing the local or absolute file path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
-  
+
   alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
   alldf$Event_ID <- as.factor(alldf$Event_ID)
   alldf$Participant_ID <- as.factor(alldf$Participant_ID)

@@ -23,7 +23,7 @@
 #' @importFrom stats complete.cases
 #' @importFrom utils read.csv
 #' @importFrom utils select.list
-#' @export align_dyads
+#' @export
 
 align_dyads <- function(clean_ts_df) {
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
