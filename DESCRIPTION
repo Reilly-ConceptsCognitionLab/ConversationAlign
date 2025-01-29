@@ -19,9 +19,7 @@ Depends:
     R (>= 2.10),
     DescTools,
     dplyr (>= 0.4.3),
-    here,
     magrittr,
-    tidyverse,
     stringi,
     stringr,
     textstem,
@@ -40,4 +38,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign, https://reilly-conceptscognitionlab.github.io/ConversationAlign/
 Config/testthat/edition: 3
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

@@ -4,7 +4,7 @@
 \alias{clean_dyads}
 \title{clean_dyads}
 \usage{
-clean_dyads(read_ts_df, lemmatize = TRUE)
+clean_dyads(read_ts_df, lemmatize = TRUE, stop_words_df = "default")
 }
 \arguments{
 \item{dataframe}{produced from the read_dyads() function}
