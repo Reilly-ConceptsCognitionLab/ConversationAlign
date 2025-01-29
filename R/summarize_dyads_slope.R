@@ -24,6 +24,7 @@
 #' @importFrom tidyselect ends_with
 #' @importFrom tidyselect contains
 #' @importFrom zoo na.approx
+#' @importFrom stats lm
 #' @export
 
 summarize_dyads_slope <- function(aligned_ts_df, resample = TRUE) {
@@ -158,7 +159,7 @@ summarize_dyads_slope <- function(aligned_ts_df, resample = TRUE) {
   #DEFINE FUNCTION FOR COMPUTING SLOPE AND P OF LM
   get_lm_results <- function(colx) {
     # run simple linear regression over a count
-    model <- lm(colx ~ c(1:length(colx)))
+    model <- stats::lm(colx ~ c(1:length(colx)))
     # pull out slope and p value of slope
     slope <- model$coefficients[2]
     intercept <- model$coef[1]

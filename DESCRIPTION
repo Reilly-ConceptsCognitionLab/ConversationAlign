@@ -37,5 +37,4 @@ Suggests:
     rmarkdown,
 VignetteBuilder: knitr
 URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign, https://reilly-conceptscognitionlab.github.io/ConversationAlign/
-Config/testthat/edition: 3
 RoxygenNote: 7.3.2
