@@ -8,9 +8,11 @@
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/align_dyads.html</loc></url>
 <url><loc>/reference/clean_dyads.html</loc></url>
-<url><loc>/reference/hello.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/read_dyads.html</loc></url>
 <url><loc>/reference/summarize_dyads.html</loc></url>
+<url><loc>/reference/summarize_dyads_auc.html</loc></url>
+<url><loc>/reference/summarize_dyads_covar.html</loc></url>
+<url><loc>/reference/summarize_dyads_slope.html</loc></url>
 </urlset>
 
