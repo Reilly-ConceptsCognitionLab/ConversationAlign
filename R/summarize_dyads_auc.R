@@ -3,7 +3,8 @@
 #' Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Area under the curve become less reliable for dyads under 30 exchanges.
 #'
 #' @name summarize_dyads_auc
-#' @param dataframe produced in the align_dyads function
+#' @param aligned_ts_df produced in the align_dyads function
+#' @param resample logical, should each transcript time series be downsampled to the shortest length of the corpus
 #' @return A data frame associating each transcript with the dAUC calculated for each dimension
 #' @importFrom DescTools AUC
 #' @importFrom dplyr summarise

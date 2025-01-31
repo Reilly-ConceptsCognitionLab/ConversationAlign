@@ -2,8 +2,10 @@
 #'
 #' Cleans and formats language transcripts from the read stage. Removes non-alphabetic characters and stopwords. Language transcripts can be lemmatized by calling lemmatize = TRUE. Vectorizes each utterance and reports the total word count and mean word length by interlocutor in each dyad. Also reports the number of words in each turn.
 #' @name clean_dyads
-#' @param dataframe produced from the read_dyads() function
-#' @return dataframe with stopwords omitted, lemmatized words one per row
+#' @param read_ts_df produced from the read_dyads() function
+#' @param lemmatize logical, should words be lemmatized (switched to base morphological form)
+#' @param stop_words_df defaults to built in list of stopwords, otherwise supply a file path to a cvs file with a column of stopwords titles 'Word'
+#' @return dataframe with cleaned text data, formatted with one word per row
 #' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr consecutive_id

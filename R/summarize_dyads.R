@@ -3,7 +3,8 @@
 #' Calculates and appends 3 measures for quantifying alignment. Appends the mean score for each dimension by turn. Calculates and Spearman's rank correlation between interlocutor time series and appends by transcript. Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Spearman's rank correlation and area under the curve become less reliable for dyads under 30 exchanges.
 #'
 #' @name summarize_dyads
-#' @param dataframe produced in the align_dyads function
+#' @param aligned_ts_df produced in the align_dyads function
+#' @param resample logical, should each transcript time series be downsampled to the shortest length of the corpus
 #' @importFrom DescTools AUC
 #' @importFrom dplyr summarise
 #' @importFrom dplyr mutate

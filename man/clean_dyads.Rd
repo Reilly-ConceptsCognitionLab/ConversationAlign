@@ -7,10 +7,14 @@
 clean_dyads(read_ts_df, lemmatize = TRUE, stop_words_df = "default")
 }
 \arguments{
-\item{dataframe}{produced from the read_dyads() function}
+\item{read_ts_df}{produced from the read_dyads() function}
+
+\item{lemmatize}{logical, should words be lemmatized (switched to base morphological form)}
+
+\item{stop_words_df}{defaults to built in list of stopwords, otherwise supply a file path to a cvs file with a column of stopwords titles 'Word'}
 }
 \value{
-dataframe with stopwords omitted, lemmatized words one per row
+dataframe with cleaned text data, formatted with one word per row
 }
 \description{
 Cleans and formats language transcripts from the read stage. Removes non-alphabetic characters and stopwords. Language transcripts can be lemmatized by calling lemmatize = TRUE. Vectorizes each utterance and reports the total word count and mean word length by interlocutor in each dyad. Also reports the number of words in each turn.
