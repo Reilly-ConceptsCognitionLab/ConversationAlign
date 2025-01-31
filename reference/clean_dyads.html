@@ -48,13 +48,21 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-dataframe">dataframe<a class="anchor" aria-label="anchor" href="#arg-dataframe"></a></dt>
+<dl><dt id="arg-read-ts-df">read_ts_df<a class="anchor" aria-label="anchor" href="#arg-read-ts-df"></a></dt>
 <dd><p>produced from the read_dyads() function</p></dd>
+
+
+<dt id="arg-lemmatize">lemmatize<a class="anchor" aria-label="anchor" href="#arg-lemmatize"></a></dt>
+<dd><p>logical, should words be lemmatized (switched to base morphological form)</p></dd>
+
+
+<dt id="arg-stop-words-df">stop_words_df<a class="anchor" aria-label="anchor" href="#arg-stop-words-df"></a></dt>
+<dd><p>defaults to built in list of stopwords, otherwise supply a file path to a cvs file with a column of stopwords titles 'Word'</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>dataframe with stopwords omitted, lemmatized words one per row</p>
+    <p>dataframe with cleaned text data, formatted with one word per row</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
