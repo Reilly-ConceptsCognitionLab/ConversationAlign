@@ -56,7 +56,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE, stop_words_df = "default") {
       x <- gsub("-", " ", x) #replace all hyphens with spaces
 
       if (default == TRUE) {
-        x <- tm::removeWords(x, omissions_dyads23$word)
+        x <- tm::removeWords(x, ReillyLab_Stopwords_25$word)
       }
       else {
         x <- tm::removeWords(x, stop_words_df$word)
@@ -84,7 +84,7 @@ clean_dyads <- function(read_ts_df, lemmatize=TRUE, stop_words_df = "default") {
       x <- gsub("-", " ", x) #replace all hyphens with spaces
 
       if (default == TRUE) {
-        x <- tm::removeWords(x, omissions_dyads23$word)
+        x <- tm::removeWords(x, ReillyLab_Stopwords_25$word)
       }
       else {
         x <- tm::removeWords(x, stop_words_df$word)
