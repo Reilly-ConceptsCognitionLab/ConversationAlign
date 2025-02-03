@@ -26,6 +26,8 @@
 #' @export
 
 align_dyads <- function(clean_ts_df) {
+  # stop notes by assigning variables as null to start
+  Event_ID <- TurnCount <- TurnCount <- CleanText <- NULL
   #allow the user to select what variables they want to align, or provide their own database(s) and subset them
   myvars <- select.list(c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -39,7 +41,7 @@ align_dyads <- function(clean_ts_df) {
                         title = writeLines("Select any number of variables you would like to align your conversation transcripts on."),
                         graphics = FALSE)
   var_selected <- lookup_db %>% #select desired columns from lookup_db
-    dplyr::select(matches("^word$"), tidyselect::contains(myvars))
+    dplyr::select(c("word", tidyselect::contains(myvars)))
   #create variable containing the column names of each variable to be aligned
   var_aligners <- colnames(var_selected)[-grep("^word$", colnames(lookup_db), ignore.case = TRUE)]
 

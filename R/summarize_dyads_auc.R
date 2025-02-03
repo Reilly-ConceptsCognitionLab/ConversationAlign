@@ -35,6 +35,8 @@
 #' @export
 
 summarize_dyads_auc <- function(aligned_ts_df, resample = TRUE) {
+  # set variables to null to prevent notes:
+  Event_ID <- Participant_ID <- NULL
   #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
   aligned_ts_df <- droplevels(aligned_ts_df)
 
@@ -60,6 +62,8 @@ summarize_dyads_auc <- function(aligned_ts_df, resample = TRUE) {
 
   #DEFINE TIME SERIES RESCALER
   resample_time_series <- function(df_list, threshold) {
+    # set variables to null to prevent notes
+    ExchangeCount <- Grouper <- NULL
 
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -164,6 +168,9 @@ summarize_dyads_auc <- function(aligned_ts_df, resample = TRUE) {
 
   #DEFINE FIND DYAD AREA UNDER THE CURVE FUNCTION
   find_auc_dyads <- function(aligned_df, resample = TRUE) {
+    # set variables to null to prevent note:
+    Participant_ID <- Event_ID <- ExchangeCount <- participant_var <- Participant_Pair <- score <- NULL
+
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
                           "aff_encouragement", "aff_excitement", "aff_guilt", "aff_happiness",

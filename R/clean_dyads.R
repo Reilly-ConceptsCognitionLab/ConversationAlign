@@ -22,9 +22,11 @@
 #' @export
 
 clean_dyads <- function(read_ts_df, lemmatize=TRUE, stop_words_df = "default") {
+  # set variables as NULL to start to stop note
+  RawText <- Event_ID <- Participant_ID <- TurnCount <- CleanText <- NULL
   default <- TRUE
   # if not default and not proper file path (aside from default), throw an error
-  if (class(stop_words_df) != "character" | (!grepl(".csv", stop_words_df) & stop_words_df != "default")) {
+  if (as.character(class(stop_words_df)) != "character" | (!grepl(".csv", stop_words_df) & stop_words_df != "default")) {
     stop("The argument 'stop_words_df' takes a string type, and should be a filepath leading to a csv file.")
   }
   # otherwise, if not default and also a csv path

@@ -34,6 +34,9 @@
 
 
 summarize_dyads_covar <- function(aligned_ts_df, lags = c(-3, -2, -1, 0, 1, 2, 3)) {
+  # set variables to null to prevent notes:
+  Participant_ID <- CleanText <- TurnCount <- ExchangeCount <- Event_ID <- NULL
+
   #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
   aligned_ts_df <- droplevels(aligned_ts_df)
 
@@ -74,6 +77,8 @@ summarize_dyads_covar <- function(aligned_ts_df, lags = c(-3, -2, -1, 0, 1, 2, 3
 
   #DEFINE SPEARMAN'S CORRELATION FUNCTION
   spearmans_corr_dyads <- function(aligned_ts_df) {
+    # set varibles to null to prevent note:
+    Event_ID <- ExchangeCount <- Participant_ID <- dimension <- score <- NULL
     #first, flexibly find the dimensions the user has aligned on
     align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
                           "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
@@ -132,11 +137,13 @@ summarize_dyads_covar <- function(aligned_ts_df, lags = c(-3, -2, -1, 0, 1, 2, 3
 
       # select the columns for one participant and remove suffixes
       x_vars <- interp_df %>%
-        dplyr::select(c('Event_ID') | c(ends_with("_S1"))) %>%
-        dplyr::rename_at(dplyr::vars(matches("_S1")), ~stringr::str_replace(., "_S1", ""))
+        dplyr::select(c('Event_ID') | c(tidyselect::ends_with("_S1"))) %>%
+        dplyr::rename_with(~stringr::str_replace(., "_S1", ""),
+                           tidyselect::ends_with("_S1"))
       y_vars <- interp_df %>%
-        select(c('Event_ID') | c(ends_with("_S2")))%>%
-        dplyr::rename_at(dplyr::vars(matches("_S2")), ~stringr::str_replace(., "_S2", ""))
+        select(c('Event_ID') | c(tidyselect::ends_with("_S2"))) %>%
+        dplyr::rename_with(~stringr::str_replace(., "_S2", ""),
+                           tidyselect::ends_with("_S2"))
 
       # function to calculate and format spearman correlation
       calculate_spearman_corr <- function(x_vars, y_vars, dim, align_var) {
