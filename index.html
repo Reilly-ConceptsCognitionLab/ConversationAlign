@@ -55,7 +55,9 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><img src="reference/figures/convo.jpeg" width="70%" height="60%" style="float:right; padding:5px"></p>
+<!-- ```{r, echo=F, out.width='70%', out.height='60%', out.extra='style="float:right; padding:5px"'} -->
+<!--  knitr::include_graphics("man/figures/convo.jpeg") -->
+<!-- ``` -->
 <p>ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. <br><br><span style="color:red;">October 2023: ConversationAlign is working, and we have repaired most of the bugs. However, we recommend for now that you check with one of the authors or maintainers of the package before running any largescale analyses. We can talk you through any potential hiccups or roadblocks given the idiosyncratic nature of your particular data.</span> <br></p>
 </div>
 <div class="section level1">
@@ -130,11 +132,18 @@ overview of ConversationAlign
 <p>Here are your choices: <br></p>
 <p>anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br></p>
 <p>Variable key here: <br><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> <br><br></p>
+<p>ConversationAlign will prompt you to append any metadata you would like to add. This joins information from a separate file (e.g., neuropsych scores, ages, etc). Just give ConversationAlign a filepath to your CSV data or click “Enter” to skip this step. A metadata file might look like this:</p>
+<p>METADATA IMAGE HERE <br></p>
 <p>Run align_dyads on the cleaned dyads object you created using the clean_dyads function.<br></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyAlignedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_dyads.html">align_dyads</a></span><span class="op">(</span><span class="va">MyCleanLangSamples</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/example4_ts_edg.jpeg" height="200" alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
 </div>
+</div>
+<div class="section level1">
+<h1 id="appending-metadata">Appending metadata<a class="anchor" aria-label="anchor" href="#appending-metadata"></a>
+</h1>
+<p>TBD</p>
 </div>
 <div class="section level1">
 <h1 id="summarize-transcripts">Summarize transcripts<a class="anchor" aria-label="anchor" href="#summarize-transcripts"></a>
@@ -185,8 +194,8 @@ overview of ConversationAlign
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small>GPL (&gt;= 3) + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>GPL (&gt;= 3) + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
