@@ -35,5 +35,5 @@ Suggests:
     knitr,
     rmarkdown,
 VignetteBuilder: knitr
-URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign, https://reilly-conceptscognitionlab.github.io/ConversationAlign/
+URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign/
 RoxygenNote: 7.3.2
