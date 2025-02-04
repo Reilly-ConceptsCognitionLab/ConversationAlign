@@ -8,7 +8,9 @@
 [![R-CMD-check](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-<img src="man/figures/convo.jpeg" width="70%" height="60%" style="float:right; padding:5px" style="display: block; margin: auto auto auto 0;" />
+<!-- ```{r, echo=F, out.width='70%', out.height='60%', out.extra='style="float:right; padding:5px"'} -->
+<!--  knitr::include_graphics("man/figures/convo.jpeg") -->
+<!-- ``` -->
 
 ConversationAlign analyzes alignment between interlocutors (conversation
 partners) engaged in two-person conversations. ConversationAlign works
@@ -165,6 +167,14 @@ Variable key here: <br/>
 <https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf>
 <br/> <br/>
 
+ConversationAlign will prompt you to append any metadata you would like
+to add. This joins information from a separate file (e.g., neuropsych
+scores, ages, etc). Just give ConversationAlign a filepath to your CSV
+data or click “Enter” to skip this step. A metadata file might look like
+this:
+
+METADATA IMAGE HERE <br/>
+
 Run align_dyads on the cleaned dyads object you created using the
 clean_dyads function.<br/>
 
@@ -175,6 +185,10 @@ MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 <img src="man/figures/example4_ts_edg.jpeg" height="200"
 alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013" />
 <br/>
+
+# Appending metadata
+
+TBD
 
 # Summarize transcripts
 
