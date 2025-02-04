@@ -56,6 +56,11 @@ install.packages("devtools")
 devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
 ```
 
+```{r, include=FALSE}
+# load package wihtout printing anything
+library(ConversationAlign)
+```
+
 # Read your transcripts into R
 ## read_dyads()
 This function will read all your files and concatenate them into a single dataframe, appending document IDs.  You can call this dataframe whatever you like. 'read_dyads' will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of 'my_transcripts' as a staging area for loading data into ConversationAlign. <br/>
@@ -65,9 +70,35 @@ MyRawLangSamples <- read_dyads()
 #if you want to specify a different folder, supply your own path
 MyRawLangSamples <- read_dyads("/my_custompath")
 ```
-<br/>
 
-![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=400px, height=600px} <br/>
+```{r, echo=FALSE}
+# code to show the read data, which is supplied manually (file not included)
+# this is real data manually defined as to not include extra data in the package and make it take up more memory
+
+# manually define 16 rows of the proper data
+exampleRead <- data.frame(Event_ID = "taylorellen",
+                          Participant_ID = rep(c("Taylor", "Ellen"), 8),
+                          RawText = c("That was an amazing montage.",
+                                      "I know. And that's that's no no one's in there. We're not gonna do it to you today.",
+                                      "It's not amateur hour. No,",
+                                      "no, I'm not going to your because I can't talk how I did it the first time you were the best scare. Well, I don't know. Sarah Paulson was pretty good, too. But",
+                                      "that was a near death experience",
+                                      "it kind of was you went down",
+                                      "Yeah.",
+                                      "Were there injuries?",
+                                      "There were several ways I could have died.",
+                                      "Well,now you're being dramatic.", 
+                                      "Yeah,",
+                                      "yeah. No, that's extreme.",
+                                      "Yeah.",
+                                      "It- I really just was watching that backstage. And I was just thinking like, thank you so much for going so above and beyond to make people happy. Yeah,",
+                                      "well,",
+                                      "that's not a good example of it"))
+
+knitr::kable(exampleRead)
+```
+<!-- <br/> -->
+<!-- ![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=400px, height=600px} <br/> -->
 
 # Clean your transcripts
 ## clean_dyads()
@@ -90,7 +121,12 @@ MyCleanLangSamples <- clean_dyads(MyRawLangSamples) #default is lemmatize=TRUE
 MyCleanLangSamples <- clean_dyads(MyRawLangSamples, lemmatize=FALSE)
 ```
 
-![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example3_ts_edg.jpeg){width=300px, height=400px} <br/>
+```{r, echo=FALSE}
+exampleClean <- clean_dyads(exampleRead, lemmatize = FALSE)
+knitr::kable(exampleClean[1:15, ])
+```
+
+<!-- ![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example3_ts_edg.jpeg){width=300px, height=400px} <br/> -->
 
 # Align your transcripts
 ## align_dyads()
@@ -118,22 +154,28 @@ MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 
 ![Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example4_ts_edg.jpeg){width=800px, height=200px} <br/>
 
-# Appending metadata
-TBD
-
 
 # Summarize transcripts
-## summarize_dyads()
-This last step will append two metrics of alignment to each dyad (AUC and Spearman R) for every variable of interest you specified. For example, summarize_dyads will append AUC and Spearman values for hostility (if that's what you're interested in) to MaryandMikeFirstDate. <br/>
-<br/>
-Link here to read more about what AUC and Spearman mean in the context of alignment (or look at the figure above for an illustration):  LINK TO METHOD
+This last step consists of three methods, each of which computes a seperate index of alignment.
 
-AUC will appear in the dataframe with a prefix "auc_". Spearman's correlation coefficient will appear with a prefix ("S_rho_") per variable per dyad. <br/>
+## summarize_dyads_auc()
+This returns the difference time series AUC (dAUC) for every variable of interest you specified. For example, summarize_dyads_auc will append dAUC values for hostility (if that's what you're interested in). <br/>
+
+## summarize_dyads_covar()
+This returns a spearman correlation coefficient and range of lagged Pearson correlation coefficients for each variable of interest. A vector of Lags/leads for Pearson correlations are supplied as a parameter.
+<br/>
+
+## summarize_dyads_slope()
+This return the intercept and slope of a simple linear regression for each interlocutor and the difference time series over each variable of interest. This provides a measure of change over time, providing information on who aligns to whom.
+<br/>
+<!-- Link here to read more about what dAUC, Spearman, and slope mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD -->
 
 ```{r, eval=F}
-MyFinalDataframe <- summarize_dyads(MyAlignedDyads) #base function defaults to computing AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) 
-MyFinalDataframe <- summarize_dyads(MyAlignedDyads, resample=F) #turns off resampling and computes AUC on the orignal dyads. This makes it very difficult to compare AUC for dyads of different lengths
-MyFinalDataframe <- summarize_dyads(MyAlignedDyads, resample=T, threshold=40) #specifies your own threshold for resampling your dyads to. All dyads will be resampled to this threshold
+MyFinalDataframe_AUC <- summarize_dyads_auc(MyAlignedDyads, resample = T) #resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) 
+
+MyFinalDataframe_Covar <- summarize_dyads_covar(MyAlignedDyads, lags = c(-2, -1, 1, 2)) # lags are supplied as a vector, defaulting to a range of [-3, 3]
+
+MyFinalDataframe_Slope <- summarize_dyads_slope(MyAlignedDyads, resample = F) # for auc and slope, when resample=F, it becomes much more difficult to compare metrics between conversations of different lengths.
 ```
 
 # Caveat emptor

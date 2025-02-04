@@ -97,11 +97,27 @@ MyRawLangSamples <- read_dyads()
 MyRawLangSamples <- read_dyads("/my_custompath")
 ```
 
-<br/>
+| Event_ID | Participant_ID | RawText |
+|:---|:---|:---|
+| taylorellen | Taylor | That was an amazing montage. |
+| taylorellen | Ellen | I know. And that’s that’s no no one’s in there. We’re not gonna do it to you today. |
+| taylorellen | Taylor | It’s not amateur hour. No, |
+| taylorellen | Ellen | no, I’m not going to your because I can’t talk how I did it the first time you were the best scare. Well, I don’t know. Sarah Paulson was pretty good, too. But |
+| taylorellen | Taylor | that was a near death experience |
+| taylorellen | Ellen | it kind of was you went down |
+| taylorellen | Taylor | Yeah. |
+| taylorellen | Ellen | Were there injuries? |
+| taylorellen | Taylor | There were several ways I could have died. |
+| taylorellen | Ellen | Well,now you’re being dramatic. |
+| taylorellen | Taylor | Yeah, |
+| taylorellen | Ellen | yeah. No, that’s extreme. |
+| taylorellen | Taylor | Yeah. |
+| taylorellen | Ellen | It- I really just was watching that backstage. And I was just thinking like, thank you so much for going so above and beyond to make people happy. Yeah, |
+| taylorellen | Taylor | well, |
+| taylorellen | Ellen | that’s not a good example of it |
 
-<img src="man/figures/example2_ts_edg.jpeg" height="600"
-alt="Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013" />
-<br/>
+<!-- <br/> -->
+<!-- ![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=400px, height=600px} <br/> -->
 
 # Clean your transcripts
 
@@ -131,9 +147,25 @@ MyCleanLangSamples <- clean_dyads(MyRawLangSamples) #default is lemmatize=TRUE
 MyCleanLangSamples <- clean_dyads(MyRawLangSamples, lemmatize=FALSE)
 ```
 
-<img src="man/figures/example3_ts_edg.jpeg" height="400"
-alt="Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013" />
-<br/>
+| Event_ID | Participant_ID | TurnCount | CleanText | NWords_ByPersonTurn_RAW | NWords_ByPersonTurn_CLEAN |
+|:---|:---|---:|:---|---:|---:|
+| taylorellen | Taylor | 1 | amazing | 5 | 2 |
+| taylorellen | Taylor | 1 | montage | 5 | 2 |
+| taylorellen | Ellen | 2 | no | 18 | 5 |
+| taylorellen | Ellen | 2 | s | 18 | 5 |
+| taylorellen | Ellen | 2 | not | 18 | 5 |
+| taylorellen | Ellen | 2 | gonna | 18 | 5 |
+| taylorellen | Ellen | 2 | today | 18 | 5 |
+| taylorellen | Taylor | 3 | not | 5 | 4 |
+| taylorellen | Taylor | 3 | amateur | 5 | 4 |
+| taylorellen | Taylor | 3 | hour | 5 | 4 |
+| taylorellen | Taylor | 3 | no | 5 | 4 |
+| taylorellen | Ellen | 4 | no | 33 | 12 |
+| taylorellen | Ellen | 4 | I | 33 | 12 |
+| taylorellen | Ellen | 4 | not | 33 | 12 |
+| taylorellen | Ellen | 4 | not | 33 | 12 |
+
+<!-- ![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example3_ts_edg.jpeg){width=300px, height=400px} <br/> -->
 
 # Align your transcripts
 
@@ -186,30 +218,38 @@ MyAlignedDyads <- align_dyads(MyCleanLangSamples)
 alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013" />
 <br/>
 
-# Appending metadata
-
-TBD
-
 # Summarize transcripts
 
-## summarize_dyads()
+This last step consists of three methods, each of which computes a
+seperate index of alignment.
 
-This last step will append two metrics of alignment to each dyad (AUC
-and Spearman R) for every variable of interest you specified. For
-example, summarize_dyads will append AUC and Spearman values for
-hostility (if that’s what you’re interested in) to MaryandMikeFirstDate.
-<br/> <br/> Link here to read more about what AUC and Spearman mean in
-the context of alignment (or look at the figure above for an
-illustration): LINK TO METHOD
+## summarize_dyads_auc()
 
-AUC will appear in the dataframe with a prefix “auc\_”. Spearman’s
-correlation coefficient will appear with a prefix (“S_rho\_”) per
-variable per dyad. <br/>
+This returns the difference time series AUC (dAUC) for every variable of
+interest you specified. For example, summarize_dyads_auc will append
+dAUC values for hostility (if that’s what you’re interested in). <br/>
+
+## summarize_dyads_covar()
+
+This returns a spearman correlation coefficient and range of lagged
+Pearson correlation coefficients for each variable of interest. A vector
+of Lags/leads for Pearson correlations are supplied as a parameter.
+<br/>
+
+## summarize_dyads_slope()
+
+This return the intercept and slope of a simple linear regression for
+each interlocutor and the difference time series over each variable of
+interest. This provides a measure of change over time, providing
+information on who aligns to whom. <br/>
+<!-- Link here to read more about what dAUC, Spearman, and slope mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD -->
 
 ``` r
-MyFinalDataframe <- summarize_dyads(MyAlignedDyads) #base function defaults to computing AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) 
-MyFinalDataframe <- summarize_dyads(MyAlignedDyads, resample=F) #turns off resampling and computes AUC on the orignal dyads. This makes it very difficult to compare AUC for dyads of different lengths
-MyFinalDataframe <- summarize_dyads(MyAlignedDyads, resample=T, threshold=40) #specifies your own threshold for resampling your dyads to. All dyads will be resampled to this threshold
+MyFinalDataframe_AUC <- summarize_dyads_auc(MyAlignedDyads, resample = T) #resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) 
+
+MyFinalDataframe_Covar <- summarize_dyads_covar(MyAlignedDyads, lags = c(-2, -1, 1, 2)) # lags are supplied as a vector, defaulting to a range of [-3, 3]
+
+MyFinalDataframe_Slope <- summarize_dyads_slope(MyAlignedDyads, resample = F) # for auc and slope, when resample=F, it becomes much more difficult to compare metrics between conversations of different lengths.
 ```
 
 # Caveat emptor
