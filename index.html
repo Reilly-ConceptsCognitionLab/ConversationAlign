@@ -101,8 +101,101 @@ overview of ConversationAlign
 <code class="sourceCode R"><span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#if you want to specify a different folder, supply your own path</span></span>
 <span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="st">"/my_custompath"</span><span class="op">)</span></span></code></pre></div>
-<p><br></p>
-<p><img src="reference/figures/example2_ts_edg.jpeg" height="600" alt="Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="left">RawText</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">That was an amazing montage.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">I know. And that’s that’s no no one’s in there. We’re not gonna do it to you today.</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">It’s not amateur hour. No,</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">no, I’m not going to your because I can’t talk how I did it the first time you were the best scare. Well, I don’t know. Sarah Paulson was pretty good, too. But</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">that was a near death experience</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">it kind of was you went down</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">Yeah.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">Were there injuries?</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">There were several ways I could have died.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">Well,now you’re being dramatic.</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">Yeah,</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">yeah. No, that’s extreme.</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">Yeah.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">It- I really just was watching that backstage. And I was just thinking like, thank you so much for going so above and beyond to make people happy. Yeah,</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">well,</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">that’s not a good example of it</td>
+</tr>
+</tbody>
+</table>
+<!-- <br/> --><!-- ![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=400px, height=600px} <br/> -->
 </div>
 </div>
 <div class="section level1">
@@ -118,7 +211,147 @@ overview of ConversationAlign
 <code class="sourceCode R"><span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span><span class="op">)</span> <span class="co">#default is lemmatize=TRUE</span></span>
 <span><span class="co">#If you do NOT want your language sample lemmatized, change the lemmatize argument to F or FALSE</span></span>
 <span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span>, lemmatize<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/example3_ts_edg.jpeg" height="400" alt="Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="right">TurnCount</th>
+<th align="left">CleanText</th>
+<th align="right">NWords_ByPersonTurn_RAW</th>
+<th align="right">NWords_ByPersonTurn_CLEAN</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">1</td>
+<td align="left">amazing</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">1</td>
+<td align="left">montage</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">no</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">s</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">not</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">gonna</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">today</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">not</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">amateur</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">hour</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">no</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">no</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">I</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">not</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">not</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+</tbody>
+</table>
+<!-- ![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example3_ts_edg.jpeg){width=300px, height=400px} <br/> -->
 </div>
 </div>
 <div class="section level1">
@@ -141,22 +374,29 @@ overview of ConversationAlign
 </div>
 </div>
 <div class="section level1">
-<h1 id="appending-metadata">Appending metadata<a class="anchor" aria-label="anchor" href="#appending-metadata"></a>
-</h1>
-<p>TBD</p>
-</div>
-<div class="section level1">
 <h1 id="summarize-transcripts">Summarize transcripts<a class="anchor" aria-label="anchor" href="#summarize-transcripts"></a>
 </h1>
+<p>This last step consists of three methods, each of which computes a seperate index of alignment.</p>
 <div class="section level2">
-<h2 id="summarize_dyads">summarize_dyads()<a class="anchor" aria-label="anchor" href="#summarize_dyads"></a>
+<h2 id="summarize_dyads_auc">summarize_dyads_auc()<a class="anchor" aria-label="anchor" href="#summarize_dyads_auc"></a>
 </h2>
-<p>This last step will append two metrics of alignment to each dyad (AUC and Spearman R) for every variable of interest you specified. For example, summarize_dyads will append AUC and Spearman values for hostility (if that’s what you’re interested in) to MaryandMikeFirstDate. <br><br> Link here to read more about what AUC and Spearman mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD</p>
-<p>AUC will appear in the dataframe with a prefix “auc_”. Spearman’s correlation coefficient will appear with a prefix (“S_rho_”) per variable per dyad. <br></p>
+<p>This returns the difference time series AUC (dAUC) for every variable of interest you specified. For example, summarize_dyads_auc will append dAUC values for hostility (if that’s what you’re interested in). <br></p>
+</div>
+<div class="section level2">
+<h2 id="summarize_dyads_covar">summarize_dyads_covar()<a class="anchor" aria-label="anchor" href="#summarize_dyads_covar"></a>
+</h2>
+<p>This returns a spearman correlation coefficient and range of lagged Pearson correlation coefficients for each variable of interest. A vector of Lags/leads for Pearson correlations are supplied as a parameter. <br></p>
+</div>
+<div class="section level2">
+<h2 id="summarize_dyads_slope">summarize_dyads_slope()<a class="anchor" aria-label="anchor" href="#summarize_dyads_slope"></a>
+</h2>
+<p>This return the intercept and slope of a simple linear regression for each interlocutor and the difference time series over each variable of interest. This provides a measure of change over time, providing information on who aligns to whom. <br><!-- Link here to read more about what dAUC, Spearman, and slope mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD --></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span><span class="op">)</span> <span class="co">#base function defaults to computing AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) </span></span>
-<span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="co">#turns off resampling and computes AUC on the orignal dyads. This makes it very difficult to compare AUC for dyads of different lengths</span></span>
-<span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample<span class="op">=</span><span class="cn">T</span>, threshold<span class="op">=</span><span class="fl">40</span><span class="op">)</span> <span class="co">#specifies your own threshold for resampling your dyads to. All dyads will be resampled to this threshold</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">MyFinalDataframe_AUC</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_auc.html">summarize_dyads_auc</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co">#resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) </span></span>
+<span></span>
+<span><span class="va">MyFinalDataframe_Covar</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_covar.html">summarize_dyads_covar</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, lags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co"># lags are supplied as a vector, defaulting to a range of [-3, 3]</span></span>
+<span></span>
+<span><span class="va">MyFinalDataframe_Slope</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_slope.html">summarize_dyads_slope</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample <span class="op">=</span> <span class="cn">F</span><span class="op">)</span> <span class="co"># for auc and slope, when resample=F, it becomes much more difficult to compare metrics between conversations of different lengths.</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level1">
