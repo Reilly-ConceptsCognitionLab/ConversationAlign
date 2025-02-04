@@ -5,54 +5,48 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.">
 <title>ConversationAlign • ConversationAlign</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="ConversationAlign">
-<meta property="og:description" content="This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  The package then analyzes alignment between two speakers across each dyad transcript as time series data.">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="ConversationAlign">
+<meta name="description" content="This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word. The package then analyzes alignment between two speakers across each dyad transcript as time series data.">
+<meta property="og:description" content="This package reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word. The package then analyzes alignment between two speakers across each dyad transcript as time series data.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="index.html">ConversationAlign</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/my-vignette.html">UNKNOWN TITLE</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/my-vignette.html">UNKNOWN TITLE</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav"></ul>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+      </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-home">
 <div class="row">
@@ -61,7 +55,9 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><img src="reference/figures/convo.jpeg" width="70%" height="60%" style="float:right; padding:5px"></p>
+<!-- ```{r, echo=F, out.width='70%', out.height='60%', out.extra='style="float:right; padding:5px"'} -->
+<!--  knitr::include_graphics("man/figures/convo.jpeg") -->
+<!-- ``` -->
 <p>ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. <br><br><span style="color:red;">October 2023: ConversationAlign is working, and we have repaired most of the bugs. However, we recommend for now that you check with one of the authors or maintainers of the package before running any largescale analyses. We can talk you through any potential hiccups or roadblocks given the idiosyncratic nature of your particular data.</span> <br></p>
 </div>
 <div class="section level1">
@@ -105,8 +101,101 @@ overview of ConversationAlign
 <code class="sourceCode R"><span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#if you want to specify a different folder, supply your own path</span></span>
 <span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="st">"/my_custompath"</span><span class="op">)</span></span></code></pre></div>
-<p><br></p>
-<p><img src="reference/figures/example2_ts_edg.jpeg" height="600" alt="Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="left">RawText</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">That was an amazing montage.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">I know. And that’s that’s no no one’s in there. We’re not gonna do it to you today.</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">It’s not amateur hour. No,</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">no, I’m not going to your because I can’t talk how I did it the first time you were the best scare. Well, I don’t know. Sarah Paulson was pretty good, too. But</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">that was a near death experience</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">it kind of was you went down</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">Yeah.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">Were there injuries?</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">There were several ways I could have died.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">Well,now you’re being dramatic.</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">Yeah,</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">yeah. No, that’s extreme.</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">Yeah.</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">It- I really just was watching that backstage. And I was just thinking like, thank you so much for going so above and beyond to make people happy. Yeah,</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="left">well,</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="left">that’s not a good example of it</td>
+</tr>
+</tbody>
+</table>
+<!-- <br/> --><!-- ![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=400px, height=600px} <br/> -->
 </div>
 </div>
 <div class="section level1">
@@ -122,7 +211,147 @@ overview of ConversationAlign
 <code class="sourceCode R"><span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span><span class="op">)</span> <span class="co">#default is lemmatize=TRUE</span></span>
 <span><span class="co">#If you do NOT want your language sample lemmatized, change the lemmatize argument to F or FALSE</span></span>
 <span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span>, lemmatize<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/example3_ts_edg.jpeg" height="400" alt="Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="right">TurnCount</th>
+<th align="left">CleanText</th>
+<th align="right">NWords_ByPersonTurn_RAW</th>
+<th align="right">NWords_ByPersonTurn_CLEAN</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">1</td>
+<td align="left">amazing</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">1</td>
+<td align="left">montage</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">no</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">s</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">not</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">gonna</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">2</td>
+<td align="left">today</td>
+<td align="right">18</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">not</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">amateur</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">hour</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Taylor</td>
+<td align="right">3</td>
+<td align="left">no</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">no</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">I</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">not</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">taylorellen</td>
+<td align="left">Ellen</td>
+<td align="right">4</td>
+<td align="left">not</td>
+<td align="right">33</td>
+<td align="right">12</td>
+</tr>
+</tbody>
+</table>
+<!-- ![Example of cleaned transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example3_ts_edg.jpeg){width=300px, height=400px} <br/> -->
 </div>
 </div>
 <div class="section level1">
@@ -145,22 +374,29 @@ overview of ConversationAlign
 </div>
 </div>
 <div class="section level1">
-<h1 id="appending-metadata">Appending metadata<a class="anchor" aria-label="anchor" href="#appending-metadata"></a>
-</h1>
-<p>TBD</p>
-</div>
-<div class="section level1">
 <h1 id="summarize-transcripts">Summarize transcripts<a class="anchor" aria-label="anchor" href="#summarize-transcripts"></a>
 </h1>
+<p>This last step consists of three methods, each of which computes a seperate index of alignment.</p>
 <div class="section level2">
-<h2 id="summarize_dyads">summarize_dyads()<a class="anchor" aria-label="anchor" href="#summarize_dyads"></a>
+<h2 id="summarize_dyads_auc">summarize_dyads_auc()<a class="anchor" aria-label="anchor" href="#summarize_dyads_auc"></a>
 </h2>
-<p>This last step will append two metrics of alignment to each dyad (AUC and Spearman R) for every variable of interest you specified. For example, summarize_dyads will append AUC and Spearman values for hostility (if that’s what you’re interested in) to MaryandMikeFirstDate. <br><br> Link here to read more about what AUC and Spearman mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD</p>
-<p>AUC will appear in the dataframe with a prefix “auc_”. Spearman’s correlation coefficient will appear with a prefix (“S_rho_”) per variable per dyad. <br></p>
+<p>This returns the difference time series AUC (dAUC) for every variable of interest you specified. For example, summarize_dyads_auc will append dAUC values for hostility (if that’s what you’re interested in). <br></p>
+</div>
+<div class="section level2">
+<h2 id="summarize_dyads_covar">summarize_dyads_covar()<a class="anchor" aria-label="anchor" href="#summarize_dyads_covar"></a>
+</h2>
+<p>This returns a spearman correlation coefficient and range of lagged Pearson correlation coefficients for each variable of interest. A vector of Lags/leads for Pearson correlations are supplied as a parameter. <br></p>
+</div>
+<div class="section level2">
+<h2 id="summarize_dyads_slope">summarize_dyads_slope()<a class="anchor" aria-label="anchor" href="#summarize_dyads_slope"></a>
+</h2>
+<p>This return the intercept and slope of a simple linear regression for each interlocutor and the difference time series over each variable of interest. This provides a measure of change over time, providing information on who aligns to whom. <br><!-- Link here to read more about what dAUC, Spearman, and slope mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD --></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span><span class="op">)</span> <span class="co">#base function defaults to computing AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) </span></span>
-<span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="co">#turns off resampling and computes AUC on the orignal dyads. This makes it very difficult to compare AUC for dyads of different lengths</span></span>
-<span><span class="va">MyFinalDataframe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample<span class="op">=</span><span class="cn">T</span>, threshold<span class="op">=</span><span class="fl">40</span><span class="op">)</span> <span class="co">#specifies your own threshold for resampling your dyads to. All dyads will be resampled to this threshold</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">MyFinalDataframe_AUC</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_auc.html">summarize_dyads_auc</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co">#resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) </span></span>
+<span></span>
+<span><span class="va">MyFinalDataframe_Covar</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_covar.html">summarize_dyads_covar</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, lags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co"># lags are supplied as a vector, defaulting to a range of [-3, 3]</span></span>
+<span></span>
+<span><span class="va">MyFinalDataframe_Slope</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_slope.html">summarize_dyads_slope</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample <span class="op">=</span> <span class="cn">F</span><span class="op">)</span> <span class="co"># for auc and slope, when resample=F, it becomes much more difficult to compare metrics between conversations of different lengths.</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level1">
@@ -198,7 +434,8 @@ overview of ConversationAlign
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>GPL (&gt;= 3)</li>
+<li>GPL (&gt;= 3) + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
@@ -232,21 +469,19 @@ overview of ConversationAlign
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Jamie Reilly, Virginia Ulichney, Ben Sacks.</p>
+  <p>Developed by Jamie Reilly, Virginia Ulichney, Ben Sacks.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
