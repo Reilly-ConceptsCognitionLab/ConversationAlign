@@ -1,9 +1,9 @@
 #' summarize_dyads_slope
 #'
-#' Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Area under the curve become less reliable for dyads under 30 exchanges.
+#' Calculates the intercept and slope of a simple linear regression for each interlocutor and the difference time series between them. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Area under the curve become less reliable for dyads under 30 exchanges.
 #'
 #' @name summarize_dyads_slope
-#' @param aligned_ts_df produced in the align_dyads function
+#' @param aligned_ts_df data frame produced in the align_dyads function
 #' @param resample logical stating whether time series should be downsampled to the shortest length present
 #' @return A data frame containing the intercept and slope of a linear regression of difference and interlocutor time series for each dimension
 #' @importFrom DescTools AUC

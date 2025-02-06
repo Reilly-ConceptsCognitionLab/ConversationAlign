@@ -3,7 +3,7 @@
 #' Calculates Spearman rank correlation and lagged Pearson correlation between interlocutor time series for each dimension and transcript.
 #'
 #' @name summarize_dyads_covar
-#' @param aligned_ts_df Dataframe produced in the align_dyads function
+#' @param aligned_ts_df data frame produced in the align_dyads function
 #' @param lags A vector of signed integers specifying lags that should be included for Pearson correlation. Negative integers are used for leads.
 #' @return A data frame containing the Spearman and Pearson correlation for each transcript. Results are organized as column and data is pivoted longer by dimension for readability.
 #' @importFrom dplyr summarise
