@@ -1,9 +1,8 @@
 pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
-articles:
-  my-vignette: my-vignette.html
-last_built: 2025-02-06T19:43Z
+articles: {}
+last_built: 2025-02-06T20:27Z
 urls:
   reference: https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference
   article: https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles
