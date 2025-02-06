@@ -18,12 +18,6 @@ on language transcripts. It can handle text files (.txt) or comma
 separated value (.csv) spreadsheet style files. ConversationAlign
 transforms raw language data into simultaneous time series objects
 spanning 30 possible dimensions via an embedded lookup database. <br/>
-<br/> <span style="color:red;">October 2023: ConversationAlign is
-working, and we have repaired most of the bugs. However, we recommend
-for now that you check with one of the authors or maintainers of the
-package before running any largescale analyses. We can talk you through
-any potential hiccups or roadblocks given the idiosyncratic nature of
-your particular data.</span> <br/>
 
 # Overview
 
