@@ -1,10 +1,9 @@
 #' summarize_dyads_slope
 #'
-#' Calculates the intercept and slope of a simple linear regression for each interlocutor and the difference time series between them. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Area under the curve become less reliable for dyads under 30 exchanges.
+#' Calculates the intercept and slope of a simple linear regression for each interlocutor and the difference time series between them.
 #'
 #' @name summarize_dyads_slope
 #' @param aligned_ts_df data frame produced in the align_dyads function
-#' @param resample logical stating whether time series should be downsampled to the shortest length present
 #' @return A data frame containing the intercept and slope of a linear regression of difference and interlocutor time series for each dimension
 #' @importFrom DescTools AUC
 #' @importFrom dplyr summarise
@@ -27,7 +26,7 @@
 #' @importFrom stats lm
 #' @export
 
-summarize_dyads_slope <- function(aligned_ts_df, resample = TRUE) {
+summarize_dyads_slope <- function(aligned_ts_df) {
   # set variables to null to prevent notes
   Event_ID <- Participant_ID <- ExchangeCount <- participant_var <- Participant_Pair <- S1 <- S2 <- Difference <- Dimension <- Time_Series <- Score <- Results <- NULL
   #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
@@ -114,33 +113,6 @@ summarize_dyads_slope <- function(aligned_ts_df, resample = TRUE) {
     }
   }
 
-  # before wrangling data, find the threshold if resampling
-  if (is.logical(resample) == TRUE) {
-    #mutate the max ExchangeCount for each dyad
-    min_exc_max <- df_wide %>%
-      dplyr::group_by(Event_ID) %>%
-      dplyr::summarize(exc_max = max(ExchangeCount),
-                       .groups = "drop")
-    #take the minimum of the max exchange count by dyad variable after converting to a vector
-    min_exc <- min(min_exc_max$exc_max)
-    # reduce the threshold by one because the resample function will add an exchange
-    threshold <- min_exc - 1
-
-    if (resample == TRUE){
-      if (threshold < 30) {
-        warning(writeLines("the threshold for resampling is below 30 exchanges.\narea under the curve  becomes a less valid measures of alignment below 30 exchanges"))
-      }
-    }
-    else {
-      small_dyads <- unique(min_exc_max$Event_ID[which(min_exc_max$exc_max < 30)])
-      warning(writeLines(paste("The following dyads are shorter than 30 exchange counts.\nArea under the curve becomes less valid below 30 exchanges", paste(small_dyads, collapse = "\n"), sep = "\n")))
-      threshold <- 3
-    }
-  }
-  else {
-    stop("Argument resample must be logical")
-  }
-
   # here is the big iteration:
   split_pid_df_list <- sapply(c("S1", "S2"), function(temp_pid){
     # grab the columns that are needed for grouping or contain just on participant's scores
@@ -152,10 +124,6 @@ summarize_dyads_slope <- function(aligned_ts_df, resample = TRUE) {
     # index the rows that are either not NA or are NaN values (numbers and NaN)
     p_df <- p_df[which(is.na(first_var_col) == FALSE | is.nan(unlist(first_var_col)) == TRUE),]
     p_df_list <- split(p_df, f = p_df$Event_ID)
-
-    if (resample == TRUE) {
-      p_df_list <- resample_time_series(p_df_list, threshold = threshold)
-    }
 
     p_df_altered <- dplyr::bind_rows(p_df_list)
     # interpolate here - fill forward for end, fill back for front, linear interpolation for the middle

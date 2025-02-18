@@ -32,8 +32,6 @@ Imports:
     YRmisc,
     zoo
 Suggests: 
-    knitr,
-    rmarkdown,
-VignetteBuilder: knitr
+    rmarkdown
 URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign/
 RoxygenNote: 7.3.2

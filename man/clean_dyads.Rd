@@ -7,7 +7,7 @@
 clean_dyads(read_ts_df, lemmatize = TRUE, stop_words_df = "default")
 }
 \arguments{
-\item{read_ts_df}{produced from the read_dyads() function}
+\item{read_ts_df}{data frame produced from the read_dyads() function}
 
 \item{lemmatize}{logical, should words be lemmatized (switched to base morphological form)}
 

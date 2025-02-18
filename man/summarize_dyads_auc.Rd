@@ -7,7 +7,7 @@
 summarize_dyads_auc(aligned_ts_df, resample = TRUE)
 }
 \arguments{
-\item{aligned_ts_df}{produced in the align_dyads function}
+\item{aligned_ts_df}{data frame produced in the align_dyads function}
 
 \item{resample}{logical, should each transcript time series be downsampled to the shortest length of the corpus}
 }

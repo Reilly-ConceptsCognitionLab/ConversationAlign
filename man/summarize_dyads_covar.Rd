@@ -7,7 +7,7 @@
 summarize_dyads_covar(aligned_ts_df, lags = c(-3, -2, -1, 0, 1, 2, 3))
 }
 \arguments{
-\item{aligned_ts_df}{Dataframe produced in the align_dyads function}
+\item{aligned_ts_df}{data frame produced in the align_dyads function}
 
 \item{lags}{A vector of signed integers specifying lags that should be included for Pearson correlation. Negative integers are used for leads.}
 }

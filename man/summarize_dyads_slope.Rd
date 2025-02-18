@@ -4,16 +4,14 @@
 \alias{summarize_dyads_slope}
 \title{summarize_dyads_slope}
 \usage{
-summarize_dyads_slope(aligned_ts_df, resample = TRUE)
+summarize_dyads_slope(aligned_ts_df)
 }
 \arguments{
-\item{aligned_ts_df}{produced in the align_dyads function}
-
-\item{resample}{logical stating whether time series should be downsampled to the shortest length present}
+\item{aligned_ts_df}{data frame produced in the align_dyads function}
 }
 \value{
 A data frame containing the intercept and slope of a linear regression of difference and interlocutor time series for each dimension
 }
 \description{
-Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Area under the curve become less reliable for dyads under 30 exchanges.
+Calculates the intercept and slope of a simple linear regression for each interlocutor and the difference time series between them.
 }
