@@ -229,7 +229,7 @@ summarize_dyads_covar <- function(aligned_ts_df, lags = c(-3, -2, -1, 0, 1, 2, 3
 
       #bind and add event id to spearman correlation df
       dyad_covar <- dplyr::bind_cols(dyad_dim_sc_list, Event_ID = unique(df$Event_ID))
-      dyad_covar$Who_lagged <- participantvec[2]
+      dyad_covar$Who_lagged <- participantvec[1]
       # report the dyad data frame
       dyad_covar
     })
