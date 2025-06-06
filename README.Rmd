@@ -36,8 +36,13 @@ Here's a schematic of how ConversationAlign processes your conversation transcri
 
 # Before
 <span style="display: inline-block; padding: 0.2em 0.4em; margin: 0.1em; background-color: #8B0000; color: white; font-weight: bold; border-radius: 3px; font-family: Arial, sans-serif;">
-How to prep your language transcripts for processing in ConversationAlign: </span> <br>
-ConversationAlign can handle a home brew of your own preferred format. The order of your columns does not matter. Any other data in your transcripts (e.g., metadata, timestamps, grouping variables) will be retained. Don't worry about stripping punctuation. ConversationAlign will do that for you. **Note: ConversationAlign can ONLY process dyadic conversation transcripts (i.e., two person dialogues)**. <br>
+How to prep your language transcripts for processing in ConversationAlign </span> <br>
+
+ConversationAlign can handle a home brew of your own preferred format. The order of your columns does not matter. Any other data in your transcripts (e.g., metadata, timestamps, grouping variables, physio data) will be retained. Don't worry about stripping punctuation or splitting your transscripts across rows. ConversationAlign will do that for you. 
+
+**Note: ConversationAlign can ONLY process dyadic conversation transcripts (i.e., two person dialogues)** <br>
+
+Conditions/Precautions: <br>
 1) Your raw transcript MUST contain at least two columns, delineating interlouctor (e.g., Mary or Joe) and text. 
 2) Label your talker/interlocutor column as 'Interlocutor', 'Speaker', or 'Participant' <br>
 3) Label your text column as 'Text', 'Utterance', or 'Turn'. <br>
