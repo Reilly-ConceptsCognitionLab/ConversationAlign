@@ -47,6 +47,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="conversationalign">ConversationAlign<a class="anchor" aria-label="anchor" href="#conversationalign"></a>
 </h1></div>
+<p>Open-source software for computing main effects and indices of alignment across coversation partners in dyadic conversation transcripts. <br></p>
 <!-- badges: start -->
 
 <!-- ```{r, echo=F, out.width='70%', out.height='60%', out.extra='style="float:right; padding:5px"'} -->
@@ -57,32 +58,36 @@
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h1>
-<p>Here’s a schematic of the guts of the program…</p>
+<p>Here’s a schematic of how ConversationAlign processes your conversation transcript.</p>
 <figure><img src="reference/figures/overview.png" height="600" alt="overview of ConversationAlign"><figcaption aria-hidden="true">
 overview of ConversationAlign
 </figcaption></figure>
 </div>
 <div class="section level1">
-<h1 id="before-starting-prep-your-data">Before starting: Prep your data<a class="anchor" aria-label="anchor" href="#before-starting-prep-your-data"></a>
+<h1 id="before">Before<a class="anchor" aria-label="anchor" href="#before"></a>
 </h1>
-<p>ConversationAlign can handle a home brew of your own preferred format. However, your transcripts must have the following header columns at a bare minimum: <br> 1) Participant identifier (named Interlocutor’, ‘Speaker’, or ‘Participant’) <br> 2) Text (named ‘Text’, ‘Utterance’, or ‘Turn’) <br></p>
-<p>The order of your columns does not matter. Any other data in your transcripts (e.g., metadata, timestamps, grouping variables) will be retained. Here’s an example of a transcript that will work. Don’t worry about stripping punctuation. We will do that for you. <br></p>
-<p><img src="reference/figures/example1_ts_edg.jpeg" height="200" alt="Example transcript from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
-<p>Considerations in prepping your language transcripts for ConversationAlign: <br></p>
-<ol style="list-style-type: decimal">
-<li>Save each conversation transcript as a separate file (e.g., MaryJoe_FirstDateTalk.txt)</li>
-<li>Be careful/deliberate about your filenaming convention. The filename for each conversation will become its event ID in the dataframe</li>
-<li>Move all your language transcripts to be analyzed into one folder (e.g., “my_transcripts”) in the same directory you are running your R script.</li>
-<li>If you have metadata (e.g., age, timestamps, grouping variables), you can either append this to your original transcript or merge the metdata as a separate file. This is a useful option when you have many individual difference and demographic details.</li>
-</ol>
+<p><span style="display: inline-block; padding: 0.2em 0.4em; margin: 0.1em; background-color: #8B0000; color: white; font-weight: bold; border-radius: 3px; font-family: Arial, sans-serif;"> How to prep your language transcripts for processing in ConversationAlign: </span> <br> ConversationAlign can handle a home brew of your own preferred format. The order of your columns does not matter. Any other data in your transcripts (e.g., metadata, timestamps, grouping variables) will be retained. Don’t worry about stripping punctuation. ConversationAlign will do that for you. <strong>Note: ConversationAlign can ONLY process dyadic conversation transcripts (i.e., two person dialogues)</strong>. <br> 1) Your raw transcript MUST contain at least two columns, delineating interlouctor (e.g., Mary or Joe) and text. 2) Label your talker/interlocutor column as ‘Interlocutor’, ‘Speaker’, or ‘Participant’ <br> 3) Label your text column as ‘Text’, ‘Utterance’, or ‘Turn’. <br> 4) Save each conversation transcript somwehere on your computer as a separate file (CSV or txt work best).<br> 5) Be careful/deliberate about your filenaming convention. The filename for each conversation will become its event ID (or document_id) in the dataframe ConversationAlign processes. <br> 6) Move all your individual conversation transcripts to be analyzed into one folder (e.g., “my_transcripts”). This folder should ideally by nested in the same directory you are running your R script in. <br> 7) If you have metadata (e.g., age, timestamps, grouping variables), you can either append this to your original transcript or merge the metdata as a separate file. This is a useful option when you have many individual difference and demographic details. <br></p>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h1>
-<p>Install the development version of ConversationAlign from <a href="https://github.com/" class="external-link">GitHub</a> by entering the following in your console or script:</p>
+<p>Install the development version of ConversationAlign from <a href="https://github.com/" class="external-link">GitHub</a> using the <code>devtools</code> package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Reilly-ConceptsCognitionLab/ConversationAlign"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Check if devtools is installed, if not install it</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Load devtools</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check if ConversationAlign is installed, if not install from GitHub</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/">"ConversationAlign"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Reilly-ConceptsCognitionLab/ConversationAlign"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Load SemanticDistance</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/">ConversationAlign</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
 <h1 id="read-your-transcripts-into-r">Read your transcripts into R<a class="anchor" aria-label="anchor" href="#read-your-transcripts-into-r"></a>
@@ -90,7 +95,7 @@ overview of ConversationAlign
 <div class="section level2">
 <h2 id="read_dyads">read_dyads()<a class="anchor" aria-label="anchor" href="#read_dyads"></a>
 </h2>
-<p>This function will read all your files and concatenate them into a single dataframe, appending document IDs. You can call this dataframe whatever you like. ‘read_dyads’ will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of ‘my_transcripts’ as a staging area for loading data into ConversationAlign. <br></p>
+<p><code><a href="reference/read_dyads.html">read_dyads()</a></code> will read all your files and concatenate them into a single dataframe, appending document IDs. You can call this dataframe whatever you like. <code><a href="reference/read_dyads.html">read_dyads()</a></code> will default to reading all csv and txt files in a folder called my_transcripts. Just remember that when you are finished processing a set of transcripts, make sure to move them out of that folder. You can think of your document folder as a staging area for loading data into <code>ConversationAlign</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyRawLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#if you want to specify a different folder, supply your own path</span></span>
@@ -189,7 +194,6 @@ overview of ConversationAlign
 </tr>
 </tbody>
 </table>
-<!-- <br/> --><!-- ![Example of read transcripts from Taylor Swift-Ellen DeGeneres Interview, 2013](man/figures/example2_ts_edg.jpeg){width=400px, height=600px} <br/> -->
 </div>
 </div>
 <div class="section level1">
@@ -198,9 +202,8 @@ overview of ConversationAlign
 <div class="section level2">
 <h2 id="clean_dyads">clean_dyads()<a class="anchor" aria-label="anchor" href="#clean_dyads"></a>
 </h2>
-<p>‘clean_dyads’ uses numerous regex to clean and format the data your just read into R in the previous step. Although there are many cleaning steps, here are the big ones: 1) to lowercase 2) omit stopwords 3) replace contractions (e.g., ‘you’re’ to ‘you are’) 4) tick marks to apostrophes 5) hypens to spaces 6) omits numerals 7) omits/squishes extraneous white space 8) lemmatization <br></p>
-<p>ConversationAlign calls the textstem package as a dependency to lemmatize your language transcript. This converts morphologiocal derivatives to their root forms. The default is lemmatize=T. Sometimes you want to retain language output in its native form. If this is the case, change the argument in clean_dyads to lemmatize=F. <br></p>
-<p>‘clean_dyads’ outputs word count metrics pre/post cleaning by dyad and interlocutor. This can be useful if you are interested in whether one person just doesn’t produce many words or produces a great deal of empty utterances.<br></p>
+<p><code><a href="reference/clean_dyads.html">clean_dyads()</a></code> uses numerous regex to clean and format the data your just read into R in the previous step. Although there are many cleaning steps, here are the big ones: <br> 1) to lowercase <br> 2) omit stopwords <br> 3) replace contractions (e.g., ‘you’re’ to ‘you are’) <br> 4) tick marks to apostrophes <br> 5) hypens to spaces <br> 6) omits numerals <br> 7) omits/squishes extraneous white space <br> 8) lemmatization <br><br></p>
+<p><code>ConversationAlign</code> calls the <code>textstem</code> package as a dependency to lemmatize your language transcript. This converts morphologiocal derivatives to their root forms. The default is lemmatize=T. Sometimes you want to retain language output in its native form. If this is the case, change the argument in clean_dyads to lemmatize=F. <code><a href="reference/clean_dyads.html">clean_dyads()</a></code> outputs word count metrics pre/post cleaning by dyad and interlocutor. This can be useful if you are interested in whether one person just doesn’t produce many words or produces a great deal of empty utterances.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyCleanLangSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_dyads.html">clean_dyads</a></span><span class="op">(</span><span class="va">MyRawLangSamples</span><span class="op">)</span> <span class="co">#default is lemmatize=TRUE</span></span>
 <span><span class="co">#If you do NOT want your language sample lemmatized, change the lemmatize argument to F or FALSE</span></span>
@@ -354,14 +357,9 @@ overview of ConversationAlign
 <div class="section level2">
 <h2 id="align_dyads">align_dyads()<a class="anchor" aria-label="anchor" href="#align_dyads"></a>
 </h2>
-<p>This is where a lot of the magic happens. align_dyads will take the cleaned dataframe you created in the last step and yoke values to every word by indexing a lookup database. The “align” step yokes data to each word in the cleaned transcript text then structures a dataframe by speaker (“Participant_ID”), exchange (“exchangecount”), and turn (“turncount”) across each dyad (“event_id”). <br></p>
-<p>You will be prompted to select one of more variables (and up to three) to yoke data to that will be used in later steps to compute alignment indices. You will be shown a menu wherein you can select up to three variables to be yoked to your text. Following the menu steps, enter the number of each variable you would like with a space separating values (e.g., “10 14 19”). <br></p>
-<p>Here are your choices: <br></p>
-<p>anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br></p>
-<p>Variable key here: <br><a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a> <br><br></p>
-<p>ConversationAlign will prompt you to append any metadata you would like to add. This joins information from a separate file (e.g., neuropsych scores, ages, etc). Just give ConversationAlign a filepath to your CSV data or click “Enter” to skip this step. A metadata file might look like this:</p>
-<p>METADATA IMAGE HERE <br></p>
-<p>Run align_dyads on the cleaned dyads object you created using the clean_dyads function.<br></p>
+<p>This is where a lot of the magic happens. align_dyads will take the cleaned dataframe you created in the last step and yoke values to every word by indexing a lookup database. The <code><a href="reference/align_dyads.html">align_dyads()</a></code> step yokes data to each word in the cleaned transcript text then structures a dataframe by speaker (“Participant_ID”), exchange (“exchangecount”), and turn (“turncount”) across each dyad (“event_id”). You will be prompted to select one of more variables (and up to three) to yoke data to that will be used in later steps to compute alignment indices. You will be shown a menu wherein you can select up to three variables to be yoked to your text. Following the menu steps, enter the number of each variable you would like with a space separating values (e.g., “10 14 19”). <br></p>
+<p>Here are your choices of dimensions to align on: <br> anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br></p>
+<p>Run <code><a href="reference/align_dyads.html">align_dyads()</a></code> on the cleaned dyads object you created using the <code><a href="reference/clean_dyads.html">clean_dyads()</a></code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyAlignedDyads</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/align_dyads.html">align_dyads</a></span><span class="op">(</span><span class="va">MyCleanLangSamples</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/example4_ts_edg.jpeg" height="200" alt="Example aligned transcripts anger, anxiety, boredom from Taylor Swift-Ellen DeGeneres Interview, 2013"><br></p>
@@ -379,12 +377,12 @@ overview of ConversationAlign
 <div class="section level2">
 <h2 id="summarize_dyads_covar">summarize_dyads_covar()<a class="anchor" aria-label="anchor" href="#summarize_dyads_covar"></a>
 </h2>
-<p>This returns a spearman correlation coefficient and range of lagged Pearson correlation coefficients for each variable of interest. A vector of Lags/leads for Pearson correlations are supplied as a parameter. <br></p>
+<p>This returns a spearman correlation coefficient and range of lagged Pearson correlation coefficients for each variable of interest. A vector of Lags/leads for Pearson correlations are supplied as a parameter.<br></p>
 </div>
 <div class="section level2">
 <h2 id="summarize_dyads_slope">summarize_dyads_slope()<a class="anchor" aria-label="anchor" href="#summarize_dyads_slope"></a>
 </h2>
-<p>This return the intercept and slope of a simple linear regression for each interlocutor and the difference time series over each variable of interest. This provides a measure of change over time, providing information on who aligns to whom. <br><!-- Link here to read more about what dAUC, Spearman, and slope mean in the context of alignment (or look at the figure above for an illustration): LINK TO METHOD --></p>
+<p>This return the intercept and slope of a simple linear regression for each interlocutor and the difference time series over each variable of interest. This provides a measure of change over time, providing information on who aligns to whom. <br></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyFinalDataframe_AUC</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_dyads_auc.html">summarize_dyads_auc</a></span><span class="op">(</span><span class="va">MyAlignedDyads</span>, resample <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co">#resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) </span></span>
 <span></span>
@@ -401,7 +399,7 @@ overview of ConversationAlign
 </h2>
 <p>Any analysis of language comes with assumptions and potential bias. For example, there are some instances where a researcher might care about morphemes and grammatical elements such as ‘the’, ‘a’, ‘and’, etc.. The default for ConversationAlign is to omit these as stopwords and to average across all open class words (e.g., nouns, verbs) in each turn by interlocutor. There are some specific cases where this can all go wrong. Here’s what you need to consider: <br></p>
 <ol style="list-style-type: decimal">
-<li><p><span style="color:red;">Stopwords </span>: The package omits stopwords. <a href="https://osf.io/atf5q/" class="external-link">See the stopword list here</a> if you would like to inspect this list. We included greetings, idioms, filler words, numerals, and pronouns in the omissions list. <br></p></li>
+<li><p><span style="color:red;">Stopwords </span>: The package omits stopwords. <a href="https://osf.io/atf5q/" class="external-link">CLICK HERE</a> to inspect the list. We included greetings, idioms, filler words, numerals, and pronouns. <br></p></li>
 <li><p><span style="color:red;">Lemmatization </span>: The package will lemmatize your language transcripts by default. Lemmatization transforms inflected forms (e.g., standing, stands) into their root or dictionary entry (e.g., stand). This helps for yoking offline values (e.g., happiness, concreteness) to each word and also entails what NLP folks refer to as ‘term aggregation’. However, sometimes you might NOT want to lemmatize. You can easily change this option by using the argument, “lemmatize=FALSE,” to the clean_dyads function below. <br></p></li>
 <li><p><span style="color:red;">Sample Size Issue 1: exchange count</span>: The program derives correlations and AUC for each dyad as metrics of alignment. If there are 40 exchanges (80 turns) between conversation partners, the R value will be computed over 40 data points. For conversations less than about 30 turns, you should not trust the R values that ConversationAlign outputs. <br></p></li>
 <li><p><span style="color:red;">Sample Size Issue 2 </span>: matching to lookup database: ConversationAlign works by yoking values from a lookup database to each word in your language transcript. Some variables have lots of values characterizing many English words. Other variables (e.g., age of acquisition) only cover about 30k words. When a word in your transcript does not have a ‘match’ in the lookup datase, ConversationAlign will return an NA which will not go into the average of the words for that interlocutor and turn. This can be dangerous when there are many missing values. Beware! <br></p></li>
@@ -413,11 +411,13 @@ overview of ConversationAlign
 <div class="section level1">
 <h1 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
 </h1>
-<p>Here are some documents describing how we derived our stopword list and lookup databases.</p>
-<p>Our OSF site for this method paper is here: <a href="https://osf.io/atf5q/" class="external-link uri">https://osf.io/atf5q/</a></p>
-<p>Read more about how we created the internal lookup_database for ConversationAlign here: <a href="https://reilly-lab.github.io/ConversationAlign_LookupDb_Methods.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_LookupDb_Methods.pdf</a></p>
-<p>Read more about the variables we have included to align on by linking here: <a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf</a></p>
-<p>You can read more about the nature of the stopword list and view it here: <a href="https://reilly-lab.github.io/ConversationAlign_StopwordsDb_Methods.pdf" class="external-link uri">https://reilly-lab.github.io/ConversationAlign_StopwordsDb_Methods.pdf</a></p>
+<p>Here are some documents describing how we derived our stopword list and lookup databases. <br></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Preprint</strong> <br> Our PsyArXiv preprint describing the method(s) in greater detail is referenced as: Sacks, B., Ulichney, V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T., … Reilly, J. (2025, March 12). <em>ConversationAlign: Open-Source Software for Analyzing Patterns of Lexical Use and Alignment in Conversation Transcripts</em>. <a href="https://osf.io/preprints/psyarxiv/7xqnp_v1" class="external-link">Click Here</a> to read our preprint. It was recently invited for revision at Behavior Rsearch Methods. We will update when/if eventually accepted there! <br></p></li>
+<li><p><strong>Methods for creating internal lookup database</strong> <br> ConversationAlign contains a large, internal lexical lookup_database. <a href="https://reilly-lab.github.io/ConversationAlign_LookupDatabaseCreation.html" class="external-link">Click Here</a> to see how we created this by merging other offline psycholinguistic databases into one. <br></p></li>
+<li><p><strong>Variable Key for ConversationAlign</strong> <br> ConversationAlign currently allows users to compute alignment dynamics across 30 different lexical, affective, and semantic dimensions.<a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf" class="external-link">Click Here</a> to link to a variable key. <br></p></li>
+<li><p><strong>Stopwords</strong> <br> ConversationAlign includes options for two different stopword lists, MIT and Temple. We generated the Temple stopword list after noticing that the MIT stopword list contains many open class words that are really NOT stopwords (at least by their POS tags). <a href="https://reilly-lab.github.io/StopwordListRevision_Apr25.html" class="external-link">Click Here</a> for a description of the Temple stopword list and a discussion of why you should be VERY careful if you do decide to use the MIT stopword list. <br></p></li>
+</ol>
 </div>
 <div class="section level1">
 <h1 id="get-in-touch">Get in touch!<a class="anchor" aria-label="anchor" href="#get-in-touch"></a>
@@ -444,9 +444,9 @@ overview of ConversationAlign
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Jamie Reilly <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Virginia Ulichney <br><small class="roles"> Author </small>  </li>
-<li>Ben Sacks <br><small class="roles"> Author </small>  </li>
+<li>Jamie Reilly <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Virginia Ulichney <br><small class="roles"> Author </small>   </li>
+<li>Ben Sacks <br><small class="roles"> Author </small>   </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -454,6 +454,10 @@ overview of ConversationAlign
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/tags" class="external-link"><img src="https://img.shields.io/github/v/tag/Reilly-ConceptsCognitionLab/SemanticDistance?color=blue" alt="GitHub tag (latest by date)"></a></li>
+<li><a href="https://github.com/reilly-lab/ConversationAlign/graphs/commit-activity" class="external-link"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance"></a></li>
+<li><a href="http://depsy.org/r/package/ConversationAlign" class="external-link"><img src="https://img.shields.io/badge/depsy-analyzed-blue.svg" alt="Depsy"></a></li>
+<li><a href="https://opensource.org/licenses/GNU" class="external-link"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a></li>
 <li><a href="https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
@@ -467,7 +471,7 @@ overview of ConversationAlign
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
