@@ -1,4 +1,5 @@
 url: https://reilly-conceptscognitionlab.github.io/ConversationAlign/
 template:
   bootstrap: 5
+  bootswatch: lux
 
