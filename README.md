@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<br> <br> <br>
+
 # ConversationAlign
 
 Open-source software for computing main effects and indices of alignment
@@ -45,35 +47,31 @@ ConversationAlign</figcaption>
 # Before
 
 <span style="display: inline-block; padding: 0.2em 0.4em; margin: 0.1em; background-color: #8B0000; color: white; font-weight: bold; border-radius: 3px; font-family: Arial, sans-serif;">
-How to prep your language transcripts for processing in
-ConversationAlign </span> <br>
+Prep your Language Transcripts for ConversationAlign </span> <br>
 
-ConversationAlign can handle a home brew of your own preferred format.
-The order of your columns does not matter. Any other data in your
-transcripts (e.g., metadata, timestamps, grouping variables, physio
-data) will be retained. Don’t worry about stripping punctuation or
-splitting your transscripts across rows. ConversationAlign will do that
-for you.
-
-**Note: ConversationAlign can ONLY process dyadic conversation
-transcripts (i.e., two person dialogues)** <br>
-
-Conditions/Precautions: <br> 1) Your raw transcript MUST contain at
-least two columns, delineating interlouctor (e.g., Mary or Joe) and
-text. 2) Label your talker/interlocutor column as ‘Interlocutor’,
-‘Speaker’, or ‘Participant’ <br> 3) Label your text column as ‘Text’,
-‘Utterance’, or ‘Turn’. <br> 4) Save each conversation transcript
-somwehere on your computer as a separate file (CSV or txt work
-best).<br> 5) Be careful/deliberate about your filenaming convention.
-The filename for each conversation will become its event ID (or
-document_id) in the dataframe ConversationAlign processes. <br> 6) Move
-all your individual conversation transcripts to be analyzed into one
-folder (e.g., “my_transcripts”). This folder should ideally by nested in
-the same directory you are running your R script in. <br> 7) If you have
-metadata (e.g., age, timestamps, grouping variables), you can either
-append this to your original transcript or merge the metdata as a
-separate file. This is a useful option when you have many individual
-difference and demographic details. <br>
+- ConversationAlign works ONLY on dyadic language transcripts (i.e.,
+  2-person dialogues).
+- Your raw transcript MUST contain at least two columns, delineating
+  interlocutor (e.g., Mary or Joe) and text.
+- The order of your columns does not matter.
+- Metadata within will be retained (e.g., timestamps, grouping
+  variables, physio values).
+- Don’t worry about stripping punctuation.
+- Don’t worry about splitting your transcripts across rows. As long as
+  the corresponding text within each turn is marked by a talkerID,
+  ConversationAlign will split and append all labeling data rowwise.
+- Label your talker/interlocutor column as ‘Interlocutor’, ‘Speaker’, or
+  ‘Participant’.
+- Label your text column as ‘Text’, ‘Utterance’, or ‘Turn’.
+- Save each conversation transcript somwehere on your computer as a
+  separate file (CSV or txt work best).
+- Be careful/deliberate about your filenaming convention. The filename
+  for each conversation will become its event ID (or document_id). You
+  might need this when processing large corpora. <br>
+- Move all your individual conversation transcripts to be analyzed into
+  one folder (e.g., “my_transcripts”). This folder should ideally by
+  nested in the same directory you are running your R script in. <br>
+  <br>
 
 # Installation
 
