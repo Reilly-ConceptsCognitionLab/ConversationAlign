@@ -114,6 +114,8 @@ read_dyads <- function(folder_name = "my_transcripts") {
              any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
             (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Turn$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^talker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^MyText$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
 
           #correct the speaker and text names to our conventions
@@ -124,6 +126,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                        grepl("person", colnames(x_read_csv), ignore.case = T) |
                                        grepl("partner", colnames(x_read_csv), ignore.case = T) |
                                        grepl("source", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("talker", colnames(x_read_csv), ignore.case = T) |
                                        grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
 
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
@@ -135,7 +138,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
 
         col_check <- sum(colnames(x_read_csv) %in% c("Participant_ID", "RawText"))
 
-        if (col_check != 2) { #if there are less than three columns
+        if (col_check != 2) { #if there are less than two columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
                      as.character(match(x, file_list_csv)), #also states the transcript
                      " correctly. Make sure that each transcript includes a column marking who is producing text in each row.
