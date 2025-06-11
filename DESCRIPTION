@@ -1,7 +1,7 @@
 Package: ConversationAlign
 Type: Package
 Title: ConversationAlign
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
      person("Jamie", "Reilly", 
            role = c("aut", "cre"), 
@@ -10,8 +10,8 @@ Authors@R: c(
     person("Virginia", "Ulichney", role = "aut"),
     person("Ben", "Sacks", role = "aut"),
     person("Sarah", "Weinstein", role = "ctb"),
-    person("Chelsea", "Helion", role = "ctb")),
-    person("Gus", "Cooney", role = "ctb")),
+    person("Chelsea", "Helion", role = "ctb"),
+    person("Gus", "Cooney", role = "ctb"))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
 Description: Reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word.  ConversationAlign computes alignment indices between two interlocutors across each transcript for up to 30 different psycholinguistic and affective lexical dimensions.
 License: GPL (>= 3) + file LICENSE
@@ -22,18 +22,22 @@ Imports:
     DescTools,
     dplyr (>= 0.4.3),
     magrittr,
+    rlang,
     stringi,
     stringr,
     textstem,
-    textclean,
     tm,
     tidyr,
     tidyselect,
     utils,
     stats,
+    utils,
     YRmisc,
     zoo
 Suggests: 
+    devtools,
+    knitr,
     rmarkdown
-URL: https://reilly-conceptscognitionlab.github.io/ConversationAlign/
+URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/CHANGELOG.md, https://Reilly-ConceptsCognitionLab.github.io/ConversationAlign/news/index.html
 RoxygenNote: 7.3.2
+LazyData: true
