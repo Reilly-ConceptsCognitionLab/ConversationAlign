@@ -4,14 +4,21 @@
 \alias{clean_dyads}
 \title{clean_dyads}
 \usage{
-clean_dyads(read_ts_df, lemmatize = TRUE, stop_words_df = "default")
+clean_dyads(
+  read_ts_df,
+  lemmatize = TRUE,
+  omit_stops = TRUE,
+  which_stoplist = "Temple_stops25"
+)
 }
 \arguments{
 \item{read_ts_df}{data frame produced from the read_dyads() function}
 
-\item{lemmatize}{logical, should words be lemmatized (switched to base morphological form)}
+\item{lemmatize}{logical, should words be lemmatized (switched to base morphological form), default is TRUE}
 
-\item{stop_words_df}{defaults to built in list of stopwords, otherwise supply a file path to a cvs file with a column of stopwords titles 'Word'}
+\item{omit_stops}{remove stopwords, default TRUE}
+
+\item{which_stoplist}{user specifies stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25". "Temple_Stopwords25 is the default list}
 }
 \value{
 dataframe with cleaned text data, formatted with one word per row
