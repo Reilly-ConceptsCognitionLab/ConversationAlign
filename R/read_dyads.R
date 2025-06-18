@@ -7,10 +7,21 @@
 #' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr bind_rows
+#' @importFrom utils read.csv
 #' @export
 
+#defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
+
 read_dyads <- function(folder_name = "my_transcripts") {
-  #defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
+
+  # Load required packages
+  my_packages <- c("dplyr", "magrittr")
+  for (pkg in my_packages) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      install.packages(pkg)
+    }
+    library(pkg, character.only = TRUE)
+  }
 
   read_otter_transcript <- function(file_path) {
     lines <- readLines(file_path) #read otter ai file

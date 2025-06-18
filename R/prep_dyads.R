@@ -24,11 +24,12 @@
 #' @importFrom tidyselect any_of
 #' @importFrom tidyselect contains
 #' @importFrom utils install.packages
+#' @importFrom utils select.list
 #' @export
 
 prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_stoplist = "Temple_stops25") {
   # Load required packages
-  my_packages <- c("dplyr", "magrittr", "purrr", "stringi", "stringr", "tm", "textstem", "tidyr", "tidyselect", "utils")
+  my_packages <- c("dplyr", "magrittr", "purrr", "stringi", "stringr", "textstem", "tidyr", "tidyselect", "utils")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       install.packages(pkg)
@@ -139,7 +140,7 @@ prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_st
 
   # Prompt user to select variables with validation
   repeat {
-    myvars <- select.list(
+    myvars <- utils::select.list(
       choices = possible_vars,
       preselect = NULL,
       multiple = TRUE,

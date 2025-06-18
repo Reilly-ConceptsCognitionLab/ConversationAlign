@@ -2,6 +2,7 @@
 #'
 #' String replacement for pattern matching and expanding lots of contractions
 #' @name replacements_25
+#' @importFrom data.table :=
 #' @importFrom dplyr mutate
 #' @importFrom magrittr %>%
 #' @importFrom rlang sym
@@ -12,7 +13,7 @@
 
 replacements_25 <- function(dat, wordcol) {
   # Load required packages
-  my_packages <- c("dplyr", "magrittr", "rlang")
+  my_packages <- c("data.table", "dplyr", "magrittr", "rlang")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       install.packages(pkg)
