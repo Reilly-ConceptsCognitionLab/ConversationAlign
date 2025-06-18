@@ -4,12 +4,12 @@
 \alias{describe_corpus}
 \title{describe_corpus}
 \usage{
-describe_corpus(df, granularity = "none", export_table = TRUE)
+describe_corpus(df_aligned, granularity = "none")
 }
 \arguments{
-\item{granularity}{provides analytics by person or by conversation, default is granularity="conversation"}
-
 \item{df_aligned}{takes dataframe produced from the df_prep() function}
+
+\item{granularity}{provides analytics by person or by conversation, default is granularity="conversation"}
 }
 \value{
 dataframe with summary analytics for a conversation corpus
