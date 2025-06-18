@@ -2,9 +2,9 @@
 #'
 #' String replacement for pattern matching and expanding lots of contractions
 #' @name replacements_25
-#' @importFrom rlang symbol
-#' @importFrom magrittr %>%
 #' @importFrom dplyr mutate
+#' @importFrom magrittr %>%
+#' @importFrom rlang sym
 #' @keywords internal
 #' @noRd
 
