@@ -5,14 +5,14 @@
 \title{prep_dyads}
 \usage{
 prep_dyads(
-  read_ts_df,
+  dat_read,
   lemmatize = TRUE,
   omit_stops = TRUE,
   which_stoplist = "Temple_stops25"
 )
 }
 \arguments{
-\item{read_ts_df}{data frame produced from the read_dyads() function}
+\item{dat_read}{data frame produced from the read_dyads() function}
 
 \item{lemmatize}{logical, should words be lemmatized (switched to base morphological form), default is TRUE}
 

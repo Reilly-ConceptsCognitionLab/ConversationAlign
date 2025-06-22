@@ -2,7 +2,7 @@
 #'
 #' Cleans, vectorizes and appends lexical norms to all content words in a language corpus. User guides options for stopword removal and lemmatization. User selects up to three psycholinguistic dimensions to yoke norms on each content word in the transcript.
 #' @name prep_dyads
-#' @param read_ts_df data frame produced from the read_dyads() function
+#' @param dat_read data frame produced from the read_dyads() function
 #' @param omit_stops remove stopwords, default TRUE
 #' @param lemmatize logical, should words be lemmatized (switched to base morphological form), default is TRUE
 #' @param which_stoplist user specifies stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25". "Temple_Stopwords25 is the default list
@@ -27,7 +27,7 @@
 #' @importFrom utils select.list
 #' @export
 
-prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_stoplist = "Temple_stops25") {
+prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stoplist = "Temple_stops25") {
   # Load required packages
   my_packages <- c("dplyr", "magrittr", "purrr", "stringi", "stringr", "textstem", "tidyr", "tidyselect", "utils")
   for (pkg in my_packages) {
@@ -38,10 +38,10 @@ prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_st
   }
 
   # Verification steps
-  if (!"RawText" %in% names(read_ts_df)) {
+  if (!"RawText" %in% names(dat_read)) {
     stop("Column 'RawText' not found.")
   }
-  if (!"Participant_ID" %in% names(read_ts_df)) {
+  if (!"Participant_ID" %in% names(dat_read)) {
     stop("Column 'Participant_ID' not found.")
   }
 
@@ -60,64 +60,61 @@ prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_st
   }
 
   # Work on new dataframe
-  prep_df <- read_ts_df
+  dat_prep <- dat_read
 
-  # create TurnCount variable, Create a switchmarker for when Participant_ID changes
-  prep_df <- prep_df %>%
+  # create Turn_Count variable, Create a switchmarker for when Participant_ID changes
+  dat_prep <- dat_prep %>%
     group_by(Event_ID) %>%
     mutate(switch_mark = Participant_ID != dplyr::lag(Participant_ID, default = dplyr::first(Participant_ID)),
            # Cumulative sum of changes to create TurnCount, Start at 1, remove switch marker
-           TurnCount = cumsum(switch_mark) + 1) %>%
+           Turn_Count = cumsum(switch_mark) + 1) %>%
     select(-switch_mark) %>%
     ungroup()
 
   # Text Processing Pipeline
-  prep_df <- prep_df %>%
-    mutate(Participant_ID = as.factor(Participant_ID),
-           Event_ID = as.factor(Event_ID)) %>%
-    mutate(Text_Prep = tolower(RawText))
+  dat_prep <- dat_prep %>% mutate(Participant_ID = as.factor(Participant_ID),
+                                  Event_ID = as.factor(Event_ID)) %>% mutate(Text_Prep = tolower(RawText))
 
   # Standardize apostrophes
-  prep_df <- prep_df %>%
+  dat_prep <- dat_prep %>%
     dplyr::mutate(
       Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[\u2018\u2019\u02BC\u201B\uFF07\u0092\u0091\u0060\u00B4\u2032\u2035]", "'"))
 
   # Remove all non-alphabetic characters except apostrophes
-  prep_df <- prep_df %>%
+  dat_prep <- dat_prep %>%
     dplyr::mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[^a-zA-Z']", " "))
 
   # Replace multiple whitespaces with one, then trim any leading or following whitespaces from letter chars
-  prep_df$Text_Prep <- stringr::str_squish(gsub("\\s+", " ", prep_df$Text_Prep))
+  dat_prep$Text_Prep <- stringr::str_squish(gsub("\\s+", " ", dat_prep$Text_Prep))
 
   # Split rows by any sequence of whitespace
-  prep_df <- prep_df %>%
-    tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")
+  dat_prep <- dat_prep %>% tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")
 
   # Remove any extraneous chars or whitespace
-  prep_df$Text_Prep <- stringi::stri_replace_all_regex(
-    prep_df$Text_Prep, pattern = "[^a-z']", replacement = "", vectorize_all = FALSE)
+  dat_prep$Text_Prep <- stringi::stri_replace_all_regex(
+    dat_prep$Text_Prep, pattern = "[^a-z']", replacement = "", vectorize_all = FALSE)
 
   # Convert ASCII and remove any remaining non-visible characters
-  prep_df$Text_Prep <- iconv(prep_df$Text_Prep, to = "ASCII//TRANSLIT", sub = "")
-  prep_df$Text_Prep <- stringi::stri_replace_all_regex(
-    prep_df$Text_Prep,
+  dat_prep$Text_Prep <- iconv(dat_prep$Text_Prep, to = "ASCII//TRANSLIT", sub = "")
+  dat_prep$Text_Prep <- stringi::stri_replace_all_regex(
+    dat_prep$Text_Prep,
     pattern = "[^[:alnum:]']",  # Remove any non-alphanumeric except apostrophes
     replacement = "",
     vectorize_all = FALSE)
 
   # apply internal function of substitutions for lots of contractions
-  prep_df <- replacements_25(prep_df, "Text_Prep")
+  dat_prep <- replacements_25(dat=dat_prep, wordcol="Text_Prep")
 
   # Split rows by any sequence of whitespace after expanding contractions
-  prep_df <- prep_df %>%
+  dat_prep <- dat_prep %>%
     tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")
 
   # kill RawText
-  prep_df <- prep_df %>%
+  dat_prep <- dat_prep %>%
     select(-RawText)
 
   # Final processing
-  df_clean <- prep_df %>%
+  df_clean <- dat_prep %>%
     mutate(Text_Clean = Text_Prep) %>%
     # Lemmatization
     mutate(Text_Clean = if (lemmatize) textstem::lemmatize_strings(Text_Clean) else Text_Clean,
@@ -140,25 +137,38 @@ prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_st
 
   # Prompt user to select variables with validation
   repeat {
-    myvars <- utils::select.list(
-      choices = possible_vars,
-      preselect = NULL,
-      multiple = TRUE,
-      title = writeLines(c(
-        "Select up to 3 variables you want to analyze alignment on.",
-        "Use CTRL/CMD to select multiple variables."
-      )),
-      graphics = FALSE
-    )
+    # Display available variables with numbers
+    cat("Available variables:\n")
+    for (i in seq_along(possible_vars)) {
+      cat(sprintf("%d. %s\n", i, possible_vars[i]))
+    }
+
+    # Get user input
+    cat("\nSelect up to 3 variables you want to analyze alignment on.\n")
+    cat("Enter the numbers separated by spaces (e.g., 1 3 5): ")
+    input <- readline()
+
+    # Process input - convert to numeric without requiring quotes
+    selected_indices <- suppressWarnings(as.numeric(unlist(strsplit(trimws(input), "\\s+"))))
 
     # Validate selection
-    if (length(myvars) == 0) {
-      message("No variables selected. Please select at least one variable.")
-    } else if (length(myvars) > 3) {
-      message("You selected more than 3 variables. Please select 3 or fewer.")
-    } else {
-      break
+    if (length(selected_indices) == 0 || any(is.na(selected_indices))) {
+      message("Invalid input. Please enter numbers only, separated by spaces.")
+      next
     }
+
+    if (any(selected_indices < 1 | selected_indices > length(possible_vars))) {
+      message("Invalid selection. Please enter numbers between 1 and ", length(possible_vars))
+      next
+    }
+
+    if (length(selected_indices) > 3) {
+      message("You selected more than 3 variables. Please select 3 or fewer.")
+      next
+    }
+
+    myvars <- possible_vars[selected_indices]
+    break
   }
 
   var_selected <- lookup_Jul25 %>%
@@ -172,17 +182,24 @@ prep_dyads <- function(read_ts_df, lemmatize = TRUE, omit_stops = TRUE, which_st
     dplyr::left_join(var_selected,
                      by = c("Text_Clean" = "word"),
                      multiple = "all",
-                     relationship = "many-to-one")
+                     relationship = "many-to-one") %>%
+    # Remove the 'word' column if it exists (from the join)
+    select(-any_of("word"))
 
   # Add exchange count - divides each turn number by 2 then rounds up
-  df_aligned$ExchangeCount <- ceiling(df_aligned$TurnCount / 2)
+  df_aligned$Exchange_Count <- ceiling(df_aligned$Turn_Count / 2)
 
-  # Rearrange columns
+  # Reorder columns
   df_aligned <- df_aligned %>%
-    dplyr::select(tidyselect::any_of(c("Event_ID", "Participant_ID", "ExchangeCount",
-                                       "TurnCount", "Text_Prep", "Text_Clean")),
-                  tidyselect::contains(var_aligners),
-                  tidyselect::everything())
+    dplyr::select(tidyselect::all_of(c('Event_ID', 'Participant_ID', 'Exchange_Count',
+                                       'Turn_Count', 'Text_Prep', 'Text_Clean')),
+
+                  # Then select all columns from var_aligners (exact matches only)
+                  tidyselect::all_of(var_aligners),
+
+                  # grab all else
+                  tidyselect::everything()
+    )
 
   return(df_aligned)
 }

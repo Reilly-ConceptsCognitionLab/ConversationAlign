@@ -4,10 +4,10 @@
 \alias{describe_corpus}
 \title{describe_corpus}
 \usage{
-describe_corpus(df_aligned, granularity = "none")
+describe_corpus(dat_align, granularity = "none")
 }
 \arguments{
-\item{df_aligned}{takes dataframe produced from the df_prep() function}
+\item{dat_align}{takes dataframe produced from the df_prep() function}
 
 \item{granularity}{provides analytics by person or by conversation, default is granularity="conversation"}
 }

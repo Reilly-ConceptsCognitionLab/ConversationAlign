@@ -27,7 +27,6 @@ Imports:
     stringr,
     textstem,
     tibble,
-    tm,
     tidyr,
     tidyselect,
     utils,

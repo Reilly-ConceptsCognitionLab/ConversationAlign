@@ -2,18 +2,18 @@
 #'
 #' String replacement for pattern matching and expanding lots of contractions
 #' @name replacements_25
-#' @importFrom data.table :=
 #' @importFrom dplyr mutate
 #' @importFrom magrittr %>%
-#' @importFrom rlang sym
+#' @importFrom rlang :=
 #' @keywords internal
 #' @noRd
 
-#my_data <- replace_strings_jrcustom(my_data, "text_column")
+#Example
+#result <- replacements_25(my_dataframe, "my_text_column")
 
 replacements_25 <- function(dat, wordcol) {
   # Load required packages
-  my_packages <- c("data.table", "dplyr", "magrittr", "rlang")
+  my_packages <- c("data.table", "dplyr", "magrittr")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       install.packages(pkg)
@@ -21,77 +21,60 @@ replacements_25 <- function(dat, wordcol) {
     library(pkg, character.only = TRUE)
   }
 
-
-  col <- rlang::sym(wordcol)
-
   # Apply all replacements in sequence
   dat %>%
     # Contractions starting with a/i
-    dplyr::mutate(!!col := gsub("\\baren['’]t\\b", "are not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bcan['’]t\\b", "cannot", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bcould['’]ve\\b", "could have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bcouldn['’]t\\b", "could not", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with d
-    dplyr::mutate(!!col := gsub("\\bdidn['’]t\\b", "did not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bdoesn['’]t\\b", "does not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bdon['’]t\\b", "do not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bdunno\\b", "do not know", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with g
-    dplyr::mutate(!!col := gsub("\\bgimme\\b", "give me", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bgonna\\b", "going to", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bgotta\\b", "got to", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with h
-    dplyr::mutate(!!col := gsub("\\bhadn['’]t\\b", "had not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bhasn['’]t\\b", "has not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bhaven['’]t\\b", "have not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bhe['’]ll\\b", "he will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bhe['’]s\\b", "he is", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with i
-    dplyr::mutate(!!col := gsub("\\bi['’]d\\b", "i would", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bi['’]ll\\b", "i will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bi['’]m\\b", "i am", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bi['’]ve\\b", "i have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bisn['’]t\\b", "is not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bit['’]ll\\b", "it will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bit['’]s\\b", "it is", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with k-m
-    dplyr::mutate(!!col := gsub("\\bkinda\\b", "kind of", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\blemme\\b", "let me", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bmight['’]ve\\b", "might have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bmightn['’]t\\b", "might not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bmust['’]ve\\b", "must have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bmustn['’]t\\b", "must not", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with n-w
-    dplyr::mutate(!!col := gsub("\\bneedn['’]t\\b", "need not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bshe['’]ll\\b", "she will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bshe['’]s\\b", "she is", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bshould['’]ve\\b", "should have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bshouldn['’]t\\b", "should not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bsorta\\b", "sort of", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bthat['’]s\\b", "that is", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bthere['’]d\\b", "there would", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bthey['’]ll\\b", "they will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bthey['’]re\\b", "they are", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bthey['’]ve\\b", "they have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwanna\\b", "want to", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwasn['’]t\\b", "was not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwe['’]ll\\b", "we will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwe['’]re\\b", "we are", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwe['’]ve\\b", "we have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bweren['’]t\\b", "were not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwon['’]t\\b", "will not", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwould['’]ve\\b", "would have", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\bwouldn['’]t\\b", "would not", !!col, ignore.case = TRUE)) %>%
-
-    # Contractions starting with y
-    dplyr::mutate(!!col := gsub("\\byou['’]d\\b", "you would", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\byou['’]ll\\b", "you will", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\byou['’]re\\b", "you are", !!col, ignore.case = TRUE)) %>%
-    dplyr::mutate(!!col := gsub("\\byou['’]ve\\b", "you have", !!col, ignore.case = TRUE))
+    dplyr::mutate({{wordcol}} := gsub("\\baren't\\b", "are not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bcan't\\b", "cannot", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bcould've\\b", "could have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bcouldn't\\b", "could not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bdidn't\\b", "did not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bdoesn't\\b", "does not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bdon't\\b", "do not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bdunno\\b", "do not know", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bgimme\\b", "give me", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bgonna\\b", "going to", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bgotta\\b", "got to", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bhadn't\\b", "had not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bhasn't\\b", "has not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bhaven't\\b", "have not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bhe'll\\b", "he will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bhe's\\b", "he is", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bi'd\\b", "i would", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bi'll\\b", "i will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bi'm\\b", "i am", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bi've\\b", "i have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bisn't\\b", "is not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bit'll\\b", "it will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bit's\\b", "it is", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bkinda\\b", "kind of", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\blemme\\b", "let me", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bmight've\\b", "might have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bmightn't\\b", "might not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bmust've\\b", "must have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bmustn't\\b", "must not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bneedn't\\b", "need not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bshe'll\\b", "she will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bshe's\\b", "she is", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bshould've\\b", "should have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bshouldn't\\b", "should not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bsorta\\b", "sort of", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bthat's\\b", "that is", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bthere'd\\b", "there would", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bthey'll\\b", "they will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bthey're\\b", "they are", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bthey've\\b", "they have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwanna\\b", "want to", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwasn't\\b", "was not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwe'll\\b", "we will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwe're\\b", "we are", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwe've\\b", "we have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bweren't\\b", "were not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwon't\\b", "will not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwould've\\b", "would have", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\bwouldn't\\b", "would not", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\byou'd\\b", "you would", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\byou'll\\b", "you will", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\byou're\\b", "you are", {{wordcol}}, ignore.case = TRUE)) %>%
+    dplyr::mutate({{wordcol}} := gsub("\\byou've\\b", "you have", {{wordcol}}, ignore.case = TRUE))
 }

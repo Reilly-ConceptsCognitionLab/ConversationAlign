@@ -2,7 +2,7 @@
 #'
 #' Produces a table of corpus analytics including numbers of complete observations at each step, word counts, lexical diversity (e.g., TTR), stopword ratios, etc. Granularity of the summary statistics are guided by the user (e.g., by conversation, by conversation and speaker, collapsed all)
 #' @name describe_corpus
-#' @param df_aligned takes dataframe produced from the df_prep() function
+#' @param dat_align takes dataframe produced from the df_prep() function
 #' @param granularity provides analytics by person or by conversation, default is granularity="conversation"
 #' @return dataframe with summary analytics for a conversation corpus
 #' @importFrom dplyr across
@@ -33,9 +33,9 @@
 #Missing Observations after alignment (% retained) by each dimension
 
 
-describe_corpus <- function(df, granularity = "none", export_table = TRUE) {
+describe_corpus <- function(dat_align, granularity = "none") {
   # Load required packages
-  my_packages <- c("dplyr", "magrittr", "purrr", 'rlang', "stringr", "tibble")
+  my_packages <- c("dplyr", "magrittr", "purrr", "rlang", "stringr", "tibble", "tidyr")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       install.packages(pkg)
@@ -43,16 +43,17 @@ describe_corpus <- function(df, granularity = "none", export_table = TRUE) {
     library(pkg, character.only = TRUE)
   }
 
-
-# Join lookup for morpheme count, nletters, word frequency
+  # Join lookup for morpheme count, nletters, word frequency
   lookup_small <- lookup_Jul25 %>%
     dplyr::select(word, phon_n_lett, lex_freqlg10, lex_n_morphemes,
                   dplyr::matches("^emo_|^phon_|^sem_|^lex_")) %>%
-    dplyr::rename(morpheme_count = lex_n_morphemes,letter_count = phon_n_lett,
-                  freq_lg10 = lex_freqlg10, syllable_count = phon_nsyll)
+    dplyr::rename(morpheme_count = lex_n_morphemes,
+                  letter_count = phon_n_lett,
+                  freq_lg10 = lex_freqlg10,
+                  syllable_count = phon_nsyll)
 
-  df_text_prep <- df %>% dplyr::left_join(lookup_small, by = c('Text_Prep' = 'word'))
-  df_text_clean <- df %>% dplyr::left_join(lookup_small, by = c('Text_Clean' = 'word'))
+  df_text_prep <- dat_align %>% dplyr::left_join(lookup_small, by = c('Text_Prep' = 'word'))
+  df_text_clean <- dat_align %>% dplyr::left_join(lookup_small, by = c('Text_Clean' = 'word'))
 
   # Function to calculate stats for special columns
   calculate_special_stats <- function(data, group_vars = NULL) {
@@ -62,38 +63,39 @@ describe_corpus <- function(df, granularity = "none", export_table = TRUE) {
     if (length(special_cols) == 0) return(NULL)
 
     if (is.null(group_vars)) {
-      data %>% dplyr::summarize(dplyr::across(dplyr::all_of(special_cols),
-                                       list(complete = ~sum(!is.na(.)),
-                                         missing = ~sum(is.na(.))
-                                       ),
-                                       .names = "{.col}_{.fn}")) %>%
-        tidyr::pivot_longer(cols = dplyr::everything(),
-                            names_to = c("measure", "stat"), names_sep = "_",
-                            values_to = "value") %>% tidyr::unite("measure", measure, stat, sep = "_")
-    } else {
-      data %>% dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
+      data %>%
         dplyr::summarize(dplyr::across(dplyr::all_of(special_cols),
                                        list(complete = ~sum(!is.na(.)),
-                                         missing = ~sum(is.na(.))
-                                       ),
+                                            missing = ~sum(is.na(.))),
+                                       .names = "{.col}_{.fn}")) %>%
+        tidyr::pivot_longer(cols = dplyr::everything(),
+                            names_to = c("measure", "summary_statistic"),
+                            names_sep = "_",
+                            values_to = "value") %>%
+        tidyr::unite("measure", measure, summary_statistic, sep = "_")
+    } else {
+      data %>%
+        dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
+        dplyr::summarize(dplyr::across(dplyr::all_of(special_cols),
+                                       list(complete = ~sum(!is.na(.)),
+                                            missing = ~sum(is.na(.))),
                                        .names = "{.col}_{.fn}"),
                          .groups = "drop") %>%
         tidyr::pivot_longer(cols = -dplyr::all_of(group_vars),
                             names_to = c("measure", "stat"),
                             names_sep = "_",
                             values_to = "value") %>%
-        tidyr::unite("measure", measure, stat, sep = "_")
+        tidyr::unite("measure", measure, summary_statistic, sep = "_")
     }
   }
 
-  # fn to calculate stats for a given text column
+  # Function to calculate stats for a given text column
   calculate_stats <- function(data, text_col, group_vars = NULL) {
     text_col_sym <- rlang::sym(text_col)
 
     if (is.null(group_vars)) {
       data %>%
         dplyr::summarize(
-          # Basic text stats
           Total_Observations = sum(!is.na(!!text_col_sym)),
           Missing_Observations = sum(is.na(!!text_col_sym)),
           Unique_Observations = dplyr::n_distinct(!!text_col_sym, na.rm = TRUE),
@@ -122,7 +124,6 @@ describe_corpus <- function(df, granularity = "none", export_table = TRUE) {
       data %>%
         dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
         dplyr::summarize(
-          # Basic text stats
           Total_Observations = sum(!is.na(!!text_col_sym)),
           Missing_Observations = sum(is.na(!!text_col_sym)),
           Unique_Observations = dplyr::n_distinct(!!text_col_sym, na.rm = TRUE),
@@ -155,13 +156,19 @@ describe_corpus <- function(df, granularity = "none", export_table = TRUE) {
     }
   }
 
-  # Determine grouping variables based on granularity
-  group_vars <- dplyr::case_when(
-    granularity == "none" ~ NULL,
-    granularity == "conversation" ~ "Event_ID",
-    granularity == "fine" ~ c("Event_ID", "Participant_ID"),
-    TRUE ~ stop("Invalid granularity argument. Must be 'none', 'conversation', or 'fine'")
-  )
+  # Validate granularity input
+  if (!granularity %in% c("none", "conversation", "fine")) {
+    stop("Invalid granularity argument. Must be 'none', 'conversation', or 'fine'")
+  }
+
+  # Assign group_vars safely
+  group_vars <- if (granularity == "none") {
+    NULL
+  } else if (granularity == "conversation") {
+    "Event_ID"
+  } else if (granularity == "fine") {
+    c("Event_ID", "Participant_ID")
+  }
 
   # Calculate stats for both text columns
   stats_prep <- calculate_stats(df_text_prep, "Text_Prep", group_vars)
@@ -216,7 +223,7 @@ describe_corpus <- function(df, granularity = "none", export_table = TRUE) {
         special_stats_clean %>% dplyr::rename(Text_Clean = value),
         by = c(group_vars, "measure"))
 
-        result <- dplyr::bind_rows(result, special_stats)
+      result <- dplyr::bind_rows(result, special_stats)
     }
   }
 

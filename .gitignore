@@ -9,3 +9,6 @@
 inst/doc
 >>>>>>> 33b54b319d3e6fcaa4e74b003a1864b97c9e7eb1
 docs
+# Ignore R Markdown paper files
+paper.Rmd
+paper.bib
