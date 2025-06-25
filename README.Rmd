@@ -58,17 +58,15 @@ if (!require("ConversationAlign", quietly = TRUE)) {
 library(ConversationAlign)
 ```
 
-# An Introduction to ConversationAlign
-ConversationAlign is a tool for computing main effects and alignment dynamics in 2-person conversation transcripts. At present, ConversationAlign is capable of analyzing synchrony across more than 30 different affective, lexical, and semantic dimensions.  Email [Jamie Reilly](mailto:reillyj@temple.edu) to suggest more. In the demo to follow, we will analyze a real conversation transcript included in the package. This transcript reflects a classic interview between American radio host, Terry Gross, and comedian, Marc Maron, first broadcast on National Public Radio (2013). Here are the first 10 lines.
+# Intro to ConversationAlign
+`ConversationAlign` is a tool for computing main effects and alignment dynamics in 2-person conversation transcripts. At present, ConversationAlign is capable of analyzing synchrony across more than 30 different affective, lexical, and semantic dimensions.  Email [Jamie Reilly](mailto:reillyj@temple.edu) to suggest more. In the demo to follow, we will analyze a simulated conversation transcript included within the package. 'MaryLittleLamb_Test` involves a repeated loop of two speakers (Mary, Dave) alternating between producing the same few phrases (100 turns, 50 exchanges)
 ```{r, eval=T, message=F, warning=F}
-knitr::kable(head(MaronGross_2013, 10), 
-             format = "pipe", 
-             col.names = c("**speaker**", "**text**"))
+knitr::kable(head(MaryLittleLamb_Test, 20), format = "pipe",  col.names = c("**speaker**", "**text**"))
 ```
 
 Conversation is ideally a cooperative endeavor where both parties modify the form and content of their own production to align with each other. This phenomenon is known as alignment. People align across many, many dimensions including word choices and emotional coloring. ``ConversationAlign`` can measure both differences (e.g., Do older people use more concrete words than younger people?) and synchrony (e.g., Do people of similar educational attainment show higher rates of alignment?) across many factors. In planning your analysis, we recommend choose your factors with a directional hypothesis in mind. <br>
 
-## Preparing Your Data 
+## How to Format Transcripts for ConversationAlign
 - ``ConversationAlign`` works **ONLY** on dyadic language transcripts (i.e., 2-person dialogues).
 - Your raw transcript **MUST** contain at least two columns, interlocutor (i.e., speaker) and text.
 - The order of your columns does not matter.
@@ -84,9 +82,9 @@ Conversation is ideally a cooperative endeavor where both parties modify the for
 # Step 1: Read Transcripts into R
 ## read_dyads() 
 ``read_dyads()`` will import all of the conversation transcripts on your machine's target folder into R. The function will also concatenate all individual transcripts into a single dataframe. Each transcript's filename will become its ``Event_ID`` in the dataframe. If you want to skip the read step and format your dataframe manually in R, you will need three columns named exactly:
-1. ``Event_ID`` column header with unique marker for each conversation transcript (variable as factor) <br>
-2. ``Paricipant_ID`` column header delineating who is producing the text on a given line (variable as factor) <br>
-3. ``RawText`` column header containing the raw text (punctuation, unsplit, uncleaned, etc,) <br>
+1. ``Event_ID`` column header with unique marker for each conversation transcript (variable as factor). <br>
+2. ``Paricipant_ID`` column header delineate who is producing text on a given line. <br>
+3. ``RawText`` column header containing the raw text (punctuation, unsplit, uncleaned, etc,). <br>
 
 Name your concatenated dataframe anything you like (e.g., MyKidConversations). ``read_dyads()`` defaults to scanning a folder called ``my_transcripts`` within the directory you are running any scripts in. ``read_dyads()`` will import all ``*.csv``,  ``*.txt``, and Otter ``*.ai`` files that exist within that folder. You can also dump your transcripts in a folder labelled however you like by specifing a custom path. Here we will import a conversation transcript representing a 2013 NPR interview (USA) between Marc Maron and Terry Gross, titled [Marc Maron: A Life Fueled By 'Panic And Dread'](https://www.npr.org/transcripts/179014321).<br>
 
@@ -94,7 +92,7 @@ Name your concatenated dataframe anything you like (e.g., MyKidConversations). `
 1. **folder_name**: default is 'my_transcripts', change path to your folder name<br>
 ```{r, eval=F, message=F, warning=F}
 #Example of custom path
-MyConvo <- read_dyads(folder_name = 'mycomputer/my_lang_transcripts')
+MyConvo <- read_dyads(folder_name = "/my_lang_transcripts")
 ```
 
 ## read_1file()
@@ -103,13 +101,13 @@ Preps one transcript already in your R environment for ConversationAlign. We wil
 <span style="color: darkred;">Arguments to `read_1file` include:</span>  <br>
 1. **my_dat**: object already in your R environment containing text and speaker information.
 ```{r, eval=T, message=F, warning=F}
-Maron_Prepped <- read_1file(MaronGross_2013)
+MaryLittleLamb <- read_1file(MaryLittleLamb_Test)
 #print first ten rows of header
-knitr::kable(head(Maron_Prepped, 10), format = "pipe")
+knitr::kable(head(MaryLittleLamb, 10), format = "pipe")
 ```
 <br>
 
-# Clean your transcripts
+# Step 2: Prep your Transcripts
 ## clean_dyads()
 ``clean_dyads()`` uses numerous regex to clean and format the data your just read into R in the previous step. ``ConversationAlign`` applies an ordered sequence of cleaning steps beginning with transforming all of your raw text to lowercase. The package eventually splits the text into a one-word-per row format after a number of transformations, including: replace contractions (e.g., 'you're' to 'you are'), gsub tick marks to apostrophes, gsub hypens to spaces, omit numerals, omit non-alphabetic characters, squish extraneous white space. There are two additional arguments you need to be VERY careful about (i.e.,lemmatization and stopword removal).  Let's briefly review these options. <br>
 
@@ -124,37 +122,46 @@ knitr::kable(head(Maron_Prepped, 10), format = "pipe")
 **Lemmatization:** ``ConversationAlign`` calls the ``textstem`` package as a dependency to lemmatize your language transcript. This converts morphologiocal derivatives to their root forms. The default is lemmatize=T. Sometimes you want to retain language output in its native form. If this is the case, change the argument in clean_dyads to lemmatize=F. ``clean_dyads()`` outputs word count metrics pre/post cleaning by dyad and interlocutor. This can be useful if you are interested in whether one person just doesn't produce many words or produces a great deal of empty utterances. <br>
 
 <span style="color: #8B0000; font-weight: bold;">Things to Keep in Mind when Choosing Cleaning/Formatting Parameters</span> <br>
-- You can specify NOT to apply cleaning operations such as stopword removal or lemmatization to your raw text. However, some transformations are obligatory, including the following: <br>
+- You can specify NOT to lemmatize or remove stopwords from your text. However, some text transformations such as the following are obligatory: <br>
 - ``ConversationAlign`` will transform your text to lowercase. <br>
 - ``ConversationAlign`` will expand contractions (e.g., 'that's' will become 'that is'). <br>
 - ``ConversationAlign`` will split your text across rows (one string per row). <br>
 - ``ConversationAlign`` will omit any non-alphabetic characters (symbols, punctuation). <br>
 
-<span style="color: darkred;">Arguments to ``clean_dyads`` include:</span> <br>
+**Choosing Dimensions for Alignment** <br>
+This is where the magic happens. ``prep_dyads()`` will take your dataframe and yoke values to every word by indexing a lookup database named ``lookup_JUl25`` embedded within the internal system data of ``ConversationAlign``. You will be asked to select anywhere from 1 to 3 dimensions from a menu where you will enter the corresponding number of each dimension you would like to compute alignment indices for. Separate wach number with a space (e.g., "10 14 19") when telling the package which variables to analyze. <br>
+
+**Possible Dimensions for Alignment** <br
+TBD
+
+<span style="color: darkred;">Arguments to ``prep_dyads`` include:</span> <br>
 1) **read_ts_df**= name of the dataframe created during ``read_dyads()`` <br>
 3) **lemmatize**= lemmatize strings converting each entry to its dictionary form, default is ``lemmatize=TRUE`` <br>
-4) **which_stopwords**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_Stopwords25``. Default is ``Temple_Stopwords25``. ``CA_OriginalStops`` is the stopword list originally bundled with ``ConversationAlign`` during its early development. <br>
-
+4) **which_stopwords**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_Stopwords25``. Default is ``Temple_Stopwords25``
 ```{r, eval=T, message=F, warning=F}
-Maron_Cleaned <- clean_dyads(read_ts_df=Maron_Prepped, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
-
-knitr::kable(head(Maron_Cleaned, 40), format = "pipe")
-```
-<br>
-
-# Align your transcripts
-## align_dyads()
-This is where the magic happens. ``align_dyads()`` will take the cleaned dataframe you created in the last step and yoke values to every word by indexing a lookup database. The ``align_dyads()`` step yokes data to each word in the cleaned transcript text then structures a dataframe by speaker ("Participant_ID"), exchange ("exchangecount"), and turn ("turncount") across each dyad ("event_id"). You will be prompted to select one of more variables (and up to three) to yoke data to that will be used in later steps to compute alignment indices. You will be shown a menu wherein you can select up to three variables to be yoked to your text. Following the menu steps, enter the number of each variable you would like with a space separating values (e.g., "10 14 19"). <br>
-
-Here are your choices of dimensions to align on: <br>
-anger, anxiety, boredom, closeness, confusion, dominance, doubt, empathy, encouragement, excitement, guilt, happiness, hope, hostility, politeness, sadness, stress, surprise, trust, valence, age of acquisition, word length (by letters), morphemes per turn, prevalence (how many people know this word), number of word senses (polysemy), word frequency (lg10), arousal, concreteness, semantic diversity, and semantic neighbors. <br>
-
-Run ``align_dyads()`` on the cleaned dyads object you created using the ``clean_dyads()`` function.
-```{r, eval=F}
-MyAlignedDyads <- align_dyads(MyCleanLangSamples)
+MaryLittleLamb <- prep_dyads(MaryLittleLamb, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
+knitr::kable(head(MaryLittleLamb, 40), format = "pipe")
 ```
 
 
+# Step 2.5 (optional): Generate corpus analytics 
+It is often critical to produce descriptives/summary statistics to characterize your language sample. This is typically a laborious process. ``describe_corpus`` will do it for you, generating a publication ready table of analytics. You guide the level of granularity that `describe_corpus` will apply via an argument to the function call. For example, the default argument ``granularity="none"`` will collapse all conversations and speakers to produce an undifferentiated picture of language output. In contrast, ``granularity="conversation"`` will produce summary statistics for each conversation. Finally, ``granularity="fine"`` will generate summary statistics by participant and conversation. <br>
+
+Descriptive measures include: <br>
+1. word count totals (raw, cleaned) <br>
+2. word length in letters (mean, SD) <br>
+3. turn count (total) <br>
+4. Total missing observations by each dimension of interest and %missing <br>
+5. Type Token Ratio <br>
+6. Avg. Turn Length (words-per-turn)
+
+<span style="color: darkred;">Arguments to ``describe_corpus`` include:</span> <br>
+1) **prepped_df**= dataframe created by ``prepped_dyads()``function <br>
+2) **granularity**= desired level of collapsing. Default is ``granularity='none'``. Other otions include ``granularity='conversation'`` (by conversation). and `granularity='fine`` by conversation and participant.  
+```{r, eval=T, warning=F, message=F}
+my_corpus_analytics <- describe_corpus(align_dat=Maron_Prepped, granularity='none')
+knitr::kable(head(my_corpus_analytics, 40), format = "pipe")
+```
 
 # Summarize transcripts
 This last step consists of three methods, each of which computes a seperate index of alignment. 
