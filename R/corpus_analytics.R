@@ -1,0 +1,142 @@
+#' corpus_analytics
+#'
+#' Produces a table of corpus analytics including numbers of complete observations at each step, word counts, lexical diversity (e.g., TTR), stopword ratios, etc. Granularity of the summary statistics are guided by the user (e.g., by conversation, by conversation and speaker, collapsed all)
+#' @name corpus_analytics
+#' @param dat_align takes dataframe produced from the df_prep() function
+#' @return dataframe with summary analytics for a conversation corpus
+#' @importFrom dplyr across
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr everything
+#' @importFrom dplyr filter
+#' @importFrom dplyr group_by
+#' @importFrom dplyr left_join
+#' @importFrom dplyr matches
+#' @importFrom dplyr mutate
+#' @importFrom dplyr n_distinct
+#' @importFrom dplyr rename
+#' @importFrom dplyr select
+#' @importFrom dplyr summarize
+#' @importFrom dplyr ungroup
+#' @importFrom magrittr %>%
+#' @importFrom purrr map_dfr
+#' @importFrom stringr str_subset
+#' @importFrom stringr str_trim
+#' @importFrom tibble tibble
+#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr separate
+#' @importFrom utils install.packages
+#' @export
+
+#Text_Prep (just with contractions split), Text_Clean (no stopwords), Any dimension in dataframe counts (emo_, phono_, lex_, sem_)
+#Group_by Event_ID for most stats
+# WordCount, TTR, Morphemes_per_word, Letters_per_word, Exchanges, NSyll, Words_Per_Turn
+
+#Complete this summarize function so that the grouped dataframe outputs new variables:
+# 'conversations (total)' = number of distinct levels of 'Event_ID'
+# 'tokens (all conversations) = sum of all complete obs of Text_Prep across all levels of Event_ID
+# 'exchanges-per-conversation (mean, sd, min, max) = exchanges per 'Event_ID' derived by the maximum exchange_count for each Event_ID.
+# words-per-conversation_raw (mean, sd, min, max): complete observations of 'Text_Prep' for each level of Event_ID
+# words-per-conversation_clean (mean, sd, min, max): complete observations of 'Text_Clean' for each level of Event_ID
+# retention rate post cleaning = Number of complete observations for: Text_Clean / Text_Prep
+# morphemes-per-word (mean, sd, min, max): across all complete obs of 'lex_n_morphemes' by level of Event_ID
+# letter count (mean, sd, min, max): across all complete obs of 'phon_n_letters' by level of Event_ID
+# word freq (mean, sd, min, max): across all complete obs of 'lex_freqlg10' by level of Event_ID
+# words-per-turn (raw) (mean, sd, min, max): group_by turn_count, Event_ID, count complete obs per level of turn_count in Text_Prep
+# words-per-turn (clean) (mean, sd, min, max): group_by turn_count, Event_ID, count complete obs per level of turn_count in Text_Clean
+# TTR (raw): Group by Event_ID, distinct Text_Prep divided by Text_Prep
+# TTR (clean): Group by Event_ID, distinct Text_Clean divided by Text_Clean
+
+corpus_analytics <- function(dat_align) {
+  # Load required packages
+  my_packages <- c("dplyr", "magrittr", "stringr", "tibble", "tidyr", "purrr")
+  for (pkg in my_packages) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      install.packages(pkg)
+    }
+    library(pkg, character.only = TRUE)
+  }
+
+  # Select and prepare data
+  dat_align <- dat_align %>%
+    dplyr::select(Event_ID, Participant_ID, Exchange_Count, Turn_Count, Text_Prep, Text_Clean,
+                  dplyr::matches("^emo_|^phon_|^sem_|^lex_"))
+
+  lookup <- lookup_Jul25 %>% dplyr::select(word, phon_n_lett, phon_nsyll, lex_freqlg10, lex_n_morphemes)
+
+  # Join dat_align with psycholing vars norms for table
+  dat_align_plusvals <- dat_align %>%
+    dplyr::left_join(lookup, by = c("Text_Clean" = "word")) %>%
+    mutate(across(where(is.numeric), ~round(., 2)))
+
+  # Calculate totals counts (n-conversations, n-tokens ALL)
+  total_tokens_raw <- sum(!is.na(dat_align_plusvals$Text_Prep))
+  total_tokens_clean <- sum(!is.na(dat_align_plusvals$Text_Clean))
+  n_conversations <- n_distinct(dat_align_plusvals$Event_ID)
+
+  # Stats for each conversation (needed for computing mean, sd, min, max)
+  conversation_stats <- dat_align_plusvals %>%
+    group_by(Event_ID) %>%
+    summarize(
+      total_exchanges = max(Exchange_Count, na.rm = TRUE),
+      words_raw = sum(!is.na(Text_Prep)),
+      words_clean = sum(!is.na(Text_Clean)),
+      retention_rate = sum(!is.na(Text_Clean))/sum(!is.na(Text_Prep)),
+      morphemes = mean(lex_n_morphemes, na.rm = TRUE),
+      letters = mean(phon_n_lett, na.rm = TRUE),
+      freq = mean(lex_freqlg10, na.rm = TRUE),
+      words_per_turn_raw = mean(str_count(Text_Prep, "\\S+"), na.rm = TRUE),
+      words_per_turn_clean = mean(str_count(Text_Clean, "\\S+"), na.rm = TRUE),
+      ttr_raw = dplyr::n_distinct(Text_Prep, na.rm = TRUE)/sum(!is.na(Text_Prep)),
+      ttr_clean = dplyr::n_distinct(Text_Clean, na.rm = TRUE)/sum(!is.na(Text_Clean)),
+      .groups = 'drop'
+    ) %>%
+    mutate(across(where(is.numeric), ~round(., 2)))
+
+  # Verify we have multiple conversations to compute SD
+  if (nrow(conversation_stats) < 2) {
+    warning("Insufficient conversations (n < 2) to compute meaningful standard deviations")
+  }
+
+  # Calculate summary statistics across all conversations
+  result <- purrr::map_dfr(
+    list(
+      "exchange count per conversation" = conversation_stats$total_exchanges,
+      "word count raw per conversation" = conversation_stats$words_raw,
+      "word count clean per conversation" = conversation_stats$words_clean,
+      "cleaning retention rate" = conversation_stats$retention_rate,
+      "morphemes per word per conversation" = conversation_stats$morphemes,
+      "letters per word per conversation" = conversation_stats$letters,
+      "lexical frequency lg10 per conversation" = conversation_stats$freq,
+      "words per turn raw per conversation" = conversation_stats$words_per_turn_raw,
+      "words per turn clean per conversation" = conversation_stats$words_per_turn_clean,
+      "TTR raw per conversation" = conversation_stats$ttr_raw,
+      "TTR clean per conversation" = conversation_stats$ttr_clean
+    ),
+    function(x) {
+      tibble(
+        mean = mean(x, na.rm = TRUE),
+        sd = ifelse(length(na.omit(x)) > 1, sd(x, na.rm = TRUE), NA_real_),
+        min = min(x, na.rm = TRUE),
+        max = max(x, na.rm = TRUE)
+      )
+    },
+    .id = "measure"
+  ) %>%
+    mutate(across(c(mean, sd, min, max), ~round(., 2)))
+
+  # Add summary rows for corpus-level totals
+  summary_rows <- tibble(
+    measure = c("total number of conversations", "total tokens all conversations (raw)", "total tokens all conversations (post cleaning)"),
+    mean = c(n_conversations, total_tokens_raw, total_tokens_clean),
+    sd = NA_real_,
+    min = NA_real_,
+    max = NA_real_
+  )
+
+  # Combine results
+  final_result <- bind_rows(summary_rows, result) %>%
+    select(measure, mean, sd, min, max)
+
+  return(final_result)
+}
