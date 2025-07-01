@@ -60,7 +60,7 @@ read_dyads <- function(folder_name = "my_transcripts") {
     #create df
     transcript_df <- data.frame(Participant_ID = speaker,
                                 Time = time,
-                                RawText = text,
+                                Text_Raw = text,
                                 stringsAsFactors = FALSE)
     return(transcript_df)
   }
@@ -141,13 +141,13 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                        grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
 
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
-                                       grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "RawText"
+                                       grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "Text_Raw"
 
           x_read_csv <- data.frame(x_read_csv)
           x_final <- x_read_csv
         }
 
-        col_check <- sum(colnames(x_read_csv) %in% c("Participant_ID", "RawText"))
+        col_check <- sum(colnames(x_read_csv) %in% c("Participant_ID", "Text_Raw"))
 
         if (col_check != 2) { #if there are less than two columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column

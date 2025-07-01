@@ -46,8 +46,8 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stop
   if (nrow(dat_read) == 0) {
     stop("Input dataframe is empty.")
   }
-  if (!"RawText" %in% names(dat_read)) {
-    stop("Column 'RawText' not found.")
+  if (!"Text_Raw" %in% names(dat_read)) {
+    stop("Column 'Text_Raw' not found.")
   }
   if (!"Participant_ID" %in% names(dat_read)) {
     stop("Column 'Participant_ID' not found.")
@@ -80,7 +80,7 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stop
 
   # Text Processing Pipeline
   dat_prep <- dat_prep %>% mutate(Participant_ID = as.factor(Participant_ID),
-           Event_ID = as.factor(Event_ID), Text_Prep = tolower(RawText)) %>% select(-RawText)
+           Event_ID = as.factor(Event_ID), Text_Prep = tolower(Text_Raw)) %>% select(-Text_Raw)
 
   # Standardize apostrophes
   dat_prep <- dat_prep %>%

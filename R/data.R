@@ -12,15 +12,16 @@
 "MaronGross_2013"
 
 
-' Sample Calibration Transcript:
+' Sample Conversation Transcript: Nursery Rhymes Looped
 #'
-#' Text and talker information delineated, raw transcript, 100 turns
+#' Text and talker information delineated, 3 separate nursery rhymes, good for computing analytics and word counts
 #'
 #' @format ## "Dyad_Sample"
 #' A data.frame with 100 observations, 2 vars:
 #' \describe{
-#'   \item{text}{text from simulated interview}
-#'    \item{speaker}{speaker identity}
+#'   \item{Event_ID}{factor 3 different simulated conversations}
+#'    \item{Participant_ID}{fictional speaker names, 2 each conversation}
+#'    \item{Raw_Text}{simulated language production, actually looped phrases from nursery rhymes}
 #'   ...
 #' }
-"MaryLittleLamb_Test"
+"NurseryRhymes"
