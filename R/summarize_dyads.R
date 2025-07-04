@@ -36,18 +36,22 @@
 
 summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
 
-  align_dimensions <- c("aff_anger", "aff_anxiety", "aff_boredom",  "aff_closeness",
-                        "aff_confusion", "aff_dominance", "aff_doubt", "aff_empathy",
-                        "aff_encouragement", "aff_excitement", "aff_guilt", "aff_happiness",
-                        "aff_hope", "aff_hostility", "aff_politeness", "aff_sadness", "aff_stress",
-                        "aff_surprise", "aff_trust", "aff_valence", "lex_age_acquisition",
-                        "lex_letter_count_raw", "lex_morphemecount_raw", "lex_prevalence",
-                        "lex_senses_polysemy", "lex_wordfreqlg10_raw", "sem_arousal",
-                        "sem_concreteness", "sem_diversity", "sem_neighbors")
+  align_dimensions <- c("emo_anger", "emo_anger_rescale", "emo_anxiety", "emo_anxiety_rescale",
+                        "emo_arousal_b24", "emo_arousal_b24_rescale", "emo_boredom",
+                        "emo_boredom_rescale", "emo_confusion", "emo_confusion_rescale", "emo_excitement",
+                        "emo_excitement_rescale", "emo_guilt", "emo_guilt_rescale", "emo_happiness",
+                        "emo_happiness_rescale", "emo_intensity", "emo_intensity_recale", "emo_sadness",
+                        "emo_sadness_rescale", "emo_trust", "emo_trust_rescale", "emo_valence_b24",
+                        "emo_valence_b24_rescale", "lex_AoA", "lex_AoA_rescale", "lex_freqlg10",
+                        "lex_freqlg10_rescale", "lex_n_morphemes", "lex_n_senses", "lex_n_senses_rescale",
+                        "phon_n_lett", "phon_nsyll", "sem_auditory", "sem_auditory_rescale",
+                        "sem_cnc_b24", "sem_cnc_b24_rescale", "sem_cnc_v2013", "sem_cnc_v2013_rescale",
+                        "sem_diversity", "sem_diversity_rescale", "sem_neighbors", "sem_neighbors_rescale",
+                        "sem_visual", "sem_visual_rescale")
 
   # summarize average dimensions by participant
   av_df <- aligned_ts_df %>% # remove all non-dimension columns
-    dplyr::select(-c(ExchangeCount, TurnCount, CleanText, NWords_ByPersonTurn_RAW, NWords_ByPersonTurn_CLEAN, NWords_ByPersonTurn_CLEAN_ALIGNED)) %>%
+    dplyr::select(-c(Exchange_Count, Turn_Count, Text_Clean)) %>%
     dplyr::group_by(Event_ID, Participant_ID) %>%
     dplyr::summarize(dplyr::across(tidyselect::contains(align_dimensions), ~ mean(.x, na.rm = T), .names = "{.col}_mean"),
                      dplyr::across(dplyr::everything(), dplyr::first), .groups = "drop") %>%
@@ -103,7 +107,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
 
     # group by turn then take the average score for each turn count,then pivot on pids
     df_wide <- df_speakvar %>%
-      dplyr::group_by(Event_ID, ExchangeCount, Participant_ID) %>%
+      dplyr::group_by(Event_ID, Exchange_Count, Participant_ID) %>%
       dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
                        participant_var = dplyr::first(participant_var),
                        Participant_Pair = dplyr::first(Participant_Pair),
@@ -117,9 +121,9 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
 
     # should remove uneven final exchanges here - need to grab the last exchange count of each row and if it is uneven, remove it.
     for (eid in unique(as.character(df_wide$Event_ID))){
-      final_exc_rows <- df_wide[which(df_wide$Event_ID == eid & df_wide$ExchangeCount == max(df_wide$ExchangeCount[which(df_wide$Event_ID == eid)])),]
+      final_exc_rows <- df_wide[which(df_wide$Event_ID == eid & df_wide$Exchange_Count == max(df_wide$Exchange_Count[which(df_wide$Event_ID == eid)])),]
       if (nrow(final_exc_rows) == 1){
-        df_wide <- df_wide[-which(df_wide$Event_ID == eid & df_wide$ExchangeCount == max(df_wide$ExchangeCount[which(df_wide$Event_ID == eid)])),]
+        df_wide <- df_wide[-which(df_wide$Event_ID == eid & df_wide$Exchange_Count == max(df_wide$Exchange_Count[which(df_wide$Event_ID == eid)])),]
       }
     }
 
@@ -127,7 +131,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
     split_pid_df_list <- sapply(c("S1", "S2"), function(temp_pid){
       # grab the columns that are needed for grouping or contain just on participant's scores
       p_df <- df_wide %>%
-        dplyr::select(c("Event_ID", "ExchangeCount", "Participant_Pair") | c(ends_with(paste0("_", temp_pid))))
+        dplyr::select(c("Event_ID", "Exchange_Count", "Participant_Pair") | c(ends_with(paste0("_", temp_pid))))
 
       # take the first column that matches an aligned variable
       first_var_col <- p_df[,which(colnames(p_df) %in% paste(align_var, temp_pid, sep = "_"))[1]]
@@ -149,8 +153,8 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
       # wrap the data frame in a list to preserve structure (lapply will pull it into a list of lists)
       df_interp_names_list <- list(p_df_interp)
     })
-    # join the two participant data frame together by dyad and exchangecount
-    widedf <- dplyr::left_join(split_pid_df_list[[1]], split_pid_df_list[[2]], by = c("Event_ID", "Participant_Pair", "ExchangeCount"))
+    # join the two participant data frame together by dyad and Exchange_Count
+    widedf <- dplyr::left_join(split_pid_df_list[[1]], split_pid_df_list[[2]], by = c("Event_ID", "Participant_Pair", "Exchange_Count"))
 
     #iterate over each aligned dimension, selecting only the scores for that dimension and pulling a difference value and subbing it in for the actual values
     for (dimension in align_var){
@@ -184,7 +188,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
       calculate_auc <- function(domain_ts, doc_name, dimension) {
         tryCatch({
           # if time series has fewer points than the threshold, fill with NA
-          if (max(domain_ts$ExchangeCount) < 3) { # hard coded to three exchanges
+          if (max(domain_ts$Exchange_Count) < 3) { # hard coded to three exchanges
             #create a single row, single column dataframe with one empty value to fill in the AUC
             doc_domain_auc_df <- data.frame(domain_auc = NA)
           }
@@ -192,7 +196,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
             domain_ts <- data.frame(domain_ts) #make single emotion Time series a data frame
             domain_auc <- DescTools::AUC(x = domain_ts[,1], y = domain_ts[,2], method = "trapezoid")
             doc_domain_auc_df <- data.frame(domain_auc,
-                                            Exchanges = max(domain_ts$ExchangeCount)) #make data frame of AUC, replicated once
+                                            Exchanges = max(domain_ts$Exchange_Count)) #make data frame of AUC, replicated once
           }
           doc_domain_auc_df
         },
@@ -201,7 +205,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
           cat(paste("Results for dAUC will be filled with NA.\n\tTranscript: ",
                     doc_name, "\n\tDimension: ", dimension, "\n", sep = ""))
           # fill the result cell with NA
-          doc_domain_auc_df <- data.frame(domain_auc = NA, Exchanges = max(domain_ts$ExchangeCount))
+          doc_domain_auc_df <- data.frame(domain_auc = NA, Exchanges = max(domain_ts$Exchange_Count))
           doc_domain_auc_df
         })
       }
@@ -210,7 +214,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
       single_doc_auc <- lapply(long_diff_df_list, function(aligned_ts_df){
 
         domain_ts <- aligned_ts_df %>%
-          dplyr::select(ExchangeCount,
+          dplyr::select(Exchange_Count,
                         tidyselect::contains(dimension)) # take dimension and time
 
         # put the function in here
@@ -253,14 +257,14 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
 
   # compute spearman correlation and lagged pearson correlations
 
-  summarize_dyads_covar <- function(aligned_ts_df, lags = c(-3, -2, -1, 0, 1, 2, 3)) {
+  summarize_dyads_covar <- function(aligned_ts_df, lags = c(-2, 0, 2)) {
     #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
     aligned_ts_df <- droplevels(aligned_ts_df)
 
     # pull out metadata into a separate df
     metaDf <- aligned_ts_df %>%
       dplyr::select(-c(Participant_ID, contains(align_dimensions),
-                       contains("Nwords"), CleanText, TurnCount, ExchangeCount)) %>%
+                       contains("Nwords"), Text_Clean, Turn_Count, Exchange_Count)) %>%
       dplyr::group_by(Event_ID) %>%
       dplyr::summarize(across(tidyselect::everything(), dplyr::first))
 
@@ -302,7 +306,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
 
         #create a wide data frame with each row containing both participants' turn aggregated scores
         df_wide <- df %>%
-          dplyr::group_by(Event_ID, ExchangeCount, Participant_ID, .add = FALSE) %>%
+          dplyr::group_by(Event_ID, Exchange_Count, Participant_ID, .add = FALSE) %>%
           dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
                            .groups = "drop")%>%
           tidyr::pivot_wider(names_from = tidyselect::contains("Participant_ID"),
@@ -314,7 +318,7 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
         }
 
         df_wide <- df_wide %>%
-          dplyr::select(Event_ID, ExchangeCount, tidyselect::contains(align_var))
+          dplyr::select(Event_ID, Exchange_Count, tidyselect::contains(align_var))
 
         rows_with_na_ind <- apply(df_wide[,which(colnames(df_wide) %in% paste(align_var, "S1", sep = "_") | colnames(df_wide) %in% paste(align_var, "S2", sep = "_"))], 1, function(x){
           any(is.na(x) == TRUE & is.nan(x) == FALSE)
@@ -447,8 +451,13 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
     row.names(covar_df) <- NULL
     return(covar_df)
   }
-
-  covar_df <- summarize_dyads_covar(aligned_ts_df, lags = c(-2, 0, 2))
+  # set lags based on user input
+  user_lags <- c(-2, 0, 2)
+  if (!is.null(additional_lags)) {
+    # organize into ascending order as well
+    user_lags <- sort(unique(append(user_lags, additional_lags)))
+  }
+  covar_df <- summarize_dyads_covar(aligned_ts_df, lags = user_lags)
 
   # pivot auc df longer by dimension
   auc_df_long <- auc_df %>%
@@ -466,5 +475,4 @@ summarize_dyads <- function(aligned_ts_df, additional_lags=NULL) {
 
   return(output)
 }
-
 
