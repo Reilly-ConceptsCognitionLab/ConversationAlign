@@ -158,13 +158,13 @@ knitr::kable(head(NurseryRhymes_Analytics, 15), format = "pipe")
 ```
 
 # Step 3: Summarize Your Data
-This is the computational stage where the package generates a dataframe boiled down to two rows per converation with summary data appended to each level of Participant_ID. Data 
+This is the computational stage where the package generates a dataframe boiled down to two rows per converation with summary data appended to each level of Participant_ID.  
 
 ## Summarize_dyads()
-`summarize_dyads()` takes 
+This returns the difference time series AUC (dAUC) for every variable of interest you specified and the pearson correlation at lags -2,-1,0,1,2. 
 
-This returns the difference time series AUC (dAUC) for every variable of interest you specified. For example, summarize_dyads_auc will append dAUC values for hostility (if that's what you're interested in). <br>
-This returns a spearman correlation coefficient and range of lagged Pearson correlation coefficients for each variable of interest. A vector of Lags/leads for Pearson correlations are supplied as a parameter.<br>
+<span style="color: darkred;">Arguments to ``summarize_dyads()`` include:</span> <br>
+1) **dat_align**= dataframe created by ``prepped_dyads()``function <br>
 
 ```{r, eval=T}
 MarySumDat <- summarize_dyads(MyAlignedDyads, resample = T) #resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) 
@@ -186,10 +186,8 @@ Any analysis of language comes with assumptions and potential bias. For example,
 
 5. <span style="color:red;">Compositionality </span>: ConversationAlign is a caveman in its complexity. It matches a value to each word as if that word is an island. Phenomena like polysemy (e.g., bank) and the modulation of one word by an intensifier (e.g., very terrible) are not handled. This is a problem for many of the affective measures but not for lexical variables like word length. <br>
 
-6. <span style="color:red;"> Resampling for AUC </span>:  summarize_dyads will output AUC values quantifying the distance between interlocutors on any dimension you specify. AUC will vary depending on the length of the dyad. Therefore, it is often necessary to resample (downsample) your dyads so that they are all of an equivalent length.  This will get very wonky and uninterpretable for very short exchanges. 
 
-# Background
-Here are some documents describing how we derived our stopword list and lookup databases. <br>
+# Background and Supporting Materials
 
 1. **Preprint** <br>
 Our PsyArXiv preprint describing the method(s) in greater detail is referenced as:

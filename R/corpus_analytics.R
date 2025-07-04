@@ -74,6 +74,21 @@ corpus_analytics <- function(dat_align) {
   total_tokens_clean <- sum(!is.na(dat_align_plusvals$Text_Clean))
   n_conversations <- n_distinct(dat_align_plusvals$Event_ID)
 
+  # First calculate words per turn for each turn in each conversation
+  words_per_turn_stats <- dat_align_plusvals %>%
+    group_by(Event_ID, Turn_Count) %>%
+    summarize(
+      words_per_turn_raw = sum(!is.na(Text_Prep)),
+      words_per_turn_clean = sum(!is.na(Text_Clean)),
+      .groups = 'drop'
+    ) %>%
+    group_by(Event_ID) %>%
+    summarize(
+      words_per_turn_raw = mean(words_per_turn_raw, na.rm = TRUE),
+      words_per_turn_clean = mean(words_per_turn_clean, na.rm = TRUE),
+      .groups = 'drop'
+    )
+
   # Stats for each conversation (needed for computing mean, sd, min, max)
   conversation_stats <- dat_align_plusvals %>%
     group_by(Event_ID) %>%
@@ -85,12 +100,11 @@ corpus_analytics <- function(dat_align) {
       morphemes = mean(lex_n_morphemes, na.rm = TRUE),
       letters = mean(phon_n_lett, na.rm = TRUE),
       freq = mean(lex_freqlg10, na.rm = TRUE),
-      words_per_turn_raw = mean(str_count(Text_Prep, "\\S+"), na.rm = TRUE),
-      words_per_turn_clean = mean(str_count(Text_Clean, "\\S+"), na.rm = TRUE),
       ttr_raw = dplyr::n_distinct(Text_Prep, na.rm = TRUE)/sum(!is.na(Text_Prep)),
       ttr_clean = dplyr::n_distinct(Text_Clean, na.rm = TRUE)/sum(!is.na(Text_Clean)),
       .groups = 'drop'
     ) %>%
+    left_join(words_per_turn_stats, by = "Event_ID") %>%
     mutate(across(where(is.numeric), ~round(., 2)))
 
   # Verify we have multiple conversations to compute SD
@@ -101,17 +115,17 @@ corpus_analytics <- function(dat_align) {
   # Calculate summary statistics across all conversations
   result <- purrr::map_dfr(
     list(
-      "exchange count per conversation" = conversation_stats$total_exchanges,
-      "word count raw per conversation" = conversation_stats$words_raw,
-      "word count clean per conversation" = conversation_stats$words_clean,
-      "cleaning retention rate" = conversation_stats$retention_rate,
-      "morphemes per word per conversation" = conversation_stats$morphemes,
-      "letters per word per conversation" = conversation_stats$letters,
-      "lexical frequency lg10 per conversation" = conversation_stats$freq,
-      "words per turn raw per conversation" = conversation_stats$words_per_turn_raw,
-      "words per turn clean per conversation" = conversation_stats$words_per_turn_clean,
-      "TTR raw per conversation" = conversation_stats$ttr_raw,
-      "TTR clean per conversation" = conversation_stats$ttr_clean
+      "exchange count (by conversation)" = conversation_stats$total_exchanges,
+      "word count raw (by conversation)" = conversation_stats$words_raw,
+      "word count clean (by conversation)" = conversation_stats$words_clean,
+      "cleaning retention rate (by conversation)" = conversation_stats$retention_rate,
+      "morphemes-per-word (by conversation)" = conversation_stats$morphemes,
+      "letters-per-word (by conversation)" = conversation_stats$letters,
+      "lexical frequency lg10 (by conversation)" = conversation_stats$freq,
+      "words-per-turn raw (by conversation)" = conversation_stats$words_per_turn_raw,
+      "words-per-turn clean (by conversation)" = conversation_stats$words_per_turn_clean,
+      "TTR raw (by conversation)" = conversation_stats$ttr_raw,
+      "TTR clean (by conversation)" = conversation_stats$ttr_clean
     ),
     function(x) {
       tibble(
@@ -127,7 +141,7 @@ corpus_analytics <- function(dat_align) {
 
   # Add summary rows for corpus-level totals
   summary_rows <- tibble(
-    measure = c("total number of conversations", "total tokens all conversations (raw)", "total tokens all conversations (post cleaning)"),
+    measure = c("total number of conversations", "token count all conversations (raw)", "token count all conversations (post-cleaning)"),
     mean = c(n_conversations, total_tokens_raw, total_tokens_clean),
     sd = NA_real_,
     min = NA_real_,
