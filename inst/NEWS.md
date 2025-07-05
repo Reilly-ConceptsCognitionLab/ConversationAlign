@@ -16,6 +16,7 @@ This is a major release. We have included many new features and fixed numerous b
 -   Added argument ``which_stoplist`` to `prep_dyads`` specifying a four stopword list options (SMART_stops, MIT_stops, Temple_stops25, CA_orig_stops). 
 -   Added pdf manual for ``ConversationAlign``
 -   Revised internal lookup datase ``lookup_db``, replaced with ``lookup_Jul25``, includes many more dimensions and options for scaled vs. raw versions of variables
+-   Added validation step to read_dyads() will throw error and warning message if any transcript has more than or less than two participants for any individual conversation (Event_ID)
 
 ### Fixed
 -  Warnings and checks (variable names, etc) to read, clean, align functions

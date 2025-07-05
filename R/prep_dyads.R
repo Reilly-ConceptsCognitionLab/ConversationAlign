@@ -28,11 +28,6 @@
 #' @export
 
 prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stoplist = "Temple_stops25") {
-  # Check for required lookup table
-  if (!exists("lookup_Jul25")) {
-    stop("Lookup table 'lookup_Jul25' not found in the environment.")
-  }
-
   # Load required packages
   my_packages <- c("dplyr", "magrittr", "purrr", "stringi", "stringr", "textstem", "tidyr", "tidyselect", "utils")
   for (pkg in my_packages) {

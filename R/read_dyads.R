@@ -175,8 +175,33 @@ read_dyads <- function(folder_name = "my_transcripts") {
     stop("No files found. Please make sure you are providing the local or absolute file path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
 
-  alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
+  alldf <- dplyr::bind_rows(all_list) #binds the rows of each list into one data frame
   alldf$Event_ID <- as.factor(alldf$Event_ID)
   alldf$Participant_ID <- as.factor(alldf$Participant_ID)
-  return(alldf)
+
+  dat_read <- alldf
+
+  # NEW VALIDATION STEP: Check for exactly two participants per event
+  participant_check <-  dat_read  %>%
+    dplyr::group_by(Event_ID) %>%
+    dplyr::summarize(
+      n_participants = n_distinct(Participant_ID),
+      .groups = "drop"
+    )
+
+  # Identify events that don't have exactly 2 participants
+  invalid_events <- participant_check %>%
+    dplyr::filter(n_participants != 2) %>%
+    dplyr::pull(Event_ID)
+
+  if (length(invalid_events) > 0) {
+    error_message <- paste(
+      "Check your data! One or more conversations has more or less than two conversation partners.\n",
+      "ConversationAlign only works on dyadic transcripts. Each conversation transcript must have ONLY two participants.\n",
+      "Problematic Event_ID(s):", paste(invalid_events, collapse = ", ")
+    )
+    stop(error_message, call. = FALSE)
+  }
+
+  return(dat_read)
 }
