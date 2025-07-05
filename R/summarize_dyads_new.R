@@ -34,7 +34,7 @@
 #' @importFrom zoo na.approx
 #' @export summarize_dyads
 
-summarize_dyads <- function(df_prep, additional_lags=NULL) {
+summarize_dyads <- function(df_prep, additional_lags = NULL) {
   my_packages <- c("dplyr", "magrittr", "stringr", "stats", "tidyr", "tidyselect", "utils", "zoo")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -43,67 +43,80 @@ summarize_dyads <- function(df_prep, additional_lags=NULL) {
     library(pkg, character.only = TRUE)
   }
 
-# generate summary data by conversation and participant on each dimension for main effects (binds at end)
-# remove all non-dimension columns (Keep Exchagne_Count, Turn_Count, Text_Clean and any dimension vars)
+  # generate summary data by conversation and participant on each dimension for main effects
   av_df <- df_prep %>%
-  dplyr::select(Exchange_Count, Turn_Count, Text_Clean,  tidyselect::matches("^(sem_|lex_|emo_|phon_)")) %>%
-  dplyr::group_by(Event_ID, Participant_ID) %>%
-  dplyr::summarize(dplyr::across(
-        tidyselect::matches("^(sem_|lex_|emo_|phon_)"), ~ mean(.x, na.rm = TRUE), .names = "{.col}_mean"),
-      dplyr::across(c(Exchange_Count, Turn_Count, Text_Clean), dplyr::first), .groups = "drop") %>%
-  dplyr::select(Event_ID, Participant_ID, tidyselect::contains("mean")) %>%
-  tidyr::pivot_longer(cols = tidyselect::matches("^(sem_|lex_|emo_|phon_).*_mean"),
-      names_to = "Dimension", names_pattern = "(.*)_mean", values_to = "Average_Score")
+    dplyr::select(Exchange_Count, Turn_Count, Text_Clean, tidyselect::matches("^(sem_|lex_|emo_|phon_)")) %>%
+    dplyr::group_by(Event_ID, Participant_ID) %>%
+    dplyr::summarize(
+      dplyr::across(
+        tidyselect::matches("^(sem_|lex_|emo_|phon_)"),
+        ~ mean(.x, na.rm = TRUE),
+        .names = "{.col}_mean"
+      ),
+      dplyr::across(c(Exchange_Count, Turn_Count, Text_Clean), dplyr::first),
+      .groups = "drop"
+    ) %>%
+    dplyr::select(Event_ID, Participant_ID, tidyselect::contains("mean")) %>%
+    tidyr::pivot_longer(
+      cols = tidyselect::matches("^(sem_|lex_|emo_|phon_).*_mean"),
+      names_to = "Dimension",
+      names_pattern = "(.*)_mean",
+      values_to = "Average_Score"
+    )
 
-#remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
-df_prep <- droplevels(df_prep)
+  # remove empty levels of all factors in the data frame
+  df_prep <- droplevels(df_prep)
 
-#mutates an interlocutor pair variable, and preserves all columns
-df_prep <- df_prep %>% dplyr::group_by(Event_ID) %>% #add a column of concatenated interlocutor names by transcript
-dplyr::mutate(Participant_Pair = paste(sort(unique(Participant_ID)), collapse = "---")) %>% dplyr::ungroup()
+  # add a column of concatenated interlocutor names by transcript
+  df_prep <- df_prep %>%
+    dplyr::group_by(Event_ID) %>%
+    dplyr::mutate(Participant_Pair = paste(sort(unique(Participant_ID)), collapse = "---")) %>%
+    dplyr::ungroup()
 
-#runs the 'compute_auc' internal function
-auc_df <- comppute_auc(df_prep = df_prep)
-auc_df <- auc_df %>% dplyr::select(c("Event_ID", tidyselect::contains("AUC")))
+  # run the 'compute_auc' internal function
+  auc_df <- compute_auc(df_prep = df_prep)
+  auc_df <- auc_df %>% dplyr::select(c("Event_ID", tidyselect::contains("AUC")))
 
-#runs the 'compute_lagg_corr' internal function with default lags -2,0,2
+  # set lags based on user input
+  user_lags <- c(-2, 0, 2)
+  if (!is.null(additional_lags)) {
+    user_lags <- sort(unique(append(user_lags, additional_lags)))
+  }
 
-covar_df <- compute_lagg_corr(df_prep) # bind the results into dataframe
+  # run the 'compute_lag_corr' internal function with specified lags
+  covar_df <- compute_lag_corr(df_prep, lags = user_lags)
 
-# reshape dataframe
-covar_df <- covar_df %>% dplyr::select(!c(Participant_ID)) %>%
-  # pivot just by the DIMENSION
-  tidyr::pivot_longer(cols = tidyselect::contains(c("SpearR", "PRho")),
-  names_pattern = "(.*)-(.*)", # match up to but not include the dimensions
-  names_to = c(".value", "Dimension")) %>%
-  dplyr::left_join(metaDf, by = "Event_ID") # bind metadata to output by event
+  # reshape covariance dataframe
+  covar_df <- covar_df %>%
+    dplyr::select(!c(Participant_ID)) %>%
+    tidyr::pivot_longer(
+      cols = tidyselect::contains(c("SpearR", "PRho")),
+      names_pattern = "(.*)-(.*)",
+      names_to = c(".value", "Dimension")
+    ) %>%
+    dplyr::left_join(metaDf, by = "Event_ID")
 
-#remove row names
-row.names(covar_df) <- NULL
-return(covar_df)
-}
+  # pivot auc df longer by dimension
+  auc_df_long <- auc_df %>%
+    tidyr::pivot_longer(
+      tidyselect::contains("AUC"),
+      names_to = c("Dimension", "reshaped"),
+      names_pattern = "AUC_(.*)_(raw|standard)",
+      values_to = "AUC"
+    ) %>%
+    tidyr::pivot_wider(
+      names_from = reshaped,
+      names_prefix = "AUC_",
+      values_from = AUC
+    )
 
-# set lags based on user input
-user_lags <- c(-2, 0, 2)
-if (!is.null(additional_lags)) {
-  # organize into ascending order as well
-  user_lags <- sort(unique(append(user_lags, additional_lags)))
-}
-covar_df <- summarize_dyads_covar(aligned_ts_df, lags = user_lags)
+  # bind all the data frames together
+  output <- av_df %>%
+    dplyr::left_join(auc_df_long, by = c("Event_ID", "Dimension")) %>%
+    dplyr::left_join(covar_df, by = c("Event_ID", "Dimension"))
 
-# pivot auc df longer by dimension
-auc_df_long <- auc_df %>%
-  tidyr::pivot_longer(
-    tidyselect::contains("AUC"),
-    names_to = c("Dimension", "reshaped"),
-    names_pattern = "AUC_(.*)_(raw|standard)",
-    values_to = "AUC"
-  ) %>%
-  tidyr::pivot_wider(names_from = reshaped, names_prefix = "AUC_", values_from = AUC)
-# bind the auc and covariance data frames
-output <- av_df %>%
-  dplyr::left_join(auc_df_long, by = c("Event_ID", "Dimension")) %>%
-  dplyr::left_join(covar_df, by = c("Event_ID", "Dimension"))
+  # remove row names
+  row.names(output) <- NULL
 
-return(output)
+  return(output)
 }
