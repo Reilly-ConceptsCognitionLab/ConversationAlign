@@ -21,6 +21,7 @@
 #' @importFrom stringr str_replace_all
 #' @importFrom textstem lemmatize_strings
 #' @importFrom tidyr separate_rows
+#' @importFrom tidyselect all_of
 #' @importFrom tidyselect any_of
 #' @importFrom tidyselect contains
 #' @importFrom utils install.packages
@@ -145,7 +146,7 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stop
     break
   }
 
-var_selected <- lookup_Jul25 %>% select(word, all_of(myvars))
+var_selected <- lookup_Jul25 %>% dplyr::select(word, tidyselect::all_of(myvars))
 
   # Join with psycholinguistic measures
   df_aligned <- df_clean %>% left_join(var_selected, by = c("Text_Clean" = "word")) %>%

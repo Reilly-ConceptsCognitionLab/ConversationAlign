@@ -19,12 +19,15 @@
 #' @importFrom dplyr ungroup
 #' @importFrom magrittr %>%
 #' @importFrom purrr map_dfr
+#' @importFrom stats sd
+#' @importFrom stats na.omit
 #' @importFrom stringr str_subset
 #' @importFrom stringr str_trim
 #' @importFrom tibble tibble
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr separate
+#' @importFrom tidyselect where
 #' @importFrom utils install.packages
 #' @export
 
@@ -49,7 +52,7 @@
 
 corpus_analytics <- function(dat_align) {
   # Load required packages
-  my_packages <- c("dplyr", "magrittr", "stringr", "tibble", "tidyr", "purrr")
+  my_packages <- c("dplyr", "magrittr", "stringr", "tibble", "tidyr", "purrr", "stats", "tidyselect")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       install.packages(pkg)
@@ -67,7 +70,7 @@ corpus_analytics <- function(dat_align) {
   # Join dat_align with psycholing vars norms for table
   dat_align_plusvals <- dat_align %>%
     dplyr::left_join(lookup, by = c("Text_Clean" = "word")) %>%
-    mutate(across(where(is.numeric), ~round(., 2)))
+    mutate(dplyr::across(tidyselect::where(is.numeric), ~round(., 2)))
 
   # Calculate totals counts (n-conversations, n-tokens ALL)
   total_tokens_raw <- sum(!is.na(dat_align_plusvals$Text_Prep))
@@ -130,27 +133,27 @@ corpus_analytics <- function(dat_align) {
     function(x) {
       tibble(
         mean = mean(x, na.rm = TRUE),
-        sd = ifelse(length(na.omit(x)) > 1, sd(x, na.rm = TRUE), NA_real_),
+        stdev= ifelse(length(na.omit(x)) > 1, sd(x, na.rm = TRUE), NA_real_),
         min = min(x, na.rm = TRUE),
         max = max(x, na.rm = TRUE)
       )
     },
     .id = "measure"
   ) %>%
-    mutate(across(c(mean, sd, min, max), ~round(., 2)))
+    mutate(across(c(mean, stdev, min, max), ~round(., 2)))
 
   # Add summary rows for corpus-level totals
   summary_rows <- tibble(
     measure = c("total number of conversations", "token count all conversations (raw)", "token count all conversations (post-cleaning)"),
     mean = c(n_conversations, total_tokens_raw, total_tokens_clean),
-    sd = NA_real_,
+    stdev = NA_real_,
     min = NA_real_,
     max = NA_real_
   )
 
   # Combine results
   final_result <- bind_rows(summary_rows, result) %>%
-    select(measure, mean, sd, min, max)
+    select(measure, mean, stdev, min, max)
 
   return(final_result)
 }
