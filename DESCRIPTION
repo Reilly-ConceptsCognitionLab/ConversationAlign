@@ -22,6 +22,7 @@ Imports:
     DescTools,
     dplyr (>= 0.4.3),
     magrittr,
+    purrr,
     rlang,
     stringi,
     stringr,
@@ -37,8 +38,7 @@ Imports:
 Suggests: 
     devtools,
     knitr,
-    rmarkdown,
-    testthat (>= 3.0.0)
+    rmarkdown
 URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/CHANGELOG.md, https://Reilly-ConceptsCognitionLab.github.io/ConversationAlign/news/index.html
 RoxygenNote: 7.3.2
 LazyData: true

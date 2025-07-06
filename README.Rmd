@@ -167,7 +167,7 @@ This returns the difference time series AUC (dAUC) for every variable of interes
 1) **dat_align**= dataframe created by ``prepped_dyads()``function <br>
 
 ```{r, eval=T}
-MarySumDat <- summarize_dyads(MyAlignedDyads, resample = T) #resample=T computes AUC by homogenizing the length of all dyads to the shortest tramscript (number of turns) 
+MarySumDat <- summarize_dyads(MyAlignedDyads) 
 ```
 <br>
 <br>
