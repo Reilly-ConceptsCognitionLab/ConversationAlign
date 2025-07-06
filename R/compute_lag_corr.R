@@ -15,20 +15,41 @@
 #' @noRd
 #'
 compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2)) {
-  #selects alignment dimensions based on prefixes rather than fixed list reference
+  #selects align_vars by grepping on possible prefixes of dimensions
   align_var <- grep("^(emo_|lex_|sem_|phon_)", colnames(df_prep), value = TRUE, ignore.case = TRUE)
-
+  #remove empty levels of all factors in the data frame - specifically for any removed transcript event ids
   df_prep <- droplevels(df_prep)
 
-  #mutates an interlocutor pair variable, and preserves all columns
-  #add a column of concatenated interlocutor names by transcript
-  df_prep <- df_prep %>%
+  # pull out metadata into a separate df
+  metaDf <- df_prep %>%
+    dplyr::select(-c(Participant_ID, tidyselect::contains(align_var),
+                     tidyselect::contains("Nwords"), Text_Clean, Turn_Count, Exchange_Count)) %>%
     dplyr::group_by(Event_ID) %>%
+    dplyr::summarize(across(tidyselect::everything(), dplyr::first))
+
+  #initial check for transcripts that do not have two interlocutors
+  check_pnum <- df_prep %>%
+    dplyr::group_by(Event_ID) %>%
+    dplyr::summarize(p_count = length(unique(Participant_ID)),
+                     .groups = "drop") #generate dataframe with number of interlocutors in each transcript
+
+  err_ts_vec <- check_pnum$Event_ID[which(check_pnum$p_count != 2)]
+  #check if any transcripts were identified and throw an error with the specific transcripts
+  if (length(err_ts_vec) != 0) {
+    stop("summarize_dyads requires that all transcripts have exactly two interlocutors.\ntranscripts with less than or greater than 2 interlocutors:\n",
+         paste(err_ts_vec, collapse = "\n"))
+  }
+
+  #mutates an interlocutor pair variable, and preserves all columns
+  df_prep <- df_prep %>%
+    dplyr::group_by(Event_ID) %>% #add a column of concatenated interlocutor names by transcript
     dplyr::mutate(Participant_Pair = paste(sort(unique(Participant_ID)), collapse = "---")) %>%
     dplyr::ungroup()
 
-  #DEFINE SPEARMAN CORRELATION FUNCTION
+  #DEFINE SPEARMAN'S CORRELATION FUNCTION
   spearmans_corr_dyads <- function(df_prep) {
+
+    align_var <- colnames(df_prep[,which(colnames(df_prep) %in% align_var)])
 
     df_list <- split(df_prep, f = df_prep$Event_ID)
     #iterate over each newly split data frame.
@@ -37,7 +58,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2)) {
       #establish raw participant name and S1/S2 'key' - denoted by order of utterance
       participantvec <- unique(df$Participant_ID)
 
-      #substitute participant names with temp variable to be replaced with real names later
+      #substitute participant names with transient variable to be replaced with real names later
       names(participantvec) <- c("S1", "S2")
       df$Participant_ID <- gsub(participantvec[1], names(participantvec)[1], df$Participant_ID)
       df$Participant_ID <- gsub(participantvec[2], names(participantvec)[2], df$Participant_ID)
@@ -46,22 +67,21 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2)) {
       df_wide <- df %>%
         dplyr::group_by(Event_ID, Exchange_Count, Participant_ID, .add = FALSE) %>%
         dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
-                         .groups = "drop") %>%
+                         .groups = "drop")%>%
         tidyr::pivot_wider(names_from = tidyselect::contains("Participant_ID"),
-                           values_from = align_var)
+                           values_from = align_var) #%>%
 
       # if there is only one aligned variable manually add that variable name to participant columns
-      if (length(align_var) == 1) {
-        colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))] <- paste(align_var[1], colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))], sep = "_")
+      if (length(align_var) == 1){
+        colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))] = paste(align_var[1], colnames(df_wide)[which(colnames(df_wide) %in% c("S1", "S2"))], sep = "_")
       }
 
       df_wide <- df_wide %>%
         dplyr::select(Event_ID, Exchange_Count, tidyselect::contains(align_var))
 
-      rows_with_na_ind <- apply(df_wide[,which(colnames(df_wide) %in% paste(align_var, "S1", sep = "_") |
-                                                 colnames(df_wide) %in% paste(align_var, "S2", sep = "_"))], 1, function(x){
-                                                   any(is.na(x) == TRUE & is.nan(x) == FALSE)
-                                                 })
+      rows_with_na_ind <- apply(df_wide[,which(colnames(df_wide) %in% paste(align_var, "S1", sep = "_") | colnames(df_wide) %in% paste(align_var, "S2", sep = "_"))], 1, function(x){
+        any(is.na(x) == TRUE & is.nan(x) == FALSE)
+      })
       # only slice out rows if there is at least one, otherwise it will not index any rows
       if (any(rows_with_na_ind)) {
         df_wide <- df_wide[!rows_with_na_ind, ]
@@ -91,9 +111,9 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2)) {
           dim_y_vars <- y_vars[[dim]]
 
           #run spearman corr and format rho and p value into a data frame - with complete cases
-          sc_results <- cor.test(dim_x_vars, dim_y_vars,
-                                 method = "spearman", exact = F,
-                                 na.action = "na.omit")
+          sc_results <- stats::cor.test(dim_x_vars, dim_y_vars,
+                                        method = "spearman", exact = F,
+                                        na.action = "na.omit")
 
           sc_results_df <- data.frame(SpearR = sc_results$estimate)
           sc_results_df
@@ -125,10 +145,11 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2)) {
           leadTimes <- c(1)
         }
         # calculate lagged correlation
-        suppressWarnings({
+        suppressWarnings((
           lo_full <- YRmisc::cor.lag(dim_x_vars, dim_y_vars,
                                      max(lagTimes), max(abs(leadTimes)))
-        })
+
+        ))
 
         # get the index of column name with zero
         which0 <- which(colnames(lo_full) == "0")
@@ -166,14 +187,26 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2)) {
 
       #bind and add event id to spearman correlation df
       dyad_covar <- dplyr::bind_cols(dyad_dim_sc_list, Event_ID = unique(df$Event_ID))
-      dyad_covar$Who_lagged <- participantvec[2]
+      dyad_covar$Who_lagged_covar <- participantvec[2]
       # report the dyad data frame
       dyad_covar
     })
     all_dyad_df <- dplyr::bind_rows(output_df_list)
     return(all_dyad_df)
   }
+  #END DEFINE SPEARMAN'S CORRELATION FUNCTIONs
+  covar_df <- spearmans_corr_dyads(df_prep = df_prep) # bind the results into dataframe
+  # order columns
 
-  # Call the inner function and return its result
-  spearmans_corr_dyads(df_prep)
+  covar_df <- covar_df %>%
+    dplyr::select(!c(Participant_ID)) %>%
+    # pivot just by the DIMENSION
+    tidyr::pivot_longer(cols = tidyselect::contains(c("SpearR", "PRho")),
+                        names_pattern = "(.*)-(.*)", # match up to but not include the dimensions
+                        names_to = c(".value", "Dimension")) %>%
+    dplyr::left_join(metaDf, by = "Event_ID") # bind metadata to output by event
+
+  #remove row names
+  row.names(covar_df) <- NULL
+  return(covar_df)
 }

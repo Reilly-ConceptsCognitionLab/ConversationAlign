@@ -45,7 +45,7 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
 
   # generate summary data by conversation and participant on each dimension for main effects
   av_df <- df_prep %>%
-    dplyr::select(Exchange_Count, Turn_Count, Text_Clean, tidyselect::matches("^(sem_|lex_|emo_|phon_)")) %>%
+    dplyr::select(Event_ID, Participant_ID, Exchange_Count, Turn_Count, Text_Clean, tidyselect::matches("^(sem_|lex_|emo_|phon_)")) %>%
     dplyr::group_by(Event_ID, Participant_ID) %>%
     dplyr::summarize(
       dplyr::across(
@@ -84,17 +84,17 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
   }
 
   # run the 'compute_lag_corr' internal function with specified lags
-  covar_df <- compute_lag_corr(df_prep, lags = user_lags)
+  covar_df <- compute_lagcorr(df_prep, lags = user_lags)
 
   # reshape covariance dataframe
-  covar_df <- covar_df %>%
-    dplyr::select(!c(Participant_ID)) %>%
-    tidyr::pivot_longer(
-      cols = tidyselect::contains(c("SpearR", "PRho")),
-      names_pattern = "(.*)-(.*)",
-      names_to = c(".value", "Dimension")
-    ) %>%
-    dplyr::left_join(metaDf, by = "Event_ID")
+  #covar_df <- covar_df %>%
+    #dplyr::select(!c(Participant_ID)) %>%
+    # tidyr::pivot_longer(
+    #   cols = tidyselect::contains(c("SpearR", "PRho")),
+    #   names_pattern = "(.*)-(.*)",
+    #   names_to = c(".value", "Dimension")
+    # ) #%>%
+    #dplyr::left_join(metaDf, by = "Event_ID")
 
   # pivot auc df longer by dimension
   auc_df_long <- auc_df %>%

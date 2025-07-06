@@ -1,6 +1,6 @@
 #' compute_auc
 #'
-#' computes auc between concersation partners for each dyad
+#' computes auc between conversation partners for each dyad
 #' @name compute_spearman
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr mutate
@@ -11,7 +11,7 @@
 
 
 compute_auc <- function(df_prep) {
-  #selects align_vars by greppign on possible prefixes of dimensions
+  #selects align_var by greppin on possible prefixes of dimensions
   align_var <- grep("^(emo_|lex_|sem_|phon_)", colnames(df_prep), value = TRUE, ignore.case = TRUE)
 
   # split the data frame into a list by event id
@@ -30,7 +30,7 @@ compute_auc <- function(df_prep) {
     dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
                      participant_var = dplyr::first(participant_var), Participant_Pair = dplyr::first(Participant_Pair),
                      .groups = "drop") %>%
-    tidyr::pivot_wider(names_from = c("participant_var"), values_from = any_of(align_dimensions))
+    tidyr::pivot_wider(names_from = c("participant_var"), values_from = any_of(align_var))
 
   # if there is only one aligned variable manually add that variable name to participant columns
   if (length(align_var) == 1){
@@ -97,7 +97,7 @@ compute_auc <- function(df_prep) {
   long_diff_df_list <- split(long_diff_df, f = long_diff_df$Event_ID)
 
   # grab the aligned dimensions as a vector to iterate over
-  xdimensions <- colnames(long_diff_df)[which(colnames(long_diff_df) %in% align_dimensions)]
+  xdimensions <- colnames(long_diff_df)[which(colnames(long_diff_df) %in% align_var)]
 
   domain_auc_list <- lapply(xdimensions, function(dimension){ #iterate over emotion
     # now iterate over each dyad in the corpus
