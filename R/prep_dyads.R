@@ -105,13 +105,13 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stop
   dat_prep <- dat_prep %>% tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")
 
   # Final processing and lemmatization
-  df_clean <- dat_prep %>% mutate(Text_Clean = ifelse(stringi::stri_isempty(Text_Prep), NA, Text_Prep),
+  df_prep <- dat_prep %>% mutate(Text_Clean = ifelse(stringi::stri_isempty(Text_Prep), NA, Text_Prep),
            Text_Clean = if(lemmatize) textstem::lemmatize_strings(Text_Clean) else Text_Clean)
 
   # Stopword removal
   if (omit_stops) {
     stopwords <- stopwords_lists[[which_stoplist]]$word
-    df_clean <- df_clean %>% mutate(Text_Clean = ifelse(Text_Clean %in% stopwords, NA, Text_Clean))
+    df_prep <- df_prep %>% mutate(Text_Clean = ifelse(Text_Clean %in% stopwords, NA, Text_Clean))
   }
 
   # Variable selection
@@ -149,12 +149,13 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE, which_stop
 var_selected <- lookup_Jul25 %>% dplyr::select(word, tidyselect::all_of(myvars))
 
   # Join with psycholinguistic measures
-  df_aligned <- df_clean %>% left_join(var_selected, by = c("Text_Clean" = "word")) %>%
+  df_prep <- df_prep %>% left_join(var_selected, by = c("Text_Clean" = "word")) %>%
     mutate(Exchange_Count = ceiling(Turn_Count / 2))
 
   # Reorder columns - INCLUDE Original_Text in output
-  df_aligned <- df_aligned %>% select(Event_ID, Participant_ID, Exchange_Count, Turn_Count,
+  df_prep <- df_prep %>% select(Event_ID, Participant_ID, Exchange_Count, Turn_Count,
            Text_Prep, Text_Clean, all_of(myvars), everything())
 
-  return(df_aligned)
+
+  return(df_prep)
 }
