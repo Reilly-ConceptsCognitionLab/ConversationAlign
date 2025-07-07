@@ -7,6 +7,8 @@ utils::globalVariables(
     "clean_dyads",
     "df",
     "df_prep",
+    "df_read",
+    "df_summarize",
     "Exchanges",
     "Exchange_Count",
     'Event_ID',
