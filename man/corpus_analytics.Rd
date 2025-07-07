@@ -4,10 +4,10 @@
 \alias{corpus_analytics}
 \title{corpus_analytics}
 \usage{
-corpus_analytics(dat_align)
+corpus_analytics(dat_prep)
 }
 \arguments{
-\item{dat_align}{takes dataframe produced from the df_prep() function}
+\item{dat_prep}{takes dataframe produced from the df_prep() function}
 }
 \value{
 dataframe with summary analytics for a conversation corpus

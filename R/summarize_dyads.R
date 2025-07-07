@@ -4,27 +4,28 @@
 #'
 #' @name summarize_dyads
 #' @param df_prep produced in the align_dyads function
-#' @param additional_lags integer vector, should any lags be added in addition to -2, 0, 2
+#' @param custom_lags integer vector, should any lags be added in addition to -2, 0, 2
+#' @param corr_type option for computing lagged correlations turn-by-turn covariance (default='Pearson')
+#' @param sumdat default=TRUE, group and summarize data, two rows per conversation, one row for each participant, false will fill down summary statistics across all exchanges
 #' @importFrom DescTools AUC
-#' @importFrom dplyr distinct
-#' @importFrom dplyr first
-#' @importFrom dplyr summarise
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom dplyr group_by
-#' @importFrom dplyr ungroup
-#' @importFrom dplyr filter
-#' @importFrom dplyr left_join
+#' @importFrom dplyr across
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr bind_cols
+#' @importFrom dplyr distinct
+#' @importFrom dplyr group_by
+#' @importFrom dplyr filter
+#' @importFrom dplyr first
+#' @importFrom dplyr summarise
+#' @importFrom dplyr left_join
+#' @importFrom dplyr mutate
 #' @importFrom dplyr rename_with
 #' @importFrom dplyr rename_at
-#' @importFrom dplyr across
-#' @importFrom dplyr first
-#' @importFrom stats cor.test
+#' @importFrom dplyr select
+#' @importFrom dplyr ungroup
+#' @importFrom magrittr %>%
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_c
-#' @importFrom magrittr %>%
+#' @importFrom tidyr fill
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyr drop_na
@@ -36,7 +37,7 @@
 #' @importFrom zoo na.approx
 #' @export summarize_dyads
 
-summarize_dyads <- function(df_prep, additional_lags = NULL) {
+summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, corr_type = 'Pearson') {
   my_packages <- c("dplyr", "magrittr", "stringr", "stats", "tidyr", "tidyselect", "utils", "zoo")
   for (pkg in my_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -45,12 +46,14 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
     library(pkg, character.only = TRUE)
   }
 
-  # Extract and Summarize Meta-Data - with safe handling
+  # Extract and Summarize Meta-Data - select Event_ID, Participant_ID, and non-numeric columns
+  # excluding dimension columns and specific technical columns
   df_meta <- df_prep %>%
-    dplyr::select(
-      Event_ID, Participant_ID,
-      -c(Exchange_Count, Turn_Count, Text_Prep, Text_Clean),
-      -matches("^(emo_|lex_|phon_|sem_|df_)"))
+    dplyr::select(Event_ID, Participant_ID,
+                  -c(Exchange_Count, Turn_Count, Text_Prep, Text_Clean),
+                  -matches("^(emo_|lex_|phon_|sem_|df_)")) %>%
+    # Select only factor and character columns (excluding numeric)
+    dplyr::select(where(~ is.factor(.x) | is.character(.x)))
 
   # Check if there are any columns left besides Event_ID and Participant_ID
   meta_cols <- setdiff(names(df_meta), c("Event_ID", "Participant_ID"))
@@ -59,7 +62,7 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
   if (length(meta_cols) > 0) {
     df_meta_sum <- df_meta %>%
       dplyr::group_by(Event_ID, Participant_ID) %>%
-      dplyr::summarize(dplyr::across(.cols = everything(),
+      dplyr::summarise(dplyr::across(.cols = everything(),
                                      .fns = ~ dplyr::first(.x),
                                      .names = "{.col}_summary"),
                        .groups = "drop")
@@ -68,8 +71,6 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
       dplyr::select(Event_ID, Participant_ID) %>%
       dplyr::distinct()
   }
-
-  # Rest of the function remains the same until the final join...
 
   # Generate summary data by conversation and participant
   av_df <- df_prep %>%
@@ -102,21 +103,21 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
     dplyr::ungroup()
 
   # Compute AUC and lag correlations
-  auc_df <- compute_auc(df_prep = df_prep) %>%
-    dplyr::select(c("Event_ID", contains("AUC")))
+  auc_df <- compute_auc(df_prep = df_prep) %>% dplyr::select(c("Event_ID", contains("AUC")))
 
   user_lags <- c(-2, 0, 2)
-  if (!is.null(additional_lags)) {
-    user_lags <- sort(unique(append(user_lags, additional_lags)))
+  if (!is.null(custom_lags)) {
+    user_lags <- sort(unique(append(user_lags, custom_lags)))
   }
-  covar_df <- compute_lagcorr(df_prep, lags = user_lags)
+  # Pass corr_type to compute_lagcorr
+  covar_df <- compute_lagcorr(df_prep, lags = user_lags, corr_type = corr_type)
 
   # Reshape AUC data
   auc_df_long <- auc_df %>%
     tidyr::pivot_longer(
       contains("AUC"),
       names_to = c("Dimension", "reshaped"),
-      names_pattern = "AUC_(.*)_(raw|standard)",
+      names_pattern = "AUC_(.*)_(raw|scaled100)",
       values_to = "AUC"
     ) %>%
     tidyr::pivot_wider(
@@ -126,18 +127,30 @@ summarize_dyads <- function(df_prep, additional_lags = NULL) {
     )
 
   # Combine all data frames - with conditional join
-  output <- av_df %>%
+  df_summarize <- av_df %>%
     dplyr::left_join(auc_df_long, by = c("Event_ID", "Dimension")) %>%
     dplyr::left_join(covar_df, by = c("Event_ID", "Dimension"))
 
   # Only join metadata if there were columns to summarize
   if (length(meta_cols) > 0) {
-    output <- output %>%
+    df_summarize <- df_summarize %>%
       dplyr::left_join(df_meta_sum, by = c("Event_ID", "Participant_ID"))
   }
 
   # Remove row names
-  row.names(output) <- NULL
+  row.names(df_summarize) <- NULL
 
-  return(output)
+  if (sumdat_only) {
+    return(df_summarize)
+  } else {
+    # Join summary data back to original dataframe
+    df_full <- df_prep %>%
+      dplyr::left_join(df_summarize, by = c("Event_ID", "Participant_ID")) %>%
+      # Fill down summary data within each Event_ID
+      dplyr::group_by(Event_ID) %>%
+      tidyr::fill(names(df_summarize)[!names(df_summarize) %in% c("Event_ID", "Participant_ID")], .direction = "downup") %>%
+      dplyr::ungroup()
+
+    return(df_full)
+  }
 }
