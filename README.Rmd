@@ -142,7 +142,7 @@ This is where the magic happens. ``prep_dyads()`` will yoke published norms for 
 4) **which_stopwords**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_stops25``. Default is ``Temple_stops25``
 ```{r, eval=T, message=F, warning=F}
 NurseryRhymes_Aligned <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
-knitr::kable(head(NurseryRhymes_Aligned, 20), format = "pipe")
+knitr::kable(head(NurseryRhymes_Aligned, 20), format = "simple")
 ```
 
 
@@ -153,8 +153,8 @@ It is often critical to produce descriptives/summary statistics to characterize 
 1) **dat_align**= dataframe created by ``prepped_dyads()``function <br>
 
 ```{r, eval=T, warning=F, message=F}
-NurseryRhymes_Analytics <-  corpus_analytics(dat_align=NurseryRhymes_Aligned)
-knitr::kable(head(NurseryRhymes_Analytics, 15), format = "pipe")
+NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Aligned)
+knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple")
 ```
 
 # Step 3: Summarize Your Data
@@ -164,10 +164,12 @@ This is the computational stage where the package generates a dataframe boiled d
 This returns the difference time series AUC (dAUC) for every variable of interest you specified and the pearson correlation at lags -2,-1,0,1,2. 
 
 <span style="color: darkred;">Arguments to ``summarize_dyads()`` include:</span> <br>
-1) **dat_align**= dataframe created by ``prepped_dyads()``function <br>
+1) **df_prep**= dataframe created by ``prep_dyads()``function <br>
 
-```{r, eval=T}
-MarySumDat <- summarize_dyads(MyAlignedDyads) 
+```{r, eval=T, warning=F, message=F}
+MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Aligned) 
+colnames(MarySumDat)
+knitr::kable(head(MarySumDat, 15), format = "simple")
 ```
 <br>
 <br>

@@ -16,6 +16,7 @@ compute_auc <- function(df_prep) {
 
   # split the data frame into a list by event id
   df_list <- split(df_prep, f = df_prep$Event_ID)
+
   # iterate over each event, replacing participant names with a transient filler variable
   df_list_speakvar <- lapply(df_list, function(df){
     svec <- unique(as.character(df$Participant_ID))
@@ -162,7 +163,7 @@ compute_auc <- function(df_prep) {
     dplyr::mutate(dplyr::across(tidyselect::contains("AUC"), ~ (50 * .x) / Exchanges)) %>%
     dplyr::select(-Exchanges)
 
-  output_auc <- dplyr::left_join(all_domain_df, all_domain_df_s, by = "Event_ID", suffix = c("_raw", "_standard")) %>%
+  output_auc <- dplyr::left_join(all_domain_df, all_domain_df_s, by = "Event_ID", suffix = c("_raw", "_scaled100")) %>%
     dplyr::select(c(Event_ID, Exchanges, dplyr::everything()))
 
   return(output_auc)

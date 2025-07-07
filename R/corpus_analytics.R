@@ -2,7 +2,7 @@
 #'
 #' Produces a table of corpus analytics including numbers of complete observations at each step, word counts, lexical diversity (e.g., TTR), stopword ratios, etc. Granularity of the summary statistics are guided by the user (e.g., by conversation, by conversation and speaker, collapsed all)
 #' @name corpus_analytics
-#' @param dat_align takes dataframe produced from the df_prep() function
+#' @param dat_prep takes dataframe produced from the df_prep() function
 #' @return dataframe with summary analytics for a conversation corpus
 #' @importFrom dplyr across
 #' @importFrom dplyr bind_rows
@@ -50,7 +50,7 @@
 # TTR (raw): Group by Event_ID, distinct Text_Prep divided by Text_Prep
 # TTR (clean): Group by Event_ID, distinct Text_Clean divided by Text_Clean
 
-corpus_analytics <- function(dat_align) {
+corpus_analytics <- function(dat_prep) {
   # Load required packages
   my_packages <- c("dplyr", "magrittr", "stringr", "tibble", "tidyr", "purrr", "stats", "tidyselect")
   for (pkg in my_packages) {
@@ -61,24 +61,24 @@ corpus_analytics <- function(dat_align) {
   }
 
   # Select and prepare data
-  dat_align <- dat_align %>%
+  dat_prep <- dat_prep %>%
     dplyr::select(Event_ID, Participant_ID, Exchange_Count, Turn_Count, Text_Prep, Text_Clean,
                   dplyr::matches("^emo_|^phon_|^sem_|^lex_"))
 
   lookup <- lookup_Jul25 %>% dplyr::select(word, phon_n_lett, phon_nsyll, lex_freqlg10, lex_n_morphemes)
 
-  # Join dat_align with psycholing vars norms for table
-  dat_align_plusvals <- dat_align %>%
+  # Join dat_prep with psycholing vars norms for table
+  dat_prep_plusvals <- dat_prep %>%
     dplyr::left_join(lookup, by = c("Text_Clean" = "word")) %>%
     mutate(dplyr::across(tidyselect::where(is.numeric), ~round(., 2)))
 
   # Calculate totals counts (n-conversations, n-tokens ALL)
-  total_tokens_raw <- sum(!is.na(dat_align_plusvals$Text_Prep))
-  total_tokens_clean <- sum(!is.na(dat_align_plusvals$Text_Clean))
-  n_conversations <- n_distinct(dat_align_plusvals$Event_ID)
+  total_tokens_raw <- sum(!is.na(dat_prep_plusvals$Text_Prep))
+  total_tokens_clean <- sum(!is.na(dat_prep_plusvals$Text_Clean))
+  n_conversations <- n_distinct(dat_prep_plusvals$Event_ID)
 
   # First calculate words per turn for each turn in each conversation
-  words_per_turn_stats <- dat_align_plusvals %>%
+  words_per_turn_stats <- dat_prep_plusvals %>%
     group_by(Event_ID, Turn_Count) %>%
     summarize(
       words_per_turn_raw = sum(!is.na(Text_Prep)),
@@ -93,7 +93,7 @@ corpus_analytics <- function(dat_align) {
     )
 
   # Stats for each conversation (needed for computing mean, sd, min, max)
-  conversation_stats <- dat_align_plusvals %>%
+  conversation_stats <- dat_prep_plusvals %>%
     group_by(Event_ID) %>%
     summarize(
       total_exchanges = max(Exchange_Count, na.rm = TRUE),
