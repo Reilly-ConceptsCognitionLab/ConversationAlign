@@ -33,7 +33,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
     dplyr::ungroup()
 
   # Define lag correlation function
-  lag_corr_dyads <- function(df_prep) {
+  lag_corr_dyads <- function(df_prep, corr_type) {
     align_var <- colnames(df_prep[, which(colnames(df_prep) %in% align_var)])
     df_list <- split(df_prep, f = df_prep$Event_ID)
 
@@ -88,10 +88,16 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
         dplyr::rename_with(~stringr::str_replace(., "_S2", ""),
                            tidyselect::ends_with("_S2"))
 
-      # Modified function to calculate lagged correlation with corr_type parameter
-      calculate_lag_corr <- function(x_vars, y_vars, dim, align_var) {
+      # Modified function to calculate lagged correlation
+      calculate_lag_corr <- function(x_vars, y_vars, dim, align_var, corr_type) {
         dim_x_vars <- x_vars[[dim]]
         dim_y_vars <- y_vars[[dim]]
+
+        # For Spearman, convert to ranks
+        if (corr_type == "Spearman") {
+          dim_x_vars <- rank(dim_x_vars, na.last = "keep")
+          dim_y_vars <- rank(dim_y_vars, na.last = "keep")
+        }
 
         # Get lag and lead times
         lagTimes <- lags[lags > 0]
@@ -99,11 +105,10 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
         if (length(lagTimes) == 0) lagTimes <- c(1)
         if (length(leadTimes) == 0) leadTimes <- c(1)
 
-        # Calculate lagged correlation with specified type
+        # Calculate lagged correlation
         suppressWarnings({
           lo_full <- YRmisc::cor.lag(dim_x_vars, dim_y_vars,
-                                     max(lagTimes), max(abs(leadTimes)),
-                                     corr_type = corr_type)
+                                     max(lagTimes), max(abs(leadTimes)))
         })
 
         # Rename columns
@@ -126,7 +131,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
 
       # Calculate correlations for each dimension
       dyad_dim_list <- lapply(align_var, function(dim) {
-        lag_results_df <- calculate_lag_corr(x_vars, y_vars, dim, align_var)
+        lag_results_df <- calculate_lag_corr(x_vars, y_vars, dim, align_var, corr_type)
         colnames(lag_results_df) <- paste(colnames(lag_results_df), dim, sep = "-")
         if (match(dim, align_var) == 1) {
           lag_results_df$Participant_ID <- paste(participantvec, collapse = "---")
@@ -136,7 +141,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
 
       # Combine results
       dyad_covar <- dplyr::bind_cols(dyad_dim_list, Event_ID = unique(df$Event_ID))
-      dyad_covar$Who_Talked_First <- participantvec[2]
+      dyad_covar$Talked_First <- participantvec[2]
       dyad_covar
     })
 
@@ -144,10 +149,9 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
   }
 
   # Compute and process correlations
-  covar_df <- lag_corr_dyads(df_prep = df_prep)
+  covar_df <- lag_corr_dyads(df_prep = df_prep, corr_type = corr_type)
 
-  covar_df <- covar_df %>%
-    dplyr::select(!c(Participant_ID)) %>%
+  covar_df <- covar_df %>% dplyr::select(!c(Participant_ID)) %>%
     tidyr::pivot_longer(cols = tidyselect::contains("TurnCorr"),
                         names_pattern = "(.*)-(.*)",
                         names_to = c(".value", "Dimension"))

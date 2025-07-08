@@ -1,9 +1,9 @@
 #' read_dyads
 #'
-#' Reads pre-formatted dyadic (2 interlocutor) conversation transcripts from your machine. Transcripts must be either csv or txt format. IF you are supplying a txt file, your transcript must be formatted as an otter.ai txt file export. Your options for using csv files are more flexible. ConversationAlign minimally requires a csv file with two columns, denoting interlocutor and text. Each separate conversation transcript should be saved as a separate file. ConversationAlign will use the file names as a document ID. Within the read dyads function, set the folder_name argument as the directory path to the local folder containing your transcripts on your machine (e.g., "my_transcripts"). Please see our github page for examples of properly formatted transcripts: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
+#' Reads pre-formatted dyadic (2 interlocutor) conversation transcripts from your machine. Transcripts must be either csv or txt format. IF you are supplying a txt file, your transcript must be formatted as an otter.ai txt file export. Your options for using csv files are more flexible. ConversationAlign minimally requires a csv file with two columns, denoting interlocutor and text. Each separate conversation transcript should be saved as a separate file. ConversationAlign will use the file names as a document ID. Within the read dyads function, set the my_path argument as the directory path to the local folder containing your transcripts on your machine (e.g., "my_transcripts"). Please see our github page for examples of properly formatted transcripts: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
 #'
 #' @name read_dyads
-#' @param folder_name folder of conversation transcripts in csv or txt format
+#' @param my_path folder of conversation transcripts in csv or txt format
 #' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr bind_rows
@@ -12,7 +12,7 @@
 
 #defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
 
-read_dyads <- function(folder_name = "my_transcripts") {
+read_dyads <- function(my_path = "my_transcripts") {
 
   # Load required packages
   my_packages <- c("dplyr", "magrittr")
@@ -67,10 +67,10 @@ read_dyads <- function(folder_name = "my_transcripts") {
   #END DEFINE OTTER READ TRANSCRIPT .TXT FILE FUNCTION
 
   #DEFINE READ ME TXT FILE FUNCTION
-  read_dyads_txt <- function(folder_name){
-    if (any(grepl("*.txt$", list.files(path = folder_name, pattern = ".", full.names = TRUE, recursive = TRUE))) == TRUE) {
-      file_list_txt <- list.files(path = folder_name, pattern = "*.txt$", full.names = TRUE, recursive = TRUE) #list files with .txt ending
-      file_names_txt <- list.files(path = folder_name, pattern = ".txt$", full.names = FALSE, recursive = TRUE)
+  read_dyads_txt <- function(my_path){
+    if (any(grepl("*.txt$", list.files(path = my_path, pattern = ".", full.names = TRUE, recursive = TRUE))) == TRUE) {
+      file_list_txt <- list.files(path = my_path, pattern = "*.txt$", full.names = TRUE, recursive = TRUE) #list files with .txt ending
+      file_names_txt <- list.files(path = my_path, pattern = ".txt$", full.names = FALSE, recursive = TRUE)
       file_names_txt <- gsub('.*/ ?(\\w+)', '\\1', file_names_txt)
       file_names_txt <- gsub(".txt$", "", file_names_txt)
 
@@ -95,12 +95,12 @@ read_dyads <- function(folder_name = "my_transcripts") {
   #END DEFINE READ ME TXT FILE FUNCITON
 
   #DEFINE READ ME CSV FILE FUNCTION
-  read_dyads_csv <- function(folder_name) {
-    if (any(grepl("*.csv$", list.files(path = folder_name, pattern = ".",
+  read_dyads_csv <- function(my_path) {
+    if (any(grepl("*.csv$", list.files(path = my_path, pattern = ".",
                                        full.names = TRUE, recursive = TRUE))) == TRUE) {
-      file_list_csv <- list.files(path = folder_name, pattern = "*.csv$",
+      file_list_csv <- list.files(path = my_path, pattern = "*.csv$",
                                   full.names = TRUE, recursive = TRUE)
-      file_names_csv <- list.files(path = folder_name, pattern = ".csv$",
+      file_names_csv <- list.files(path = my_path, pattern = ".csv$",
                                    full.names = FALSE, recursive = TRUE)
       file_names_csv<- gsub('.*/ ?(\\w+)', '\\1', file_names_csv)
       file_names_csv <- gsub(".csv$", "", file_names_csv)
@@ -166,8 +166,8 @@ read_dyads <- function(folder_name = "my_transcripts") {
     }}
   #END DEFINE READ ME CSV FILE FUNCTION
   #calls two functions to read in txt and csv file transcripts, returning a list.
-  txtlist <- read_dyads_txt(folder_name)
-  csvlist <- read_dyads_csv(folder_name)
+  txtlist <- read_dyads_txt(my_path)
+  csvlist <- read_dyads_csv(my_path)
   all_list <- append(txtlist, csvlist) #append the two lists into one list
 
   #throws an error if no files are found

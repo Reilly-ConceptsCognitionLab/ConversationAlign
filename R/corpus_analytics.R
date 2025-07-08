@@ -67,10 +67,10 @@ corpus_analytics <- function(dat_prep) {
 
   lookup <- lookup_Jul25 %>% dplyr::select(word, phon_n_lett, phon_nsyll, lex_freqlg10, lex_n_morphemes)
 
-  # Join dat_prep with psycholing vars norms for table
+  # Join dat_prep with psycholing vars norms for table (NO ROUNDING)
   dat_prep_plusvals <- dat_prep %>%
-    dplyr::left_join(lookup, by = c("Text_Clean" = "word")) %>%
-    mutate(dplyr::across(tidyselect::where(is.numeric), ~round(., 2)))
+    dplyr::left_join(lookup, by = c("Text_Clean" = "word"))
+  # Removed: mutate(across(where(is.numeric), ~round(., 2)))
 
   # Calculate totals counts (n-conversations, n-tokens ALL)
   total_tokens_raw <- sum(!is.na(dat_prep_plusvals$Text_Prep))
@@ -92,7 +92,7 @@ corpus_analytics <- function(dat_prep) {
       .groups = 'drop'
     )
 
-  # Stats for each conversation (needed for computing mean, sd, min, max)
+  # Stats for each conversation (NO ROUNDING)
   conversation_stats <- dat_prep_plusvals %>%
     group_by(Event_ID) %>%
     summarize(
@@ -107,15 +107,15 @@ corpus_analytics <- function(dat_prep) {
       ttr_clean = dplyr::n_distinct(Text_Clean, na.rm = TRUE)/sum(!is.na(Text_Clean)),
       .groups = 'drop'
     ) %>%
-    left_join(words_per_turn_stats, by = "Event_ID") %>%
-    mutate(across(where(is.numeric), ~round(., 2)))
+    left_join(words_per_turn_stats, by = "Event_ID")
+  # Removed: mutate(across(where(is.numeric), ~round(., 2)))
 
   # Verify we have multiple conversations to compute SD
   if (nrow(conversation_stats) < 2) {
     warning("Insufficient conversations (n < 2) to compute meaningful standard deviations")
   }
 
-  # Calculate summary statistics across all conversations
+  # Calculate summary statistics across all conversations (NO ROUNDING)
   result <- purrr::map_dfr(
     list(
       "exchange count (by conversation)" = conversation_stats$total_exchanges,
@@ -133,14 +133,14 @@ corpus_analytics <- function(dat_prep) {
     function(x) {
       tibble(
         mean = mean(x, na.rm = TRUE),
-        stdev= ifelse(length(na.omit(x)) > 1, sd(x, na.rm = TRUE), NA_real_),
+        stdev = ifelse(length(na.omit(x)) > 1, sd(x, na.rm = TRUE), NA_real_),
         min = min(x, na.rm = TRUE),
         max = max(x, na.rm = TRUE)
       )
     },
     .id = "measure"
-  ) %>%
-    mutate(across(c(mean, stdev, min, max), ~round(., 2)))
+  )
+  # Removed: mutate(across(c(mean, stdev, min, max), ~round(., 2)))
 
   # Add summary rows for corpus-level totals
   summary_rows <- tibble(

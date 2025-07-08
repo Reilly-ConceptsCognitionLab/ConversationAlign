@@ -14,28 +14,40 @@ knitr::opts_chunk$set(
 ```
 <br>
 <br>
-<br>
 
 # ConversationAlign
 Open-source software for computing main effects and indices of alignment across coversation partners in dyadic conversation transcripts. <br>
 
-<!-- badges: start -->
-[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/Reilly-ConceptsCognitionLab/SemanticDistance?color=blue)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/tags)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/reilly-lab/ConversationAlign/graphs/commit-activity)
-[![Depsy](https://img.shields.io/badge/depsy-analyzed-blue.svg)](http://depsy.org/r/package/ConversationAlign)
-[![License: GPL v3+](https://img.shields.io/badge/License-GPL%20v3+-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![R-CMD-check](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/reilly-lab/ConversationAlign/actions/workflows/R-CMD-check.yaml)
-  <!-- badges: end -->
+```{r echo=FALSE, results='asis'}
+# Get current package version from DESCRIPTION
+if (!requireNamespace("desc", quietly = TRUE)) {
+  install.packages("desc")
+}
+pkg_version <- desc::desc_get_version()
 
-<!-- ```{r, echo=F, out.width='70%', out.height='60%', out.extra='style="float:right; padding:5px"'} -->
-<!--  knitr::include_graphics("man/figures/convo.jpeg") -->
-<!-- ``` -->
-ConversationAlign analyzes alignment between interlocutors (conversation partners) engaged in two-person conversations.  ConversationAlign works on language transcripts. It can handle text files (.txt) or comma separated value (.csv) spreadsheet style files. ConversationAlign transforms raw language data into simultaneous time series objects spanning 30 possible dimensions via an embedded lookup database. <br>
+# Generate badges with HTML wrapper for horizontal layout
+cat('<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">')
+
+# GitHub Release badge 
+cat('[![GitHub release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)')
+
+# Other badges
+cat('
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/graphs/commit-activity)
+[![License: GPL v3+](https://img.shields.io/badge/License-GPL%20v3+-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![R-CMD-check](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/actions/workflows/R-CMD-check.yaml)
+')
+
+cat('</div>')  # Close flex container
+```
+
+  
+<img src="man/figures/convo_demo.jpg" 
+     alt="illustration of processing pipeline used by ConversationAlign" 
+     style="float: right; width: 60%; margin-left: 20px; margin-bottom: 10px;" />
 
 # Overview
-Here's a schematic of how ConversationAlign processes your conversation transcript.
-
-![overview of ConversationAlign](man/figures/overview.png){width=300px, height=600px} 
+`ConversationAlign` analyzes alignment and computes main effects across more than 40 unique dimensions between interlocutors (conversation partners) engaged in two-person conversations.  ConversationAlign transforms raw language data into simultaneous time series objects across >40 possible dimensions via an embedded lookup database. There are a number of issues you should consider and steps you should take to prepare your data. To read more about preparation and caveats for use, visit our vignette [REF] or for a deeper dive into theory and methods click here [REF]. <br>
 
 # Installation
 Install the development version of ConversationAlign from [GitHub](https://github.com/) using the ``devtools`` package.
@@ -58,154 +70,87 @@ if (!require("ConversationAlign", quietly = TRUE)) {
 library(ConversationAlign)
 ```
 
-# Intro to ConversationAlign
-A good conversation is a cooperative endeavor where both parties modify the form and content of their own production to align with each other. This is a phenomenon known as alignment. People align across many dimensions including the words they choose and the affective tenor of their prosody. ``ConversationAlign`` measures dynamics of lexical use between conversation partners across more than 40 semantic, lexical, phonological, and affective dimensions. Before launching into your analyses, there are some important use caveats to consider.
 
-## Caveats for Using ConversationAlign
-- Language analyses often proliferate in complexity. Spend the extra time to keep careful records and a logical organization system (e.g., smart filenaming, variable keys, a formalized processing pipeline). 
-- ``ConversationAlign`` only works on dyadic language transcripts (i.e., 2-person dialogues). 
-- ``ConversationAlign`` does NOT parse turns automatically. The software will aggregate all words produced by one speaker across sentences and rows until a switch occurs in the 'speaker' column.
-- ``ConversationAlign`` will strip punctuation and other special characters automatically. 
-- ``ConversationAlign`` will split/vectorize your text into a one-word-per-row format, retaining all variable labels.
-- ``ConversationAlign`` will retain all meta-data throughout text processing (e.g., timestamps, grouping variables). ``ConversationAlign`` is pretty good at detecting and repairing unconventional font encoding systems, but it will not catch everything, You will find all sorts of hidden junk when you copy/paste interview transcripts from random websites are from YouTube. Inspect your transcripts to make sure they are what you think they are before launching into a complex computational analysis. 
-
-## Prepare your Transcripts Outside of the Package
-- Save each conversation transcript as a separate file (``*.txt``, ``*.csv``, or Otter ``*.ai``).
-- Be deliberate about your filenaming convention. Each transcript's filename will become its unique document identifier (Event_ID) when importing into ``ConversationAlign``. <br>
-- Store all the transcripts you want to analyze in the same folder (e.g., '/my_transcripts).
-- Your transcript folder and analysis scripts should ideally exist within the same directory.
-- Each raw comversation transcript **MUST** nominally contain at least two columns, talker/interlocutor and text.  
-- Name your talker/interlocutor column as 'Interlocutor', 'Speaker', or 'Participant' (not case sensitive).
-- Name your text column as 'Text', 'Utterance', or 'Turn' (not case sensitive).
-
-# Step 0: View Calibaration Transcript
-``ConversationAlign``contains two sample conversation transcripts that are pre-load when you call the package. These are:
-**MaronGross_2013:** Interview transcript of Marc Maron and Terry Gross on NPR (2013).
-**NurseryRhymes:** Three nursery rhymes looping same phrases formatted as conversations, cleaned, and aligned to illustrate how the formatting pipeline reshaopes conversation transcripts.
-
-```{r, eval=T, message=F, warning=F}
-knitr::kable(head(NurseryRhymes, 6), format = "pipe",  col.names = c("**Event_ID**", '**Participant_ID**', "**Raw_Text**"))
-```
-
-
-# Step 1: Read Transcripts into R
-## read_dyads() 
-``read_dyads()`` will import all of the conversation transcripts on your machine's target folder into R. The function will also concatenate all individual transcripts into a single dataframe. Each transcript's filename will become its ``Event_ID`` in the dataframe. If you want to skip the read step and format your dataframe manually in R, you will need three column. These must be named exactly as follows (if manually formatting):
-1. ``Event_ID`` column header with unique marker for each conversation transcript (variable as factor). <br>
-2. ``Paricipant_ID`` column header delineate who is producing text on a given line. <br>
-3. ``RawText`` column header containing the raw text (punctuation, unsplit, uncleaned, etc,). <br>
-
-Name your concatenated dataframe anything you like (e.g., MyKidConversations). ``read_dyads()`` defaults to scanning a folder called ``my_transcripts`` within the directory you are running any scripts in. ``read_dyads()`` will import all ``*.csv``,  ``*.txt``, and Otter ``*.ai`` files within that folder. Feel free to dump your transcripts in a folder labelled however you like. You can specify a custom file path such as '/my_folder' as an argument. <br>
-
-``ConversationAlign`` also contains some calibration and demo transcripts. Here's one from a 2013 NPR interview (USA) between Marc Maron and Terry Gross, titled [Marc Maron: A Life Fueled By 'Panic And Dread'](https://www.npr.org/transcripts/179014321).<br>
+# Step 1: Read and Format Transcript Options
+## `read_dyads()`  
+- Reads transcripts from a local drive or directory of your choice. 
+- Store each of your  individual conversation transcripts (`.csv`, `.txt`, `.ai`) that you wish to concatenate into a corpus in a folder. `ConversationAlign` will search for a folder called `my_transcripts` in the same directory as your script.  However, feel free to name your folder anything you like. You can specify a custom path as an argument to read_dyads()
+- Each transcript must nominally contain two columns of data (Participant and Text). All other columns (e.g., meta-data) will be retained. 
 
 <span style="color: darkred;">Arguments to `read_dyads` include:</span>  <br>
-1. **folder_name**: default is 'my_transcripts', change path to your folder name<br>
+1. **my_path**: default is 'my_transcripts', change path to your folder name<br>
 ```{r, eval=F, message=F, warning=F}
-#Example of custom path
-MyConvo <- read_dyads(folder_name = "/my_transcripts")
+#will search for folder 'my_transcripts' in your current directory
+MyConvos <- read_dyads()
+
+#will scan custom folder called 'MyStuff' in your current directory, concatenating all files in that folder into a single dataframe
+MyConvos2 <- read_dyads(my_path='/MyStuff')
 ```
 
-## read_1file()
-Preps one transcript already in your R environment for ConversationAlign. We will use read_1file() to prep the Marc Maron and Terry Gross transcript. Look at how the column headers have changed and the object name (MaronGross_2013) is now the Event_ID (a document identifier), <br>
+## `read_1file()`
+- Read single transcript already in R environment. We will use read_1file() to prep the Marc Maron and Terry Gross transcript. Look at how the column headers have changed and the object name (MaronGross_2013) is now the Event_ID (a document identifier), <br>
 
 <span style="color: darkred;">Arguments to `read_1file` include:</span>  <br>
 1. **my_dat**: object already in your R environment containing text and speaker information.
 ```{r, eval=T, message=F, warning=F}
 MaryLittleLamb <- read_1file(MaronGross_2013)
 #print first ten rows of header
-knitr::kable(head(MaronGross_2013, 10), format = "pipe")
+knitr::kable(head(MaronGross_2013, 15), format = "pipe")
 ```
 <br>
 
-# Step 2: Prep your Transcripts
-## prep_dyads()
-``prep_dyads()`` uses numerous regex to clean and format the data your just read into R in the previous step. ``ConversationAlign`` applies an ordered sequence of cleaning steps on the road toward vectorizing your original text into a one-word-per row format. These steps include: converting all text to lowercase, expanding contractions, omitting all non-alphabetic characters (e.g., numbers, punctuation, line breaks). In addition to text cleaning, users guide options for stopword removal and lemmatization. During formatting ``prep_dyads()`` will prompt you to select up to three variables for computing alignment on. This works by joining values from a large internal lookup database to each word in your language transcript. ``prep_dyads()`` is customizable via the following arguments.
+# Step 2: Clean, Format, Align Norms
+## `prep_dyads()`
+-Cleans, formats, and vectorizes conversation transwcripts to a one-word-per-row format
+-Yokes psycholinguistic norms for up to three dimensions at a time (from <40 possible dimensions) to each content word.
+-Retains metadata
 
-### Stopword removal
-There are two important arguments regarding stopword removal. ``omit_stops`` specifies whether or not to remove stopwords. ``which_stopwords`` specifies which stopword list you would like to apply with the default being ``Temple_stops25``. The full list of choices is: ``none``, ``SMART_stops``, ``CA_orig_stops``. ``MIT_stops``, and ``Temple_stops25``. Stopword removal is an important, yet also controversial step in text cleaning.  <br>
-
-[CLICK HERE](XX) to learn more about stopword list choices and norms. <br>
-
-### Lemmatization
-``ConversationAlign`` calls the ``textstem`` package as a dependency to lemmatize your language transcript. This converts morphologiocal derivatives to their root forms. The default is lemmatize=T. Sometimes you want to retain language output in its native form. If this is the case, change the argument in clean_dyads to lemmatize=F. ``clean_dyads()`` outputs word count metrics pre/post cleaning by dyad and interlocutor. This can be useful if you are interested in whether one person just doesn't produce many words or produces a great deal of empty utterances. <br>
-
-### Dimension Selection
-This is where the magic happens. ``prep_dyads()`` will yoke published norms for up to 45 possible dimensions to every content word in your transcript. This join is executed by merging your vectorized conversation transcript with a huge internal lexical database with norms spanning over 100k English words. ``prep_dyads()`` will prompt you to select anywhere from 1 to 3 target dimensions at a time. Enter the number corresponding to each dimension of interest separated by spaces and then hit enter (e.g., 10 14 19) ``ConversationAlign`` will append a published norm if available (e.g., concreteness, word length) to every running word in your transcript. These quantitative values are used in the subsequent ``summarize_dyads()`` step to compute alignment. <br>
-
-[CLICK HERE](XX) to learn about the 40+ dimensions available for analyses in ``ConversationAlign``.  <br>
-
-<span style="color: darkred;">Arguments to ``prep_dyads``:</span> <br>
-1) **dat_read**= name of the dataframe created during ``read_dyads()`` <br>
+<span style="color: darkred;">Arguments to `prep_dyads`:</span> <br>
+1) **dat_read**= name of the dataframe created during `read_dyads()` <br>
 2) **omit_stops**= T/F (default=T) option to remove stopwords
-3) **lemmatize**= lemmatize strings converting each entry to its dictionary form, default is ``lemmatize=TRUE`` <br>
-4) **which_stopwords**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_stops25``. Default is ``Temple_stops25``
-```{r, eval=T, message=F, warning=F}
-NurseryRhymes_Aligned <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
-knitr::kable(head(NurseryRhymes_Aligned, 20), format = "simple")
+3) **lemmatize**= lemmatize strings converting each entry to its dictionary form, default is `lemmatize=TRUE` <br>
+4) **which_stoplist**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_stops25``. Default is ``Temple_stops25``
+```{r, eval=F, message=F, warning=F}
+NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
 ```
 
-
-# Step 2.5 (optional): Generate corpus analytics 
-It is often critical to produce descriptives/summary statistics to characterize your language sample. This is typically a laborious process. ``describe_corpus`` will do it for you, generating a publication ready table of analytics. You guide the level of granularity that `describe_corpus` will apply via an argument to the function call. For example, the default argument ``granularity="none"`` will collapse all conversations and speakers to produce an undifferentiated picture of language output. In contrast, ``granularity="conversation"`` will produce summary statistics for each conversation. Finally, ``granularity="fine"`` will generate summary statistics by participant and conversation. <br>
-
-<span style="color: darkred;">Arguments to ``describe_corpus`` include:</span> <br>
-1) **dat_align**= dataframe created by ``prepped_dyads()``function <br>
-
-```{r, eval=T, warning=F, message=F}
-NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Aligned)
-knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple")
+Example of a prepped dataset embedded as external data in the package with 'anger' values yoked to each word.
+```{r}
+knitr::kable(head(NurseryRhymes_Prepped, 20), format = "simple", digits=2)
 ```
 
-# Step 3: Summarize Your Data
-This is the computational stage where the package generates a dataframe boiled down to two rows per converation with summary data appended to each level of Participant_ID.  
-
-## Summarize_dyads()
-This returns the difference time series AUC (dAUC) for every variable of interest you specified and the pearson correlation at lags -2,-1,0,1,2. 
+# Step 3: Summarize Data, Alignment Stats 
+## `summarize_dyads()`
+This is the computational stage where the package generates a dataframe boiled down to two rows per converation with summary data appended to each level of Participant_ID. This returns the difference time series AUC (dAUC) for every variable of interest you specified and the correlation at lags -2,,0, 2. You decide whether you want a Pearson or Spearman lagged correlation. <br>
 
 <span style="color: darkred;">Arguments to ``summarize_dyads()`` include:</span> <br>
 1) **df_prep**= dataframe created by ``prep_dyads()``function <br>
+2) **custom_lags**=  default is NULL, any additional user-specified lagged correlations. will automatically produce lead of 2 turns, immediate response, lag of 2 turns for each dimension of interest. <br>
+3) **sumdat_only**= boolean default is TRUE, produces grouped summary dataframe with averages by conversation and participant for each alignment dimension, FALSE retrains all of the original rows, filling down empty rows of summary statistics for the conversation (e.g., AUC) <br>
+4) **corr_type**= default='Pearson', other option 'Spearman' for computing turn-by-turn correlations across interlocutors for each dimension of interest.
+```{r, eval=T, warning=F, message=F, options(digits = 3)}
+MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Prepped, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
+colnames(MarySumDat)
+knitr::kable(head(MarySumDat, 15), format = "simple", digits = 3)
+```
+
+# Optional: Generate corpus analytics 
+## `corpus_analytics()`
+It is often critical to produce descriptives/summary statistics to characterize your language sample. This is typically a laborious process. ``corpus_analytics`` will do it for you, generating a near publication ready table of analytics that you can easily export to the specific journal format of your choice using any number of packages such as `flextable` or `tinytable`.
+
+<span style="color: darkred;">Arguments to `corpus_analytics` include:</span> <br>
+1) **dat_prep**= dataframe created by ``prep_dyads()``function <br>
 
 ```{r, eval=T, warning=F, message=F}
-MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Aligned) 
-colnames(MarySumDat)
-knitr::kable(head(MarySumDat, 15), format = "simple")
+NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
+knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple", digits = 2)
 ```
-<br>
-<br>
-<br>
-
-# Caveat emptor
-Any analysis of language comes with assumptions and potential bias. For example, there are some instances where a researcher might care about morphemes and grammatical elements such as 'the', 'a', 'and', etc..  The default for ConversationAlign is to omit these as stopwords and to average across all open class words (e.g., nouns, verbs) in each turn by interlocutor. There are some specific cases where this can all go wrong. Here are some things to consider: <br>
-
-1. <span style="color:red;">Stopwords </span>: ``ConversationAlign`` omits stopwords by default applying a customized stopword list, ``Temple_Stopwords25``. [CLICK HERE](https://osf.io/dc5k7) to inspect the list. This stopword list includes greetings, idioms, filler words, numerals, and pronouns.
-
-2. <span style="color:red;">Lemmatization </span>: The package will lemmatize your language transcripts by default. Lemmatization transforms inflected forms (e.g., standing, stands) into their root or dictionary entry (e.g., stand). This helps for yoking offline values (e.g., happiness, concreteness) to each word and also entails what NLP folks refer to as 'term aggregation'. However, sometimes you might NOT want to lemmatize. You can easily change this option by using the argument, "lemmatize=FALSE," to the clean_dyads function below. <br>
-
-3. <span style="color:red;">Sample Size Issue 1: Exchange Count</span>: The program derives correlations and AUC for each dyad as metrics of alignment. For very brief conversations (<30 turns), the likelihood of unstable or unreliable estimates is high. <br>
-
-4. <span style="color:red;">Sample Size Issue 2 </span>: matching to lookup database: ConversationAlign works by yoking values from a lookup database to each word in your language transcript. Some variables have lots of values characterizing many English words. Other variables (e.g., age of acquisition) only cover about 30k words. When a word in your transcript does not have a 'match' in the lookup datase, ConversationAlign will return an NA which will not go into the average of the words for that interlocutor and turn. This can be dangerous when there are many missing values. Beware! <br>
-
-5. <span style="color:red;">Compositionality </span>: ConversationAlign is a caveman in its complexity. It matches a value to each word as if that word is an island. Phenomena like polysemy (e.g., bank) and the modulation of one word by an intensifier (e.g., very terrible) are not handled. This is a problem for many of the affective measures but not for lexical variables like word length. <br>
 
 
-# Background and Supporting Materials
-
-1. **Preprint** <br>
-Our PsyArXiv preprint describing the method(s) in greater detail is referenced as:
-Sacks, B., Ulichney, V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T., ... Reilly, J. (2025, March 12). *ConversationAlign: Open-Source Software for Analyzing Patterns of Lexical Use and Alignment in Conversation Transcripts*. [Click Here](https://osf.io/preprints/psyarxiv/7xqnp_v1) to read our preprint. It was recently invited for revision at Behavior Rsearch Methods. We will update when/if eventually accepted there! <br>
-
-2. **Methods for creating internal lookup database** <br>
-ConversationAlign contains a large, internal lexical lookup_database. [Click Here](https://reilly-lab.github.io/ConversationAlign_LookupDatabaseCreation.html) to see how we created this by merging other offline psycholinguistic databases into one. <br>
-
-3. **Variable Key for ConversationAlign** <br>
-ConversationAlign currently allows users to compute alignment dynamics across 30 different lexical, affective, and semantic dimensions.[Click Here](https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf) to link to a variable key. <br>
-
-# Get in touch!
-Contact <jamie_reilly@temple.edu> for feedback and assistance.
-
-
-# References
-Lewis, David D., et al. (2004) "Rcv1: A new benchmark collection for text categorization research." Journal of machine learning research 5: 361-397.
-
-
+# News and Getting Help
+For bugs, feature requests, and general questions, reach out via one of the following options: <br>
+<ul style="list-style-type: none; padding-left: 0;">
+  <li><strong>Bugs/Features:</strong><br>[Open an Issue](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/issues)</li>
+  <li><strong>Questions:</strong><br>[Join Discussion](https://github.com/Reilly-ConceptsCognitionLab/SemanticDistance/discussions)</li>
+  <li><strong>Urgent:</strong><br>Email <code>jamie.reilly@temple.edu</code></li>
+</ul>
