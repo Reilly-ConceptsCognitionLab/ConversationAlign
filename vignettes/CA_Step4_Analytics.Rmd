@@ -1,0 +1,44 @@
+---
+title: CA Step 4 Corpus Analytics
+subtitle: corpus_analytics()
+author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+show_toc: true
+slug: ConversationAlign Analytics
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{CA Step 4 Corpus Analytics}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message=FALSE, warning=F, echo=F}
+# Check if devtools is installed, if not install it
+if (!require("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+
+# Load devtools
+library(devtools)
+
+# Check if ConversationAlign is installed, if not install from GitHub
+if (!require("ConversationAlign", quietly = TRUE)) {
+  devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
+}
+
+# Load SemanticDistance
+library(ConversationAlign)
+```
+
+# Generate corpus analytics
+
+`

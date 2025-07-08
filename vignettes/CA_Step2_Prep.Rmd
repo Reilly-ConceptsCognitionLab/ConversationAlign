@@ -1,0 +1,47 @@
+---
+title: CA Step 2 Prep Data
+subtitle: prep_dyads()
+author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+show_toc: true
+slug: ConversationAlign Prep
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: |
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{ConversationAlign Step_2 Prep_Dyads}
+  %\VignetteEncoding{UTF-8}
+---
+
+Install and load the development version of `ConversationAlign` from [GitHub](https://github.com/) using the `devtools` package.
+```{r, message=FALSE, warning=F, echo=F}
+# Check if devtools is installed, if not install it
+if (!require("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+
+# Load devtools
+library(devtools)
+
+# Check if ConversationAlign is installed, if not install from GitHub
+if (!require("ConversationAlign", quietly = TRUE)) {
+  devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
+}
+
+# Load SemanticDistance
+library(ConversationAlign)
+```
+
+## prep_dyads()
+``prep_dyads()`` uses numerous regex to clean and format the data your just read into R in the previous step. ``ConversationAlign`` applies an ordered sequence of cleaning steps on the road toward vectorizing your original text into a one-word-per row format. These steps include: converting all text to lowercase, expanding contractions, omitting all non-alphabetic characters (e.g., numbers, punctuation, line breaks). In addition to text cleaning, users guide options for stopword removal and lemmatization. During formatting ``prep_dyads()`` will prompt you to select up to three variables for computing alignment on. This works by joining values from a large internal lookup database to each word in your language transcript. ``prep_dyads()`` is customizable via the following arguments.
+
+### Stopword removal
+There are two important arguments regarding stopword removal. ``omit_stops`` specifies whether or not to remove stopwords. ``which_stopwords`` specifies which stopword list you would like to apply with the default being ``Temple_stops25``. The full list of choices is: ``none``, ``SMART_stops``, ``CA_orig_stops``. ``MIT_stops``, and ``Temple_stops25``. Stopword removal is an important, yet also controversial step in text cleaning.  <br>
+
+### Lemmatization
+``ConversationAlign`` calls the ``textstem`` package as a dependency to lemmatize your language transcript. This converts morphologiocal derivatives to their root forms. The default is lemmatize=T. Sometimes you want to retain language output in its native form. If this is the case, change the argument in clean_dyads to lemmatize=F. ``clean_dyads()`` outputs word count metrics pre/post cleaning by dyad and interlocutor. This can be useful if you are interested in whether one person just doesn't produce many words or produces a great deal of empty utterances. <br>
+
+### Dimension Selection
+This is where the magic happens. ``prep_dyads()`` will yoke published norms for up to 45 possible dimensions to every content word in your transcript. This join is executed by merging your vectorized conversation transcript with a huge internal lexical database with norms spanning over 100k English words. ``prep_dyads()`` will prompt you to select anywhere from 1 to 3 target dimensions at a time. Enter the number corresponding to each dimension of interest separated by spaces and then hit enter (e.g., 10 14 19) ``ConversationAlign`` will append a published norm if available (e.g., concreteness, word length) to every running word in your transcript. These quantitative values are used in the subsequent ``summarize_dyads()`` step to compute alignment. <br>
+
