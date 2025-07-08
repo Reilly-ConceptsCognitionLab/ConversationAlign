@@ -1,0 +1,44 @@
+---
+title: CA Step 1 Read_Dyads
+subtitle: Read and Format Data for ConversationAlign
+author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
+date: "`r Sys.Date()`"
+show_toc: true
+slug: ConversationAlign Read
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{CA Step 1 Read_Dyads}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Installation
+Install and load the development version of `ConversationAlign` from [GitHub](https://github.com/) using the `devtools` package.
+```{r, message=FALSE, warning=F, echo=F}
+# Check if devtools is installed, if not install it
+if (!require("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+
+# Load devtools
+library(devtools)
+
+# Check if ConversationAlign is installed, if not install from GitHub
+if (!require("ConversationAlign", quietly = TRUE)) {
+  devtools::install_github("Reilly-ConceptsCognitionLab/ConversationAlign")
+}
+
+# Load SemanticDistance
+library(ConversationAlign)
+```
+
+# Prep_Data

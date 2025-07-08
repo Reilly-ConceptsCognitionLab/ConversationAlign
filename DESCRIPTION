@@ -22,11 +22,12 @@ Imports:
     DescTools,
     dplyr (>= 0.4.3),
     magrittr,
+    purrr,
     rlang,
     stringi,
     stringr,
     textstem,
-    tm,
+    tibble,
     tidyr,
     tidyselect,
     utils,
@@ -41,3 +42,5 @@ Suggests:
 URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/CHANGELOG.md, https://Reilly-ConceptsCognitionLab.github.io/ConversationAlign/news/index.html
 RoxygenNote: 7.3.2
 LazyData: true
+Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -1,16 +1,27 @@
 #' read_dyads
 #'
-#' Reads pre-formatted dyadic (2 interlocutor) conversation transcripts from your machine. Transcripts must be either csv or txt format. IF you are supplying a txt file, your transcript must be formatted as an otter.ai txt file export. Your options for using csv files are more flexible. ConversationAlign minimally requires a csv file with two columns, denoting interlocutor and text. Each separate conversation transcript should be saved as a separate file. ConversationAlign will use the file names as a document ID. Within the read dyads function, set the folder_name argument as the directory path to the local folder containing your transcripts on your machine (e.g., "my_transcripts"). Please see our github page for examples of properly formatted transcripts: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
+#' Reads pre-formatted dyadic (2 interlocutor) conversation transcripts from your machine. Transcripts must be either csv or txt format. IF you are supplying a txt file, your transcript must be formatted as an otter.ai txt file export. Your options for using csv files are more flexible. ConversationAlign minimally requires a csv file with two columns, denoting interlocutor and text. Each separate conversation transcript should be saved as a separate file. ConversationAlign will use the file names as a document ID. Within the read dyads function, set the my_path argument as the directory path to the local folder containing your transcripts on your machine (e.g., "my_transcripts"). Please see our github page for examples of properly formatted transcripts: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
 #'
 #' @name read_dyads
-#' @param folder_name folder of conversation transcripts in csv or txt format
+#' @param my_path folder of conversation transcripts in csv or txt format
 #' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr bind_rows
+#' @importFrom utils read.csv
 #' @export
 
-read_dyads <- function(folder_name = "my_transcripts") {
-  #defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
+#defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
+
+read_dyads <- function(my_path = "my_transcripts") {
+
+  # Load required packages
+  my_packages <- c("dplyr", "magrittr")
+  for (pkg in my_packages) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      install.packages(pkg)
+    }
+    library(pkg, character.only = TRUE)
+  }
 
   read_otter_transcript <- function(file_path) {
     lines <- readLines(file_path) #read otter ai file
@@ -49,17 +60,17 @@ read_dyads <- function(folder_name = "my_transcripts") {
     #create df
     transcript_df <- data.frame(Participant_ID = speaker,
                                 Time = time,
-                                RawText = text,
+                                Text_Raw = text,
                                 stringsAsFactors = FALSE)
     return(transcript_df)
   }
   #END DEFINE OTTER READ TRANSCRIPT .TXT FILE FUNCTION
 
   #DEFINE READ ME TXT FILE FUNCTION
-  read_dyads_txt <- function(folder_name){
-    if (any(grepl("*.txt$", list.files(path = folder_name, pattern = ".", full.names = TRUE, recursive = TRUE))) == TRUE) {
-      file_list_txt <- list.files(path = folder_name, pattern = "*.txt$", full.names = TRUE, recursive = TRUE) #list files with .txt ending
-      file_names_txt <- list.files(path = folder_name, pattern = ".txt$", full.names = FALSE, recursive = TRUE)
+  read_dyads_txt <- function(my_path){
+    if (any(grepl("*.txt$", list.files(path = my_path, pattern = ".", full.names = TRUE, recursive = TRUE))) == TRUE) {
+      file_list_txt <- list.files(path = my_path, pattern = "*.txt$", full.names = TRUE, recursive = TRUE) #list files with .txt ending
+      file_names_txt <- list.files(path = my_path, pattern = ".txt$", full.names = FALSE, recursive = TRUE)
       file_names_txt <- gsub('.*/ ?(\\w+)', '\\1', file_names_txt)
       file_names_txt <- gsub(".txt$", "", file_names_txt)
 
@@ -84,12 +95,12 @@ read_dyads <- function(folder_name = "my_transcripts") {
   #END DEFINE READ ME TXT FILE FUNCITON
 
   #DEFINE READ ME CSV FILE FUNCTION
-  read_dyads_csv <- function(folder_name) {
-    if (any(grepl("*.csv$", list.files(path = folder_name, pattern = ".",
+  read_dyads_csv <- function(my_path) {
+    if (any(grepl("*.csv$", list.files(path = my_path, pattern = ".",
                                        full.names = TRUE, recursive = TRUE))) == TRUE) {
-      file_list_csv <- list.files(path = folder_name, pattern = "*.csv$",
+      file_list_csv <- list.files(path = my_path, pattern = "*.csv$",
                                   full.names = TRUE, recursive = TRUE)
-      file_names_csv <- list.files(path = folder_name, pattern = ".csv$",
+      file_names_csv <- list.files(path = my_path, pattern = ".csv$",
                                    full.names = FALSE, recursive = TRUE)
       file_names_csv<- gsub('.*/ ?(\\w+)', '\\1', file_names_csv)
       file_names_csv <- gsub(".csv$", "", file_names_csv)
@@ -130,13 +141,13 @@ read_dyads <- function(folder_name = "my_transcripts") {
                                        grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
 
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
-                                       grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "RawText"
+                                       grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "Text_Raw"
 
           x_read_csv <- data.frame(x_read_csv)
           x_final <- x_read_csv
         }
 
-        col_check <- sum(colnames(x_read_csv) %in% c("Participant_ID", "RawText"))
+        col_check <- sum(colnames(x_read_csv) %in% c("Participant_ID", "Text_Raw"))
 
         if (col_check != 2) { #if there are less than two columns
           stop(paste("Function is unable to process csv transcript ", #error stating missing column
@@ -155,8 +166,8 @@ read_dyads <- function(folder_name = "my_transcripts") {
     }}
   #END DEFINE READ ME CSV FILE FUNCTION
   #calls two functions to read in txt and csv file transcripts, returning a list.
-  txtlist <- read_dyads_txt(folder_name)
-  csvlist <- read_dyads_csv(folder_name)
+  txtlist <- read_dyads_txt(my_path)
+  csvlist <- read_dyads_csv(my_path)
   all_list <- append(txtlist, csvlist) #append the two lists into one list
 
   #throws an error if no files are found
@@ -164,8 +175,33 @@ read_dyads <- function(folder_name = "my_transcripts") {
     stop("No files found. Please make sure you are providing the local or absolute file path to the desired folder as a character vector. At least one .csv or .txt file must be present.")
   }
 
-  alldf <- dplyr::bind_rows(all_list) #binds the rows  of each list into one data frame
+  alldf <- dplyr::bind_rows(all_list) #binds the rows of each list into one data frame
   alldf$Event_ID <- as.factor(alldf$Event_ID)
   alldf$Participant_ID <- as.factor(alldf$Participant_ID)
-  return(alldf)
+
+  dat_read <- alldf
+
+  # NEW VALIDATION STEP: Check for exactly two participants per event
+  participant_check <-  dat_read  %>%
+    dplyr::group_by(Event_ID) %>%
+    dplyr::summarize(
+      n_participants = n_distinct(Participant_ID),
+      .groups = "drop"
+    )
+
+  # Identify events that don't have exactly 2 participants
+  invalid_events <- participant_check %>%
+    dplyr::filter(n_participants != 2) %>%
+    dplyr::pull(Event_ID)
+
+  if (length(invalid_events) > 0) {
+    error_message <- paste(
+      "Check your data! One or more conversations has more or less than two conversation partners.\n",
+      "ConversationAlign only works on dyadic transcripts. Each conversation transcript must have ONLY two participants.\n",
+      "Problematic Event_ID(s):", paste(invalid_events, collapse = ", ")
+    )
+    stop(error_message, call. = FALSE)
+  }
+
+  return(dat_read)
 }
