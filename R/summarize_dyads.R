@@ -46,12 +46,16 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
     library(pkg, character.only = TRUE)
   }
 
+  # Validate correlation type at the start
+  if (!corr_type %in% c("Pearson", "Spearman")) {
+    stop("corr_type must be either 'Pearson' or 'Spearman'")
+  }
+
   # Extract and Summarize Meta-Data - select Event_ID, Participant_ID, and non-numeric columns
   # excluding dimension columns and specific technical columns
-  df_meta <- df_prep %>%
-    dplyr::select(Event_ID, Participant_ID,
-                  -c(Exchange_Count, Turn_Count, Text_Prep, Text_Clean),
-                  -matches("^(emo_|lex_|phon_|sem_|df_)")) %>%
+  df_meta <- df_prep %>% dplyr::select(Event_ID, Participant_ID,
+                                       -c(Exchange_Count, Turn_Count, Text_Prep, Text_Clean),
+                                       -matches("^(emo_|lex_|phon_|sem_|df_)")) %>%
     # Select only factor and character columns (excluding numeric)
     dplyr::select(where(~ is.factor(.x) | is.character(.x)))
 
@@ -90,7 +94,7 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
       cols = matches("^(sem_|lex_|emo_|phon_).*_mean"),
       names_to = "Dimension",
       names_pattern = "(.*)_mean",
-      values_to = "Average_Score"
+      values_to = "Dimension_Mean"
     )
 
   # Clean up factors
@@ -109,8 +113,9 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
   if (!is.null(custom_lags)) {
     user_lags <- sort(unique(append(user_lags, custom_lags)))
   }
-  # Pass corr_type to compute_lagcorr
-  covar_df <- compute_lagcorr(df_prep, lags = user_lags, corr_type = corr_type)
+
+  # Pass corr_type to compute_lagcorr - this is the key modification
+  covar_df <- compute_lagcorr(df_prep = df_prep, lags = user_lags, corr_type = corr_type)
 
   # Reshape AUC data
   auc_df_long <- auc_df %>%
