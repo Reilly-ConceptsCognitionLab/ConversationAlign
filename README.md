@@ -31,9 +31,7 @@ partners) engaged in two-person conversations. ConversationAlign
 transforms raw language data into simultaneous time series objects
 across \>40 possible dimensions via an embedded lookup database. There
 are a number of issues you should consider and steps you should take to
-prepare your data. To read more about preparation and caveats for use,
-visit our vignette \[REF\] or for a deeper dive into theory and methods
-click here \[REF\]. <br>
+prepare your data.
 
 # Installation
 

@@ -2,7 +2,7 @@
 #'
 #' Text and talker information delineated, raw transcript, multiple lines per talker
 #'
-#' @format ## "Dyad_Sample"
+#' @format ## "MaronGross_2013"
 #' A data.frame with 546 obs, 2 vars:
 #' \describe{
 #'   \item{text}{text from interview}
@@ -16,7 +16,7 @@
 #'
 #' Text and talker information delineated, 3 separate nursery rhymes, good for computing analytics and word counts
 #'
-#' @format ## "Dyad_Sample"
+#' @format ## "NurseryRhymes"
 #' A data.frame with 100 observations, 2 vars:
 #' \describe{
 #'   \item{Event_ID}{factor 3 different simulated conversations}
@@ -31,7 +31,7 @@
 #'
 #' Text and talker information delineated, 3 separate nursery rhymes, good for computing analytics and word counts
 #'
-#' @format ## "Dyad_Sample"
+#' @format ## "NurseryRhymes_Prepped"
 #' A data.frame with 1507 x 7 observations, 5 vars:
 #' \describe{
 #'   \item{Event_ID}{factor 3 different simulated conversations}

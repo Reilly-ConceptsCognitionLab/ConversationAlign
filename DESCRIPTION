@@ -19,7 +19,6 @@ Encoding: UTF-8
 Depends: 
     R (>= 3.5)
 Imports:
-    desc,
     DescTools,
     dplyr (>= 0.4.3),
     magrittr,

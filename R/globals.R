@@ -27,6 +27,8 @@ utils::globalVariables(
     "phon_nsyll",
     "reshaped",
     "score",
+    "sumdat",
+    "sumdat_only",
     'switch_mark',
     "syllable_count",
     "Temple_Stops25",

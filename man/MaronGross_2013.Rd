@@ -5,7 +5,7 @@
 \alias{MaronGross_2013}
 \title{Sample Dyadic Interview Transcript: Marc Maron and Terry Gross Radio Interview 2013}
 \format{
-## "Dyad_Sample"
+## "MaronGross_2013"
 A data.frame with 546 obs, 2 vars:
 \describe{
   \item{text}{text from interview}
