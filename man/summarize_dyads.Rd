@@ -16,9 +16,9 @@ summarize_dyads(
 
 \item{custom_lags}{integer vector, should any lags be added in addition to -2, 0, 2}
 
-\item{corr_type}{option for computing lagged correlations turn-by-turn covariance (default='Pearson')}
+\item{sumdat_only}{default=TRUE, group and summarize data, two rows per conversation, one row for each participant, false will fill down summary statistics across all exchanges}
 
-\item{sumdat}{default=TRUE, group and summarize data, two rows per conversation, one row for each participant, false will fill down summary statistics across all exchanges}
+\item{corr_type}{option for computing lagged correlations turn-by-turn covariance (default='Pearson')}
 }
 \description{
 Calculates and appends 3 measures for quantifying alignment. Appends the mean score for each dimension by turn. Calculates and Spearman's rank correlation between interlocutor time series and appends by transcript. Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Spearman's rank correlation and area under the curve become less reliable for dyads under 30 exchanges.

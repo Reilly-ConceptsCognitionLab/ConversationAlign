@@ -23,13 +23,18 @@ Open-source software for computing main effects and indices of alignment across 
 if (!requireNamespace("desc", quietly = TRUE)) {
   install.packages("desc")
 }
-pkg_version <- desc::desc_get_version()
+pkg_version <- desc::desc_get_version(file = "DESCRIPTION")
 
 # Generate badges with HTML wrapper for horizontal layout
 cat('<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">')
 
-# GitHub Release badge 
-cat('[![GitHub release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)')
+# GitHub Release badge with specific version
+cat(sprintf('[![GitHub release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release&v=%s)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)', pkg_version))
+
+# GitHub Stars badge
+cat('
+[![GitHub stars](https://img.shields.io/github/stars/Reilly-ConceptsCognitionLab/ConversationAlign?style=social)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/stargazers)
+')
 
 # Other badges
 cat('
@@ -39,6 +44,7 @@ cat('
 ')
 
 cat('</div>')  # Close flex container
+
 ```
 
   

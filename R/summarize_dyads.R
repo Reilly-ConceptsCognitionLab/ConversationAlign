@@ -6,7 +6,7 @@
 #' @param df_prep produced in the align_dyads function
 #' @param custom_lags integer vector, should any lags be added in addition to -2, 0, 2
 #' @param corr_type option for computing lagged correlations turn-by-turn covariance (default='Pearson')
-#' @param sumdat default=TRUE, group and summarize data, two rows per conversation, one row for each participant, false will fill down summary statistics across all exchanges
+#' @param sumdat_only default=TRUE, group and summarize data, two rows per conversation, one row for each participant, false will fill down summary statistics across all exchanges
 #' @importFrom DescTools AUC
 #' @importFrom dplyr across
 #' @importFrom dplyr bind_rows
