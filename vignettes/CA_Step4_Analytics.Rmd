@@ -40,5 +40,19 @@ library(ConversationAlign)
 ```
 
 # Generate corpus analytics
+## `corpus_analytics()`
+This is a helpful addition to `ConversationAlign` that will generate a variety of corpus analytics (e.g., word count, type-token-ratio) for your conversation corpus. The output is in a summary table that is readily exportable to to the specific journal format of your choice using any number of packages such as `flextable` or `tinytable`. <br>
+
+Generate your corpus analytics on the dataframe you created with `prep_dyads`.
+
+<span style="color: darkred;">Arguments to `corpus_analytics` include:</span> <br>
+1) **dat_prep**= dataframe created by ``prep_dyads()``function <br>
+
+```{r, eval=T, warning=F, message=F}
+NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
+knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple", digits = 2)
+```
+
+
 
 `

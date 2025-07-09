@@ -21,8 +21,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Installation
-Install and load the development version of `ConversationAlign` from [GitHub](https://github.com/) using the `devtools` package.
 ```{r, message=FALSE, warning=F, echo=F}
 # Check if devtools is installed, if not install it
 if (!require("devtools", quietly = TRUE)) {
@@ -41,4 +39,39 @@ if (!require("ConversationAlign", quietly = TRUE)) {
 library(ConversationAlign)
 ```
 
-# Prep_Data
+# Reading data into R for ConversationAlign
+Half the battle with R is getting your data imported and formatted. This is especially true for string data and working with text. `ConversationAlign` uses a series of sequential functions to import, clean, and format your raw data. You **MUST** run each of these functions. They append important variable names and automatically reshape your data. <br>
+
+# Prepping your data for import
+- `ConversationAlign` works **ONLY** on dyadic (i.e., two person) conversation transcripts. 
+- Each transcript must nominally contain two colummns, one column should delineate the interlocutor (person who produced the text), and another column should contain the text itself.
+- `ConversationAlign` contains an import function called `read_dyads()` that will scan a target folder for text samples.
+- `read_dyads()` will import all of your transcripts into R and concatenate them into a single dataframe.
+-  `read_dyads()` will append each transcript's filename as a unique identifier for that conversation. This is SUPER important to remember when analyzing your data.
+- Store each of your individual conversation transcripts (`.csv`, `.txt`, `.ai`) that you wish to concatenate into a corpus in a folder. `ConversationAlign` will search for a folder called `my_transcripts` in the same directory as your script.  However, feel free to name your folder anything you like. You can specify a custom path as an argument to read_dyads()
+- Each transcript must nominally contain two columns of data (Participant and Text). All other columns (e.g., meta-data) will be retained. 
+
+## `read_dyads()`  
+Here are some exampples of `read_dyads()` in action. There is only one argument to `read_dyads()`, and that is `my_path`. This is for supplying a quoted directory path to the folder where your transcripts live. Remember to treat this folder as a staging area!  Once you are finished with a set of transcripts and don't want them read into `ConversationAlign` move them out of the folder, or specify a new folder.  Language data tends to proliferate quickly, and it is easy to forget what you are doing. Be a CAREFUL secretary, and record your steps.
+
+<span style="color: darkred;">Arguments to `read_dyads` include:</span>  <br>
+1. **my_path**: default is 'my_transcripts', change path to your folder name<br>
+```{r, eval=F, message=F, warning=F}
+#will search for folder 'my_transcripts' in your current directory
+MyConvos <- read_dyads()
+
+#will scan custom folder called 'MyStuff' in your current directory, concatenating all files in that folder into a single dataframe
+MyConvos2 <- read_dyads(my_path='/MyStuff')
+```
+
+## `read_1file()`
+- Read single transcript already in R environment. We will use `read_1file()` to prep the Marc Maron and Terry Gross transcript. Look at how the column headers have changed and the object name (MaronGross_2013) is now the Event_ID (a document identifier), <br>
+
+<span style="color: darkred;">Arguments to `read_1file` include:</span>  <br>
+1. **my_dat**: object already in your R environment containing text and speaker information.
+```{r, eval=T, message=F, warning=F}
+MaryLittleLamb <- read_1file(MaronGross_2013)
+#print first ten rows of header
+knitr::kable(head(MaronGross_2013, 15), format = "pipe")
+```
+<br>

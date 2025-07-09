@@ -14,7 +14,6 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-Install and load the development version of `ConversationAlign` from [GitHub](https://github.com/) using the `devtools` package.
 ```{r, message=FALSE, warning=F, echo=F}
 # Check if devtools is installed, if not install it
 if (!require("devtools", quietly = TRUE)) {
@@ -33,7 +32,9 @@ if (!require("ConversationAlign", quietly = TRUE)) {
 library(ConversationAlign)
 ```
 
-## prep_dyads()
+# Cleaning, Formatting, Aligning Norms to Your Data
+Lots of wild operations happen in this next step that transform your unstructured text to numeric time series objects aggregated by conversation and interlocutor. It is important that you have a handle on what `prep_dyads()` does and what processes such as lemmatization and stopword removal mean. <br>
+
 ``prep_dyads()`` uses numerous regex to clean and format the data your just read into R in the previous step. ``ConversationAlign`` applies an ordered sequence of cleaning steps on the road toward vectorizing your original text into a one-word-per row format. These steps include: converting all text to lowercase, expanding contractions, omitting all non-alphabetic characters (e.g., numbers, punctuation, line breaks). In addition to text cleaning, users guide options for stopword removal and lemmatization. During formatting ``prep_dyads()`` will prompt you to select up to three variables for computing alignment on. This works by joining values from a large internal lookup database to each word in your language transcript. ``prep_dyads()`` is customizable via the following arguments.
 
 ### Stopword removal
@@ -43,5 +44,31 @@ There are two important arguments regarding stopword removal. ``omit_stops`` spe
 ``ConversationAlign`` calls the ``textstem`` package as a dependency to lemmatize your language transcript. This converts morphologiocal derivatives to their root forms. The default is lemmatize=T. Sometimes you want to retain language output in its native form. If this is the case, change the argument in clean_dyads to lemmatize=F. ``clean_dyads()`` outputs word count metrics pre/post cleaning by dyad and interlocutor. This can be useful if you are interested in whether one person just doesn't produce many words or produces a great deal of empty utterances. <br>
 
 ### Dimension Selection
-This is where the magic happens. ``prep_dyads()`` will yoke published norms for up to 45 possible dimensions to every content word in your transcript. This join is executed by merging your vectorized conversation transcript with a huge internal lexical database with norms spanning over 100k English words. ``prep_dyads()`` will prompt you to select anywhere from 1 to 3 target dimensions at a time. Enter the number corresponding to each dimension of interest separated by spaces and then hit enter (e.g., 10 14 19) ``ConversationAlign`` will append a published norm if available (e.g., concreteness, word length) to every running word in your transcript. These quantitative values are used in the subsequent ``summarize_dyads()`` step to compute alignment. <br>
+This is where the magic happens. ``prep_dyads()`` will yoke published norms for >40 possible dimensions to every content word in your transcript (up to 3 at a time). This join is executed by merging your vectorized conversation transcript with a huge internal lexical database with norms spanning over 100k English words. ``prep_dyads()`` will prompt you to select anywhere from 1 to 3 target dimensions at a time. Enter the number corresponding to each dimension of interest separated by spaces and then hit enter (e.g., 10 14 19) ``ConversationAlign`` will append a published norm if available (e.g., concreteness, word length) to every running word in your transcript. These quantitative values are used in the subsequent ``summarize_dyads()`` step to compute alignment. <br>
+
+# `prep_dyads()`
+-Cleans, formats, and vectorizes conversation transwcripts to a one-word-per-row format
+-Yokes psycholinguistic norms for up to three dimensions at a time (from <40 possible dimensions) to each content word.
+-Retains metadata <br>
+
+<span style="color: darkred;">Arguments to `prep_dyads`:</span> <br>
+1) **dat_read**= name of the dataframe created during `read_dyads()` <br>
+2) **omit_stops**= T/F (default=T) option to remove stopwords
+3) **lemmatize**= lemmatize strings converting each entry to its dictionary form, default is `lemmatize=TRUE` <br>
+4) **which_stoplist**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_stops25``. Default is ``Temple_stops25``
+
+```{r, eval=F, message=F, warning=F}
+#Example of running the function
+NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
+```
+
+## Example of a prepped dataset 
+This embedded as external data in the package with 'anger' values yoked to each word.
+```{r}
+knitr::kable(head(NurseryRhymes_Prepped, 20), format = "simple", digits=2)
+```
+
+
+
+
 

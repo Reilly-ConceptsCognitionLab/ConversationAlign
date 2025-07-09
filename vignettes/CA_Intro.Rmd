@@ -102,7 +102,7 @@ Sacks, B., Ulichney, V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T.,
 ConversationAlign contains a large, internal lexical lookup_database. [Click Here](https://reilly-lab.github.io/ConversationAlign_LookupDatabaseCreation.html) to see how we created this by merging other offline psycholinguistic databases into one. <br>
 
 3. **Variable Key for ConversationAlign** <br>
-ConversationAlign currently allows users to compute alignment dynamics across 30 different lexical, affective, and semantic dimensions.[Click Here](https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf) to link to a variable key. <br>
+ConversationAlign currently allows users to compute alignment dynamics across >40 different lexical, affective, and semantic dimensions.[Click Here](https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf) to link to a variable key. <br>
 
 # References
 Lewis, David D., et al. (2004) "Rcv1: A new benchmark collection for text categorization research." Journal of machine learning research 5: 361-397.

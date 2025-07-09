@@ -40,4 +40,28 @@ library(ConversationAlign)
 ```
 
 ## summarize_dyads()
-`
+This is the final step where `ConversationAlign` will compute summary statistics including main effects and alignment statistics for the vectorized dataframe you produced using `prep_dyads()`. Users have several options for how to output their data, and these choices should be guided by your analysis strategy. For example, a linear mixed effects approach might involve modeling the rise and fall of values across turns. In contrast, a standard ANOVA would work on grouped summary data.  
+
+- Main effects for each dimension of interest aggregated by Conversation (Event_ID) and Person (Participant_ID). For example, main effects of concreteness would involve aggregated means of all the concreteness values for words produced by Mary vs words produced by Dave in an individual conversation.
+- dAUC_raw: difference area under the curve reflecting the difference between interlocutors at each turn on each dimension uncorrected for conversation length. For example, if Mary's concreteness at Exchange 1 was 8 (on a scale of 0-9), and Dave's concreteness on Exchange 1 was 4, the difference between Mary and Dave in this one-turn conversation would be 4. dAUC reflects area across all turns estimated using the trapezoidal rule.
+- dAUC_scaled100:  normalized AUC value to 100 turns using proportional scaling. e.g., (Observed AUC/Turns Raw) = (Normalized AUC)/100).
+- Lead_Corr2: Pearson or Spearman lagged correlation reflecting turn-by-turn covariance across partners for each specified dimension
+- Lag_Corr2: Lead correlation
+- Who_Talked_First: Interlocutor who started the conversation (needed for interepreting lead/lag stats)
+
+
+<span style="color: darkred;">Arguments to ``summarize_dyads()`` include:</span> <br>
+1) **df_prep**= dataframe created by ``prep_dyads()``function <br>
+2) **custom_lags**=  default is NULL, any additional user-specified lagged correlations. will automatically produce lead of 2 turns, immediate response, lag of 2 turns for each dimension of interest. <br>
+3) **sumdat_only**= boolean default is TRUE, produces grouped summary dataframe with averages by conversation and participant for each alignment dimension, FALSE retrains all of the original rows, filling down empty rows of summary statistics for the conversation (e.g., AUC) <br>
+4) **corr_type**= default='Pearson', other option 'Spearman' for computing turn-by-turn correlations across interlocutors for each dimension of interest.
+
+```{r, eval=T, warning=F, message=F, options(digits = 3)}
+MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Prepped, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
+colnames(MarySumDat)
+knitr::kable(head(MarySumDat, 15), format = "simple", digits = 3)
+```
+
+
+
+
