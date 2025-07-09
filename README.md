@@ -36,6 +36,8 @@ across \>40 possible dimensions via an embedded lookup database. There
 are a number of issues you should consider and steps you should take to
 prepare your data.
 
+<br> <br> <br>
+
 # Installation
 
 Install the development version of ConversationAlign from

@@ -54,6 +54,10 @@ cat('</div>')  # Close flex container
 # Overview
 `ConversationAlign` analyzes alignment and computes main effects across more than 40 unique dimensions between interlocutors (conversation partners) engaged in two-person conversations.  ConversationAlign transforms raw language data into simultaneous time series objects across >40 possible dimensions via an embedded lookup database. There are a number of issues you should consider and steps you should take to prepare your data. 
 
+<br>
+<br>
+<br>
+
 # Installation
 Install the development version of ConversationAlign from [GitHub](https://github.com/) using the ``devtools`` package.
 
