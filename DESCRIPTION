@@ -39,7 +39,7 @@ Suggests:
     devtools,
     knitr,
     rmarkdown
-URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/CHANGELOG.md, https://Reilly-ConceptsCognitionLab.github.io/ConversationAlign/news/index.html
+URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
 RoxygenNote: 7.3.2
 LazyData: true
 Config/testthat/edition: 3

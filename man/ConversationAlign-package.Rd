@@ -11,8 +11,7 @@ Reads conversation transcripts into R, cleans and formats them, and yokes user-s
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/CHANGELOG.md}
-  \item \url{https://Reilly-ConceptsCognitionLab.github.io/ConversationAlign/news/index.html}
+  \item \url{https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign}
 }
 
 }
