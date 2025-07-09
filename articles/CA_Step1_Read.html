@@ -67,22 +67,175 @@ Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
             
             <h4 data-toc-skip class="date">2025-07-09</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/v0.2.0/vignettes/CA_Step1_Read.Rmd" class="external-link"><code>vignettes/CA_Step1_Read.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/vignettes/CA_Step1_Read.Rmd" class="external-link"><code>vignettes/CA_Step1_Read.Rmd</code></a></small>
       <div class="d-none name"><code>CA_Step1_Read.Rmd</code></div>
     </div>
 
     
     
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="reading-data-into-r-for-conversationalign">Reading data into R for ConversationAlign<a class="anchor" aria-label="anchor" href="#reading-data-into-r-for-conversationalign"></a>
 </h2>
-<p>Install and load the development version of
-<code>ConversationAlign</code> from <a href="https://github.com/" class="external-link">GitHub</a> using the <code>devtools</code>
-package.</p>
+<p>Half the battle with R is getting your data imported and formatted.
+This is especially true for string data and working with text.
+<code>ConversationAlign</code> uses a series of sequential functions to
+import, clean, and format your raw data. You <strong>MUST</strong> run
+each of these functions. They append important variable names and
+automatically reshape your data. <br></p>
 </div>
 <div class="section level2">
-<h2 id="prep_data">Prep_Data<a class="anchor" aria-label="anchor" href="#prep_data"></a>
+<h2 id="prepping-your-data-for-import">Prepping your data for import<a class="anchor" aria-label="anchor" href="#prepping-your-data-for-import"></a>
 </h2>
+<ul>
+<li>
+<code>ConversationAlign</code> works <strong>ONLY</strong> on dyadic
+(i.e., two person) conversation transcripts.</li>
+<li>Each transcript must nominally contain two colummns, one column
+should delineate the interlocutor (person who produced the text), and
+another column should contain the text itself.</li>
+<li>
+<code>ConversationAlign</code> contains an import function called
+<code><a href="../reference/read_dyads.html">read_dyads()</a></code> that will scan a target folder for text
+samples.</li>
+<li>
+<code><a href="../reference/read_dyads.html">read_dyads()</a></code> will import all of your transcripts into R
+and concatenate them into a single dataframe.</li>
+<li>
+<code><a href="../reference/read_dyads.html">read_dyads()</a></code> will append each transcript’s filename as
+a unique identifier for that conversation. This is SUPER important to
+remember when analyzing your data.</li>
+<li>Store each of your individual conversation transcripts
+(<code>.csv</code>, <code>.txt</code>, <code>.ai</code>) that you wish
+to concatenate into a corpus in a folder. <code>ConversationAlign</code>
+will search for a folder called <code>my_transcripts</code> in the same
+directory as your script. However, feel free to name your folder
+anything you like. You can specify a custom path as an argument to
+read_dyads()</li>
+<li>Each transcript must nominally contain two columns of data
+(Participant and Text). All other columns (e.g., meta-data) will be
+retained.</li>
+</ul>
+<div class="section level3">
+<h3 id="read_dyads">
+<code>read_dyads()</code><a class="anchor" aria-label="anchor" href="#read_dyads"></a>
+</h3>
+<p>Here are some exampples of <code><a href="../reference/read_dyads.html">read_dyads()</a></code> in action. There
+is only one argument to <code><a href="../reference/read_dyads.html">read_dyads()</a></code>, and that is
+<code>my_path</code>. This is for supplying a quoted directory path to
+the folder where your transcripts live. Remember to treat this folder as
+a staging area! Once you are finished with a set of transcripts and
+don’t want them read into <code>ConversationAlign</code> move them out
+of the folder, or specify a new folder. Language data tends to
+proliferate quickly, and it is easy to forget what you are doing. Be a
+CAREFUL secretary, and record your steps.</p>
+<p><span style="color: darkred;">Arguments to <code>read_dyads</code>
+include:</span> <br> 1. <strong>my_path</strong>: default is
+‘my_transcripts’, change path to your folder name<br></p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#will search for folder 'my_transcripts' in your current directory</span></span>
+<span><span class="va">MyConvos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_dyads.html">read_dyads</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#will scan custom folder called 'MyStuff' in your current directory, concatenating all files in that folder into a single dataframe</span></span>
+<span><span class="va">MyConvos2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_dyads.html">read_dyads</a></span><span class="op">(</span>my_path<span class="op">=</span><span class="st">'/MyStuff'</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="read_1file">
+<code>read_1file()</code><a class="anchor" aria-label="anchor" href="#read_1file"></a>
+</h3>
+<ul>
+<li>Read single transcript already in R environment. We will use
+<code><a href="../reference/read_1file.html">read_1file()</a></code> to prep the Marc Maron and Terry Gross
+transcript. Look at how the column headers have changed and the object
+name (MaronGross_2013) is now the Event_ID (a document identifier),
+<br>
+</li>
+</ul>
+<p><span style="color: darkred;">Arguments to <code>read_1file</code>
+include:</span> <br> 1. <strong>my_dat</strong>: object already in your
+R environment containing text and speaker information.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MaryLittleLamb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_1file.html">read_1file</a></span><span class="op">(</span><span class="va">MaronGross_2013</span><span class="op">)</span></span>
+<span><span class="co">#print first ten rows of header</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MaronGross_2013</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"pipe"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="4%">
+<col width="95%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">speaker</th>
+<th align="left">text</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">I’m a little nervous but I’ve prepared I’ve written
+things on a piece of paper</td>
+</tr>
+<tr class="even">
+<td align="left">MARON</td>
+<td align="left">I don’t know how you prepare I could ask you that -
+maybe I will But this is how I prepare - I panic</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">For a while</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Yeah</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">And then I scramble and then I type some things up and
+then I handwrite things that are hard to read So I can you know
+challenge myself on that level during the interview</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Being self-defeating is always a good part of
+preparation</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">What is?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Being self-defeating</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Self-sabotage</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Key</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Right so you do that?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">I sometimes do that</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">How often?</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

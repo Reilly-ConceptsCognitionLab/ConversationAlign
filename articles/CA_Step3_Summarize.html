@@ -66,7 +66,7 @@ Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
             
             <h4 data-toc-skip class="date">July 09, 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/v0.2.0/vignettes/CA_Step3_Summarize.Rmd" class="external-link"><code>vignettes/CA_Step3_Summarize.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/vignettes/CA_Step3_Summarize.Rmd" class="external-link"><code>vignettes/CA_Step3_Summarize.Rmd</code></a></small>
       <div class="d-none name"><code>CA_Step3_Summarize.Rmd</code></div>
     </div>
 
@@ -75,7 +75,146 @@ Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
 <div class="section level2">
 <h2 id="summarize_dyads">summarize_dyads()<a class="anchor" aria-label="anchor" href="#summarize_dyads"></a>
 </h2>
-<p>`</p>
+<p>This is the final step where <code>ConversationAlign</code> will
+compute summary statistics including main effects and alignment
+statistics for the vectorized dataframe you produced using
+<code><a href="../reference/prep_dyads.html">prep_dyads()</a></code>. Users have several options for how to output
+their data, and these choices should be guided by your analysis
+strategy. For example, a linear mixed effects approach might involve
+modeling the rise and fall of values across turns. In contrast, a
+standard ANOVA would work on grouped summary data.</p>
+<ul>
+<li>Main effects for each dimension of interest aggregated by
+Conversation (Event_ID) and Person (Participant_ID). For example, main
+effects of concreteness would involve aggregated means of all the
+concreteness values for words produced by Mary vs words produced by Dave
+in an individual conversation.</li>
+<li>dAUC_raw: difference area under the curve reflecting the difference
+between interlocutors at each turn on each dimension uncorrected for
+conversation length. For example, if Mary’s concreteness at Exchange 1
+was 8 (on a scale of 0-9), and Dave’s concreteness on Exchange 1 was 4,
+the difference between Mary and Dave in this one-turn conversation would
+be 4. dAUC reflects area across all turns estimated using the
+trapezoidal rule.</li>
+<li>dAUC_scaled100: normalized AUC value to 100 turns using proportional
+scaling. e.g., (Observed AUC/Turns Raw) = (Normalized AUC)/100).</li>
+<li>Lead_Corr2: Pearson or Spearman lagged correlation reflecting
+turn-by-turn covariance across partners for each specified
+dimension</li>
+<li>Lag_Corr2: Lead correlation</li>
+<li>Who_Talked_First: Interlocutor who started the conversation (needed
+for interepreting lead/lag stats)</li>
+</ul>
+<p><span style="color: darkred;">Arguments to
+<code><a href="../reference/summarize_dyads.html">summarize_dyads()</a></code> include:</span> <br> 1)
+<strong>df_prep</strong>= dataframe created by
+<code><a href="../reference/prep_dyads.html">prep_dyads()</a></code>function <br> 2) <strong>custom_lags</strong>=
+default is NULL, any additional user-specified lagged correlations. will
+automatically produce lead of 2 turns, immediate response, lag of 2
+turns for each dimension of interest. <br> 3)
+<strong>sumdat_only</strong>= boolean default is TRUE, produces grouped
+summary dataframe with averages by conversation and participant for each
+alignment dimension, FALSE retrains all of the original rows, filling
+down empty rows of summary statistics for the conversation (e.g., AUC)
+<br> 4) <strong>corr_type</strong>= default=‘Pearson’, other option
+‘Spearman’ for computing turn-by-turn correlations across interlocutors
+for each dimension of interest.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MarySumDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span>df_prep <span class="op">=</span> <span class="va">NurseryRhymes_Prepped</span>, custom_lags<span class="op">=</span><span class="cn">NULL</span>, sumdat_only <span class="op">=</span> <span class="cn">TRUE</span>, corr_type<span class="op">=</span><span class="st">'Pearson'</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">MarySumDat</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "Event_ID"           "Participant_ID"     "Dimension"         </span></span>
+<span><span class="co">#&gt;  [4] "Dimension_Mean"     "AUC_raw"            "AUC_scaled100"     </span></span>
+<span><span class="co">#&gt;  [7] "Talked_First"       "TurnCorr_Lead2"     "TurnCorr_Immediate"</span></span>
+<span><span class="co">#&gt; [10] "TurnCorr_Lag2"</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MarySumDat</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"simple"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="left">Dimension</th>
+<th align="right">Dimension_Mean</th>
+<th align="right">AUC_raw</th>
+<th align="right">AUC_scaled100</th>
+<th align="left">Talked_First</th>
+<th align="right">TurnCorr_Lead2</th>
+<th align="right">TurnCorr_Immediate</th>
+<th align="right">TurnCorr_Lag2</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">emo_anger</td>
+<td align="right">0.001</td>
+<td align="right">0.783</td>
+<td align="right">1.630</td>
+<td align="left">Maya</td>
+<td align="right">-1</td>
+<td align="right">-1</td>
+<td align="right">-1</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.033</td>
+<td align="right">0.783</td>
+<td align="right">1.630</td>
+<td align="left">Maya</td>
+<td align="right">-1</td>
+<td align="right">-1</td>
+<td align="right">-1</td>
+</tr>
+<tr class="odd">
+<td align="left">JackJill</td>
+<td align="left">Ana</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.066</td>
+<td align="right">3.729</td>
+<td align="right">4.662</td>
+<td align="left">Ana</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">JackJill</td>
+<td align="left">Franklin</td>
+<td align="left">emo_anger</td>
+<td align="right">0.030</td>
+<td align="right">3.729</td>
+<td align="right">4.662</td>
+<td align="left">Ana</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">LittleLamb</td>
+<td align="left">Dave</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.001</td>
+<td align="right">1.486</td>
+<td align="right">1.486</td>
+<td align="left">Dave</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">LittleLamb</td>
+<td align="left">Mary</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.031</td>
+<td align="right">1.486</td>
+<td align="right">1.486</td>
+<td align="left">Dave</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

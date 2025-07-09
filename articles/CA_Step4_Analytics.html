@@ -66,7 +66,7 @@ Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
             
             <h4 data-toc-skip class="date">July 09, 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/v0.2.0/vignettes/CA_Step4_Analytics.Rmd" class="external-link"><code>vignettes/CA_Step4_Analytics.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/vignettes/CA_Step4_Analytics.Rmd" class="external-link"><code>vignettes/CA_Step4_Analytics.Rmd</code></a></small>
       <div class="d-none name"><code>CA_Step4_Analytics.Rmd</code></div>
     </div>
 
@@ -75,7 +75,136 @@ Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
 <div class="section level2">
 <h2 id="generate-corpus-analytics">Generate corpus analytics<a class="anchor" aria-label="anchor" href="#generate-corpus-analytics"></a>
 </h2>
+<div class="section level3">
+<h3 id="corpus_analytics">
+<code>corpus_analytics()</code><a class="anchor" aria-label="anchor" href="#corpus_analytics"></a>
+</h3>
+<p>This is a helpful addition to <code>ConversationAlign</code> that
+will generate a variety of corpus analytics (e.g., word count,
+type-token-ratio) for your conversation corpus. The output is in a
+summary table that is readily exportable to to the specific journal
+format of your choice using any number of packages such as
+<code>flextable</code> or <code>tinytable</code>. <br></p>
+<p>Generate your corpus analytics on the dataframe you created with
+<code>prep_dyads</code>.</p>
+<p><span style="color: darkred;">Arguments to
+<code>corpus_analytics</code> include:</span> <br> 1)
+<strong>dat_prep</strong>= dataframe created by
+<code><a href="../reference/prep_dyads.html">prep_dyads()</a></code>function <br></p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">NurseryRhymes_Analytics</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/corpus_analytics.html">corpus_analytics</a></span><span class="op">(</span>dat_prep<span class="op">=</span><span class="va">NurseryRhymes_Prepped</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">NurseryRhymes_Analytics</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"simple"</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">measure</th>
+<th align="right">mean</th>
+<th align="right">stdev</th>
+<th align="right">min</th>
+<th align="right">max</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">total number of conversations</td>
+<td align="right">3.00</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">token count all conversations (raw)</td>
+<td align="right">1506.00</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">token count all conversations (post-cleaning)</td>
+<td align="right">1032.00</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">exchange count (by conversation)</td>
+<td align="right">38.00</td>
+<td align="right">13.11</td>
+<td align="right">24.00</td>
+<td align="right">50.00</td>
+</tr>
+<tr class="odd">
+<td align="left">word count raw (by conversation)</td>
+<td align="right">502.00</td>
+<td align="right">47.03</td>
+<td align="right">456.00</td>
+<td align="right">550.00</td>
+</tr>
+<tr class="even">
+<td align="left">word count clean (by conversation)</td>
+<td align="right">344.00</td>
+<td align="right">48.66</td>
+<td align="right">312.00</td>
+<td align="right">400.00</td>
+</tr>
+<tr class="odd">
+<td align="left">cleaning retention rate (by conversation)</td>
+<td align="right">0.68</td>
+<td align="right">0.04</td>
+<td align="right">0.64</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="even">
+<td align="left">morphemes-per-word (by conversation)</td>
+<td align="right">1.00</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">letters-per-word (by conversation)</td>
+<td align="right">4.22</td>
+<td align="right">0.14</td>
+<td align="right">4.12</td>
+<td align="right">4.38</td>
+</tr>
+<tr class="even">
+<td align="left">lexical frequency lg10 (by conversation)</td>
+<td align="right">3.67</td>
+<td align="right">0.18</td>
+<td align="right">3.48</td>
+<td align="right">3.84</td>
+</tr>
+<tr class="odd">
+<td align="left">words-per-turn raw (by conversation)</td>
+<td align="right">7.08</td>
+<td align="right">2.13</td>
+<td align="right">5.50</td>
+<td align="right">9.50</td>
+</tr>
+<tr class="even">
+<td align="left">words-per-turn clean (by conversation)</td>
+<td align="right">4.83</td>
+<td align="right">1.44</td>
+<td align="right">4.00</td>
+<td align="right">6.50</td>
+</tr>
+<tr class="odd">
+<td align="left">TTR raw (by conversation)</td>
+<td align="right">0.03</td>
+<td align="right">0.01</td>
+<td align="right">0.02</td>
+<td align="right">0.04</td>
+</tr>
+<tr class="even">
+<td align="left">TTR clean (by conversation)</td>
+<td align="right">0.04</td>
+<td align="right">0.02</td>
+<td align="right">0.02</td>
+<td align="right">0.05</td>
+</tr>
+</tbody>
+</table>
 <p>`</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
