@@ -11,7 +11,7 @@ across coversation partners in dyadic conversation transcripts. <br>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
 
 [![GitHub
-release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release&v=0.2.0)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)
+release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)
 [![GitHub
 stars](https://img.shields.io/github/stars/Reilly-ConceptsCognitionLab/ConversationAlign?style=social)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/stargazers)
 
