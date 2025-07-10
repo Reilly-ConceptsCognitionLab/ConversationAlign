@@ -118,7 +118,7 @@ knitr::kable(head(MaronGross_2013, 10), format = "pipe")
 - `dat_read` name of the dataframe created during `read_dyads()` <br>
 - `omit_stops` T/F (default=T) option to remove stopwords
 -  `lemmatize` T/F (default=T) lemmatize strings converting each entry to its dictionary form
--  `which_stoplist` quoted argument specifying stopword list to apply, options include `none`, `MIT_stops`, `SMART`, `CA_OriginalStops`, or `Temple_stops25`. Default is `Temple_stops25`.
+-  `which_stoplist` quoted argument specifying stopword list to apply, options include `none`, `MIT_stops`, `SMART_stops`, `CA_OriginalStops`, or `Temple_stops25`. Default is `Temple_stops25`.
 ```{r, eval=F, message=F, warning=F}
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
 ```

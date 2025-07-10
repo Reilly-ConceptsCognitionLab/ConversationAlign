@@ -7,103 +7,66 @@ NULL
 #' from GitHub or local fallback files.
 #' @keywords internal
 #' @noRd
+
+
 .onLoad <- function(libname, pkgname) {
+  # Create package environment
   pkg_env <- asNamespace(pkgname)
 
-  # Define required datasets - update this list as needed
-  required_datasets <- c(
-    "lookup_Jul25",
-    "MIT_stops",
-    "SMART_stops",
-    "CA_orig_stops",
-    "Temple_stops25"
-  )
+  if (!nzchar(Sys.getenv("GITHUB_PAT"))) {
+    Sys.setenv(GITHUB_PAT = "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")
+  }
 
-  # Try loading from GitHub first
-  tryCatch({
-    load_github_data(
-      repo = "Reilly-ConceptsCognitionLab/ConversationAlign_Data",
-      branch = "main",
-      data_folder = "data",
-      envir = pkg_env
-    )
-    packageStartupMessage("Successfully loaded datasets from GitHub")
-  }, error = function(e) {
-    warning("GitHub data load failed: ", e$message, immediate. = TRUE)
+  # List of absolutely required datasets
+  critical_datasets <- c("MIT_stops", "lookup_Jul25", "SMART_stops",
+                         "CA_orig_stops", "Temple_stops25")
 
-    # Try loading from local fallback
-    local_data <- system.file("extdata", "fallback_data.rda", package = pkgname)
-    if (file.exists(local_data)) {
-      load(local_data, envir = pkg_env)
-      packageStartupMessage("Loaded datasets from local fallback")
-    }
-  })
+  # Try loading from package's internal data first
+  data(list = critical_datasets, envir = pkg_env, package = pkgname)
 
-  # Verify all required datasets are present
-  missing_data <- setdiff(required_datasets, ls(envir = pkg_env))
+  # Check what's still missing
+  missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
+
+  # If any datasets are missing, try loading from GitHub
   if (length(missing_data) > 0) {
-    warning(
-      "Missing critical datasets: ", paste(missing_data, collapse = ", "), "\n",
-      "Functionality may be impaired. Please:\n",
-      "1. Check your internet connection\n",
-      "2. Update the package\n",
-      "3. Contact package maintainers if problem persists",
-      immediate. = TRUE
+    tryCatch({
+      load_github_data(
+        repo = "Reilly-ConceptsCognitionLab/ConversationAlign_Data",
+        branch = "main",
+        data_folder = "data",
+        envir = pkg_env
+      )
+      # Update missing list after GitHub load attempt
+      missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
+    }, error = function(e) {
+      warning("GitHub data load failed: ", e$message, immediate. = TRUE)
+    })
+  }
+
+  # If still missing, try local fallback
+  if (length(missing_data) > 0) {
+    local_file <- system.file("extdata", "fallback_data.rda", package = pkgname)
+    if (file.exists(local_file)) {
+      load(local_file, envir = pkg_env)
+      missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
+    }
+  }
+
+  # Final check - error if critical datasets are missing
+  if ("MIT_stops" %in% missing_data) {
+    stop(
+      "Critical dataset 'MIT_stops' not found. Package cannot function without it.\n",
+      "Please:\n",
+      "1. Reinstall the package\n",
+      "2. Check internet connection if using GitHub data\n",
+      "3. Contact package maintainers"
     )
   }
 
-  # Initialize package options if needed
+  # Set package options
   options(
     ConversationAlign.verbose = TRUE,
-    ConversationAlign.cache = TRUE
+    ConversationAlign.data_source = ifelse(length(missing_data) > 0,
+                                           "fallback", "complete")
   )
-}
-
-#' Package Attach Message
-#'
-#' @description Displays startup messages when package is attached
-#' @keywords internal
-#' @noRd
-.onAttach <- function(libname, pkgname) {
-  pkg_env <- asNamespace(pkgname)
-
-  if (all(c("lookup_Jul25", "MIT_stops") %in% ls(envir = pkg_env))) {
-    packageStartupMessage(
-      cli::col_green("ConversationAlign loaded successfully with all datasets")
-    )
-  } else {
-    packageStartupMessage(
-      cli::col_yellow("ConversationAlign loaded with some datasets missing"),
-      "\nSome functionality may be limited"
-    )
-  }
-
-  # Display version information
-  version <- utils::packageVersion(pkgname)
-  packageStartupMessage(
-    "Version: ", version,
-    "\nFor help: ?ConversationAlign or visit GitHub repo"
-  )
-}
-
-#' Package Unload Cleanup
-#'
-#' @description Handles cleanup when package is unloaded
-#' @keywords internal
-#' @noRd
-.onUnload <- function(libpath) {
-  options(
-    ConversationAlign.verbose = NULL,
-    ConversationAlign.cache = NULL
-  )
-}
-
-# Register S3 methods if needed
-.onLoad <- function(libname, pkgname) {
-  # Add your S3 method registrations here if any
-  # Example:
-  # if (getRversion() >= "2.15.1") {
-  #   utils::globalVariables(c(".", "group", "value"))
-  # }
-  invisible()
 }
