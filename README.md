@@ -77,7 +77,7 @@ library(ConversationAlign)
   retained.
 
 <span style="color: darkred;">Arguments to `read_dyads` include:</span>
-<br> 1. **my_path**: default is ‘my_transcripts’, change path to your
+<br> 1. **my_path** default is ‘my_transcripts’, change path to your
 folder name<br>
 
 ``` r
@@ -135,10 +135,10 @@ dimensions at a time (from \<40 possible dimensions) to each content
 word. -Retains metadata
 
 <span style="color: darkred;">Arguments to `prep_dyads`:</span> <br> 1)
-**dat_read**= name of the dataframe created during `read_dyads()` <br>
-2) **omit_stops**= T/F (default=T) option to remove stopwords 3)
-**lemmatize**= lemmatize strings converting each entry to its dictionary
-form, default is `lemmatize=TRUE` <br> 4) **which_stoplist**= quoted
+**dat_read** name of the dataframe created during `read_dyads()` <br> 2)
+**omit_stops** T/F (default=T) option to remove stopwords 3)
+**lemmatize** lemmatize strings converting each entry to its dictionary
+form, default is `lemmatize=TRUE` <br> 4) **which_stoplist** quoted
 argument specifying stopword list, options include `none`, `MIT_stops`,
 `SMART`, `CA_OriginalStops`, or `Temple_stops25`. Default is
 `Temple_stops25`
@@ -189,15 +189,15 @@ correlation at lags -2,,0, 2. You decide whether you want a Pearson or
 Spearman lagged correlation. <br>
 
 <span style="color: darkred;">Arguments to `summarize_dyads()`
-include:</span> <br> 1) **df_prep**= dataframe created by
-`prep_dyads()`function <br> 2) **custom_lags**= default is NULL, any
+include:</span> <br> 1) **df_prep** dataframe created by
+`prep_dyads()`function <br> 2) **custom_lags** default is NULL, any
 additional user-specified lagged correlations. will automatically
 produce lead of 2 turns, immediate response, lag of 2 turns for each
-dimension of interest. <br> 3) **sumdat_only**= boolean default is TRUE,
+dimension of interest. <br> 3) **sumdat_only** boolean default is TRUE,
 produces grouped summary dataframe with averages by conversation and
 participant for each alignment dimension, FALSE retrains all of the
 original rows, filling down empty rows of summary statistics for the
-conversation (e.g., AUC) <br> 4) **corr_type**= default=‘Pearson’, other
+conversation (e.g., AUC) <br> 4) **corr_type** default=‘Pearson’, other
 option ‘Spearman’ for computing turn-by-turn correlations across
 interlocutors for each dimension of interest.
 
@@ -232,7 +232,7 @@ specific journal format of your choice using any number of packages such
 as `flextable` or `tinytable`.
 
 <span style="color: darkred;">Arguments to `corpus_analytics`
-include:</span> <br> 1) **dat_prep**= dataframe created by
+include:</span> <br> 1) **dat_prep** dataframe created by
 `prep_dyads()`function <br>
 
 ``` r
