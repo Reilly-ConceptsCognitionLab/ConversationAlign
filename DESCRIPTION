@@ -21,6 +21,7 @@ Depends:
 Imports:
     DescTools,
     dplyr (>= 0.4.3),
+    jsonlite,
     magrittr,
     purrr,
     rlang,
@@ -42,5 +43,4 @@ Suggests:
 URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
 RoxygenNote: 7.3.2
 LazyData: true
-Config/testthat/edition: 3
 VignetteBuilder: knitr
