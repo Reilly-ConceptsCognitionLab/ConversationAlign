@@ -4,9 +4,9 @@
 \name{ConversationAlign-package}
 \alias{ConversationAlign}
 \alias{ConversationAlign-package}
-\title{ConversationAlign: ConversationAlign}
+\title{ConversationAlign: Process Text and Compute Linguistic Alignment in Conversation Transcripts}
 \description{
-Reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word. ConversationAlign computes alignment indices between two interlocutors across each transcript for up to 30 different psycholinguistic and affective lexical dimensions.
+`ConversationAlign` imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. `ConversationAlign` then computes alignment indices between two interlocutors across each transcript for >40 possible semantic, lexical, and affective dimensions. In addition to alignment, `ConversationAlign` also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.
 }
 \seealso{
 Useful links:
