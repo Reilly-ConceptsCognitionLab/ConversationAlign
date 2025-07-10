@@ -71,14 +71,15 @@ library(ConversationAlign)
   `ConversationAlign` will search for a folder called `my_transcripts`
   in the same directory as your script. However, feel free to name your
   folder anything you like. You can specify a custom path as an argument
-  to read_dyads()
+  to `read_dyads()`
 - Each transcript must nominally contain two columns of data
   (Participant and Text). All other columns (e.g., meta-data) will be
   retained.
 
-<span style="color: darkred;">Arguments to `read_dyads` include:</span>
-<br> 1. **my_path** default is ‘my_transcripts’, change path to your
-folder name<br>
+### <span style="color: darkred;">Arguments to `read_dyads`:</span> <br>
+
+- `my_path` default is ‘my_transcripts’, change path to your folder
+  name<br>
 
 ``` r
 #will search for folder 'my_transcripts' in your current directory
@@ -95,9 +96,10 @@ MyConvos2 <- read_dyads(my_path='/MyStuff')
   at how the column headers have changed and the object name
   (MaronGross_2013) is now the Event_ID (a document identifier), <br>
 
-<span style="color: darkred;">Arguments to `read_1file` include:</span>
-<br> 1. **my_dat**: object already in your R environment containing text
-and speaker information.
+### <span style="color: darkred;">Arguments to `read_1file`:</span> <br>
+
+- `my_dat` object already in your R environment containing text and
+  speaker information.
 
 ``` r
 MaryLittleLamb <- read_1file(MaronGross_2013)
@@ -134,14 +136,15 @@ one-word-per-row format -Yokes psycholinguistic norms for up to three
 dimensions at a time (from \<40 possible dimensions) to each content
 word. -Retains metadata
 
-<span style="color: darkred;">Arguments to `prep_dyads`:</span> <br> 1)
-**dat_read** name of the dataframe created during `read_dyads()` <br> 2)
-**omit_stops** T/F (default=T) option to remove stopwords 3)
-**lemmatize** lemmatize strings converting each entry to its dictionary
-form, default is `lemmatize=TRUE` <br> 4) **which_stoplist** quoted
-argument specifying stopword list, options include `none`, `MIT_stops`,
-`SMART`, `CA_OriginalStops`, or `Temple_stops25`. Default is
-`Temple_stops25`
+### <span style="color: darkred;">Arguments to `prep_dyads`:</span> <br>
+
+- `dat_read` name of the dataframe created during `read_dyads()` <br>
+- `omit_stops` T/F (default=T) option to remove stopwords
+- `lemmatize` T/F (default=T) lemmatize strings converting each entry to
+  its dictionary form
+- `which_stoplist` quoted argument specifying stopword list to apply,
+  options include `none`, `MIT_stops`, `SMART`, `CA_OriginalStops`, or
+  `Temple_stops25`. Default is `Temple_stops25`.
 
 ``` r
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
@@ -188,18 +191,20 @@ AUC (dAUC) for every variable of interest you specified and the
 correlation at lags -2,,0, 2. You decide whether you want a Pearson or
 Spearman lagged correlation. <br>
 
-<span style="color: darkred;">Arguments to `summarize_dyads()`
-include:</span> <br> 1) **df_prep** dataframe created by
-`prep_dyads()`function <br> 2) **custom_lags** default is NULL, any
-additional user-specified lagged correlations. will automatically
-produce lead of 2 turns, immediate response, lag of 2 turns for each
-dimension of interest. <br> 3) **sumdat_only** boolean default is TRUE,
-produces grouped summary dataframe with averages by conversation and
-participant for each alignment dimension, FALSE retrains all of the
-original rows, filling down empty rows of summary statistics for the
-conversation (e.g., AUC) <br> 4) **corr_type** default=‘Pearson’, other
-option ‘Spearman’ for computing turn-by-turn correlations across
-interlocutors for each dimension of interest.
+### <span style="color: darkred;">Arguments to `summarize_dyads()` include:</span> <br>
+
+- `df_prep` dataframe created by `prep_dyads()`function
+- `custom_lags` user specifies a custom set of turn-lags. Default is
+  NULL with `ConversationAlign` producing correlations at a lead of 2
+  turns, immediate response, and lag of 2 turns for each dimension of
+  interest. <br>
+- `sumdat_only` default is TRUE, produces grouped summary dataframe with
+  averages by conversation and participant for each alignment dimension,
+  FALSE retrains all of the original rows, filling down empty rows of
+  summary statistics for the conversation (e.g., AUC)
+- `corr_type` specifies correlation madel (parametric default =
+  ‘Pearson’); other option ‘Spearman’ for computing turn-by-turn
+  correlations across interlocutors for each dimension of interest.
 
 ``` r
 MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Prepped, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
@@ -231,9 +236,9 @@ publication ready table of analytics that you can easily export to the
 specific journal format of your choice using any number of packages such
 as `flextable` or `tinytable`.
 
-<span style="color: darkred;">Arguments to `corpus_analytics`
-include:</span> <br> 1) **dat_prep** dataframe created by
-`prep_dyads()`function <br>
+### <span style="color: darkred;">Arguments to `corpus_analytics` include:</span> <br>
+
+- `dat_prep` dataframe created by `prep_dyads()`function <br>
 
 ``` r
 NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
@@ -256,6 +261,8 @@ knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple", digits = 2)
 | words-per-turn clean (by conversation)        |    4.83 |  1.44 |   4.00 |   6.50 |
 | TTR raw (by conversation)                     |    0.03 |  0.01 |   0.02 |   0.04 |
 | TTR clean (by conversation)                   |    0.04 |  0.02 |   0.02 |   0.05 |
+
+<br> <br>
 
 # News and Getting Help
 
