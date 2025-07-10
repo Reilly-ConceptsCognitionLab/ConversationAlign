@@ -24,7 +24,7 @@ v3+](https://img.shields.io/badge/License-GPL%20v3+-blue.svg)](https://www.gnu.o
 
 <img src="man/figures/convo_demo.jpg" 
      alt="illustration of processing pipeline used by ConversationAlign" 
-     style="float: right; width: 60%; margin-left: 20px; margin-bottom: 10px;" />
+     style="float: right; width: 50%; margin-left: 20px; margin-bottom: 10px;" />
 
 # Overview
 
@@ -34,9 +34,7 @@ partners) engaged in two-person conversations. ConversationAlign
 transforms raw language data into simultaneous time series objects
 across \>40 possible dimensions via an embedded lookup database. There
 are a number of issues you should consider and steps you should take to
-prepare your data.
-
-<br> <br> <br>
+prepare your data. <br> <br>
 
 # Installation
 
@@ -89,6 +87,8 @@ MyConvos <- read_dyads()
 MyConvos2 <- read_dyads(my_path='/MyStuff')
 ```
 
+<br>
+
 ## `read_1file()`
 
 - Read single transcript already in R environment. We will use
@@ -104,7 +104,7 @@ MyConvos2 <- read_dyads(my_path='/MyStuff')
 ``` r
 MaryLittleLamb <- read_1file(MaronGross_2013)
 #print first ten rows of header
-knitr::kable(head(MaronGross_2013, 15), format = "pipe")
+knitr::kable(head(MaronGross_2013, 10), format = "pipe")
 ```
 
 | speaker | text |
@@ -119,13 +119,8 @@ knitr::kable(head(MaronGross_2013, 15), format = "pipe")
 | GROSS | Being self-defeating |
 | MARON | Yes |
 | GROSS | Self-sabotage |
-| MARON | Yes |
-| GROSS | Key |
-| MARON | Right so you do that? |
-| GROSS | I sometimes do that |
-| MARON | How often? |
 
-<br>
+<br> <br>
 
 # Step 2: Clean, Format, Align Norms
 
@@ -136,7 +131,7 @@ one-word-per-row format -Yokes psycholinguistic norms for up to three
 dimensions at a time (from \<40 possible dimensions) to each content
 word. -Retains metadata
 
-### <span style="color: darkred;">Arguments to `prep_dyads`:</span> <br>
+### <span style="color: darkred;">Arguments to `prep_dyads()`:</span> <br>
 
 - `dat_read` name of the dataframe created during `read_dyads()` <br>
 - `omit_stops` T/F (default=T) option to remove stopwords
@@ -154,7 +149,7 @@ Example of a prepped dataset embedded as external data in the package
 with ‘anger’ values yoked to each word.
 
 ``` r
-knitr::kable(head(NurseryRhymes_Prepped, 20), format = "simple", digits=2)
+knitr::kable(head(NurseryRhymes_Prepped, 10), format = "simple", digits=2)
 ```
 
 | Event_ID | Participant_ID | Exchange_Count | Turn_Count | Text_Prep | Text_Clean | emo_anger |
@@ -169,16 +164,8 @@ knitr::kable(head(NurseryRhymes_Prepped, 20), format = "simple", digits=2)
 | ItsySpider | Yin | 1 | 1 | water | water | -0.17 |
 | ItsySpider | Yin | 1 | 1 | spout | spout | 0.05 |
 | ItsySpider | Maya | 1 | 2 | down | down | 0.03 |
-| ItsySpider | Maya | 1 | 2 | came | come | -0.13 |
-| ItsySpider | Maya | 1 | 2 | the | NA | NA |
-| ItsySpider | Maya | 1 | 2 | rain | rain | 0.07 |
-| ItsySpider | Maya | 1 | 2 | and | NA | NA |
-| ItsySpider | Maya | 1 | 2 | washed | wash | 0.06 |
-| ItsySpider | Maya | 1 | 2 | the | NA | NA |
-| ItsySpider | Maya | 1 | 2 | spider | spider | 0.04 |
-| ItsySpider | Maya | 1 | 2 | out | out | 0.04 |
-| ItsySpider | Yin | 2 | 3 | out | out | 0.04 |
-| ItsySpider | Yin | 2 | 3 | came | come | -0.13 |
+
+<br> <br>
 
 # Step 3: Summarize Data, Alignment Stats
 
@@ -191,9 +178,9 @@ AUC (dAUC) for every variable of interest you specified and the
 correlation at lags -2,,0, 2. You decide whether you want a Pearson or
 Spearman lagged correlation. <br>
 
-### <span style="color: darkred;">Arguments to `summarize_dyads()` include:</span> <br>
+### <span style="color: darkred;">Arguments to `summarize_dyads()`:</span> <br>
 
-- `df_prep` dataframe created by `prep_dyads()`function
+- `df_prep` dataframe created by `prep_dyads()` function
 - `custom_lags` user specifies a custom set of turn-lags. Default is
   NULL with `ConversationAlign` producing correlations at a lead of 2
   turns, immediate response, and lag of 2 turns for each dimension of
@@ -213,7 +200,7 @@ colnames(MarySumDat)
 #>  [4] "Dimension_Mean"     "AUC_raw"            "AUC_scaled100"     
 #>  [7] "Talked_First"       "TurnCorr_Lead2"     "TurnCorr_Immediate"
 #> [10] "TurnCorr_Lag2"
-knitr::kable(head(MarySumDat, 15), format = "simple", digits = 3)
+knitr::kable(head(MarySumDat, 10), format = "simple", digits = 3)
 ```
 
 | Event_ID | Participant_ID | Dimension | Dimension_Mean | AUC_raw | AUC_scaled100 | Talked_First | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
@@ -236,13 +223,13 @@ publication ready table of analytics that you can easily export to the
 specific journal format of your choice using any number of packages such
 as `flextable` or `tinytable`.
 
-### <span style="color: darkred;">Arguments to `corpus_analytics` include:</span> <br>
+### <span style="color: darkred;">Arguments to `corpus_analytics()`:</span>
 
 - `dat_prep` dataframe created by `prep_dyads()`function <br>
 
 ``` r
 NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
-knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple", digits = 2)
+knitr::kable(head(NurseryRhymes_Analytics, 10), format = "simple", digits = 2)
 ```
 
 | measure                                       |    mean | stdev |    min |    max |
@@ -257,10 +244,6 @@ knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple", digits = 2)
 | morphemes-per-word (by conversation)          |    1.00 |  0.00 |   1.00 |   1.00 |
 | letters-per-word (by conversation)            |    4.22 |  0.14 |   4.12 |   4.38 |
 | lexical frequency lg10 (by conversation)      |    3.67 |  0.18 |   3.48 |   3.84 |
-| words-per-turn raw (by conversation)          |    7.08 |  2.13 |   5.50 |   9.50 |
-| words-per-turn clean (by conversation)        |    4.83 |  1.44 |   4.00 |   6.50 |
-| TTR raw (by conversation)                     |    0.03 |  0.01 |   0.02 |   0.04 |
-| TTR clean (by conversation)                   |    0.04 |  0.02 |   0.02 |   0.05 |
 
 <br> <br>
 
