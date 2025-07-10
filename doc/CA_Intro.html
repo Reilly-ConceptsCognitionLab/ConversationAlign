@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion" />
+
+<meta name="date" content="2025-07-08" />
+
+<title>ConversationAlign Intro</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ConversationAlign Intro</h1>
+<h4 class="author">Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney,
+Chelsea Helion</h4>
+<h4 class="date">July 08, 2025</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#intro-to-conversationalign" id="toc-intro-to-conversationalign">Intro to ConversationAlign</a>
+<ul>
+<li><a href="#caveats-for-using-conversationalign" id="toc-caveats-for-using-conversationalign">Caveats for Using
+ConversationAlign</a></li>
+<li><a href="#prepare-your-transcripts-outside-of-the-package" id="toc-prepare-your-transcripts-outside-of-the-package">Prepare your
+Transcripts Outside of the Package</a></li>
+</ul></li>
+<li><a href="#installation" id="toc-installation">Installation</a>
+<ul>
+<li><a href="#calibaration-transcripts-included-in-conversationalign" id="toc-calibaration-transcripts-included-in-conversationalign">Calibaration
+Transcripts Included in <code>ConversationAlign</code></a>
+<ul>
+<li><a href="#nurseryrhymes" id="toc-nurseryrhymes">NurseryRhymes</a></li>
+<li><a href="#maron-gross-interview" id="toc-maron-gross-interview">Maron-Gross Interview</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#caveat-emptor" id="toc-caveat-emptor">Caveat
+emptor</a></li>
+<li><a href="#background-and-supporting-materials" id="toc-background-and-supporting-materials">Background and Supporting
+Materials</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
+
+<div id="intro-to-conversationalign" class="section level1">
+<h1>Intro to ConversationAlign</h1>
+<p>A good conversation is a cooperative endeavor where both parties
+modify the form and content of their own production to align with each
+other. This is a phenomenon known as alignment. People align across many
+dimensions including the words they choose and the affective tenor of
+their prosody. <code>ConversationAlign</code> measures dynamics of
+lexical use between conversation partners across more than 40 semantic,
+lexical, phonological, and affective dimensions. Before launching into
+your analyses, there are some important use caveats to consider.</p>
+<div id="caveats-for-using-conversationalign" class="section level2">
+<h2>Caveats for Using ConversationAlign</h2>
+<ul>
+<li>Language analyses often proliferate in complexity. Spend the extra
+time to keep careful records and a logical organization system (e.g.,
+smart filenaming, variable keys, a formalized processing pipeline).</li>
+<li><code>ConversationAlign</code> only works on dyadic language
+transcripts (i.e., 2-person dialogues).</li>
+<li><code>ConversationAlign</code> does NOT parse turns automatically.
+The software will aggregate all words produced by one speaker across
+sentences and rows until a switch occurs in the ‘speaker’ column.</li>
+<li><code>ConversationAlign</code> will strip punctuation and other
+special characters automatically.</li>
+<li><code>ConversationAlign</code> will split/vectorize your text into a
+one-word-per-row format, retaining all variable labels.</li>
+<li><code>ConversationAlign</code> will retain all meta-data throughout
+text processing (e.g., timestamps, grouping variables).
+<code>ConversationAlign</code> is pretty good at detecting and repairing
+unconventional font encoding systems, but it will not catch everything,
+You will find all sorts of hidden junk when you copy/paste interview
+transcripts from random websites are from YouTube. Inspect your
+transcripts to make sure they are what you think they are before
+launching into a complex computational analysis.</li>
+</ul>
+</div>
+<div id="prepare-your-transcripts-outside-of-the-package" class="section level2">
+<h2>Prepare your Transcripts Outside of the Package</h2>
+<ul>
+<li>Save each conversation transcript as a separate file
+(<code>*.txt</code>, <code>*.csv</code>, or Otter
+<code>*.ai</code>).</li>
+<li>Be deliberate about your filenaming convention. Each transcript’s
+filename will become its unique document identifier (Event_ID) when
+importing into <code>ConversationAlign</code>. <br></li>
+<li>Store all the transcripts you want to analyze in the same folder
+(e.g., ’/my_transcripts).</li>
+<li>Your transcript folder and analysis scripts should ideally exist
+within the same directory.</li>
+<li>Each raw comversation transcript <strong>MUST</strong> nominally
+contain at least two columns, talker/interlocutor and text.<br />
+</li>
+<li>Name your talker/interlocutor column as ‘Interlocutor’, ‘Speaker’,
+or ‘Participant’ (not case sensitive).</li>
+<li>Name your text column as ‘Text’, ‘Utterance’, or ‘Turn’ (not case
+sensitive).</li>
+</ul>
+</div>
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<p>Install and load the development version of
+<code>ConversationAlign</code> from <a href="https://github.com/">GitHub</a> using the <code>devtools</code>
+package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Check if devtools is installed, if not install it</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;devtools&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># Load devtools</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># Check if ConversationAlign is installed, if not install from GitHub</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;ConversationAlign&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Reilly-ConceptsCognitionLab/ConversationAlign&quot;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>}</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># Load SemanticDistance</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="fu">library</span>(ConversationAlign)</span></code></pre></div>
+<div id="calibaration-transcripts-included-in-conversationalign" class="section level2">
+<h2>Calibaration Transcripts Included in
+<code>ConversationAlign</code></h2>
+<p><code>ConversationAlign</code>contains two sample conversation
+transcripts that are pre-load when you call the package. These are:
+<strong>MaronGross_2013:</strong> Interview transcript of Marc Maron and
+Terry Gross on NPR (2013). <br> <strong>NurseryRhymes:</strong> Three
+nursery rhymes looping same phrases formatted as conversations, cleaned,
+and aligned to illustrate how the formatting pipeline reshaopes
+conversation transcripts.</p>
+<div id="nurseryrhymes" class="section level3">
+<h3>NurseryRhymes</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(NurseryRhymes, <span class="dv">20</span>), <span class="at">format =</span> <span class="st">&quot;simple&quot;</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="left">Text_Raw</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">The itsy-bitsy spider climbed up the water spout</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">Down came the rain and washed the spider out</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">Out came the sun, and dried up all the rain</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">And the itsy-bitsy spider climbed up the spout
+again</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">The itsy-bitsy spider climbed up the water spout</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">Down came the rain and washed the spider out</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">Out came the sun, and dried up all the rain</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">And the itsy-bitsy spider climbed up the spout
+again</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">The itsy-bitsy spider climbed up the water spout</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">Down came the rain and washed the spider out</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">Out came the sun, and dried up all the rain</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">And the itsy-bitsy spider climbed up the spout
+again</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">The itsy-bitsy spider climbed up the water spout</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">Down came the rain and washed the spider out</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">Out came the sun, and dried up all the rain</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">And the itsy-bitsy spider climbed up the spout
+again</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">The itsy-bitsy spider climbed up the water spout</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">Down came the rain and washed the spider out</td>
+</tr>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">Out came the sun, and dried up all the rain</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">And the itsy-bitsy spider climbed up the spout
+again</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">str</span>(NurseryRhymes)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    228 obs. of  3 variables:</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;  $ Event_ID      : chr  &quot;ItsySpider&quot; &quot;ItsySpider&quot; &quot;ItsySpider&quot; &quot;ItsySpider&quot; ...</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;  $ Participant_ID: chr  &quot;Yin&quot; &quot;Maya&quot; &quot;Yin&quot; &quot;Maya&quot; ...</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;  $ Text_Raw      : chr  &quot;The itsy-bitsy spider climbed up the water spout&quot; &quot;Down came the rain and washed the spider out&quot; &quot;Out came the sun, and dried up all the rain&quot; &quot;And the itsy-bitsy spider climbed up the spout again&quot; ...</span></span></code></pre></div>
+</div>
+<div id="maron-gross-interview" class="section level3">
+<h3>Maron-Gross Interview</h3>
+<p>Here’s one from a 2013 NPR interview (USA) between Marc Maron and
+Terry Gross, titled <a href="https://www.npr.org/transcripts/179014321">Marc Maron: A Life
+Fueled By ‘Panic And Dread’</a>.<br></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(MaronGross_2013, <span class="dv">20</span>), <span class="at">format =</span> <span class="st">&quot;simple&quot;</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">speaker</th>
+<th align="left">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">I’m a little nervous but I’ve prepared I’ve written
+things on a piece of paper</td>
+</tr>
+<tr class="even">
+<td align="left">MARON</td>
+<td align="left">I don’t know how you prepare I could ask you that -
+maybe I will But this is how I prepare - I panic</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">For a while</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Yeah</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">And then I scramble and then I type some things up and
+then I handwrite things that are hard to read So I can you know
+challenge myself on that level during the interview</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Being self-defeating is always a good part of
+preparation</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">What is?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Being self-defeating</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Self-sabotage</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Key</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Right so you do that?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">I sometimes do that</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">How often?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">I try not to do that I do that more in life than I do
+in radio</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Really?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Yeah</td>
+</tr>
+<tr class="odd">
+<td align="left">MARON</td>
+<td align="left">Like today?</td>
+</tr>
+<tr class="even">
+<td align="left">GROSS</td>
+<td align="left">Life is harder than radio</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">str</span>(MaronGross_2013)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    546 obs. of  2 variables:</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;  $ speaker: chr  &quot;MARON&quot; &quot;MARON&quot; &quot;MARON&quot; &quot;GROSS&quot; ...</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;  $ text   : chr  &quot; I&#39;m a little nervous but I&#39;ve prepared I&#39;ve written things on a piece of paper&quot; &quot; I don&#39;t know how you prepare I could ask you that - maybe I will But this is how I prepare - I panic&quot; &quot; For a while&quot; &quot; Yeah&quot; ...</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="caveat-emptor" class="section level1">
+<h1>Caveat emptor</h1>
+<p>Any analysis of language comes with assumptions and potential bias.
+For example, there are some instances where a researcher might care
+about morphemes and grammatical elements such as ‘the’, ‘a’, ‘and’,
+etc.. The default for ConversationAlign is to omit these as stopwords
+and to average across all open class words (e.g., nouns, verbs) in each
+turn by interlocutor. There are some specific cases where this can all
+go wrong. Here are some things to consider: <br></p>
+<ol style="list-style-type: decimal">
+<li><p><span style="color:red;">Stopwords </span>:
+<code>ConversationAlign</code> omits stopwords by default applying a
+customized stopword list, <code>Temple_Stopwords25</code>. <a href="https://osf.io/dc5k7">CLICK HERE</a> to inspect the list. This
+stopword list includes greetings, idioms, filler words, numerals, and
+pronouns.</p></li>
+<li><p><span style="color:red;">Lemmatization </span>: The package will
+lemmatize your language transcripts by default. Lemmatization transforms
+inflected forms (e.g., standing, stands) into their root or dictionary
+entry (e.g., stand). This helps for yoking offline values (e.g.,
+happiness, concreteness) to each word and also entails what NLP folks
+refer to as ‘term aggregation’. However, sometimes you might NOT want to
+lemmatize. You can easily change this option by using the argument,
+“lemmatize=FALSE,” to the clean_dyads function below. <br></p></li>
+<li><p><span style="color:red;">Sample Size Issue 1: Exchange
+Count</span>: The program derives correlations and AUC for each dyad as
+metrics of alignment. For very brief conversations (&lt;30 turns), the
+likelihood of unstable or unreliable estimates is high. <br></p></li>
+<li><p><span style="color:red;">Sample Size Issue 2 </span>: matching to
+lookup database: ConversationAlign works by yoking values from a lookup
+database to each word in your language transcript. Some variables have
+lots of values characterizing many English words. Other variables (e.g.,
+age of acquisition) only cover about 30k words. When a word in your
+transcript does not have a ‘match’ in the lookup datase,
+ConversationAlign will return an NA which will not go into the average
+of the words for that interlocutor and turn. This can be dangerous when
+there are many missing values. Beware! <br></p></li>
+<li><p><span style="color:red;">Compositionality </span>:
+ConversationAlign is a caveman in its complexity. It matches a value to
+each word as if that word is an island. Phenomena like polysemy (e.g.,
+bank) and the modulation of one word by an intensifier (e.g., very
+terrible) are not handled. This is a problem for many of the affective
+measures but not for lexical variables like word length. <br></p></li>
+</ol>
+</div>
+<div id="background-and-supporting-materials" class="section level1">
+<h1>Background and Supporting Materials</h1>
+<ol style="list-style-type: decimal">
+<li><p><strong>Preprint</strong> <br> Our PsyArXiv preprint describing
+the method(s) in greater detail is referenced as: Sacks, B., Ulichney,
+V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T., … Reilly, J.
+(2025, March 12). <em>ConversationAlign: Open-Source Software for
+Analyzing Patterns of Lexical Use and Alignment in Conversation
+Transcripts</em>. <a href="https://osf.io/preprints/psyarxiv/7xqnp_v1">Click Here</a> to read
+our preprint. It was recently invited for revision at Behavior Rsearch
+Methods. We will update when/if eventually accepted there! <br></p></li>
+<li><p><strong>Methods for creating internal lookup database</strong>
+<br> ConversationAlign contains a large, internal lexical
+lookup_database. <a href="https://reilly-lab.github.io/ConversationAlign_LookupDatabaseCreation.html">Click
+Here</a> to see how we created this by merging other offline
+psycholinguistic databases into one. <br></p></li>
+<li><p><strong>Variable Key for ConversationAlign</strong> <br>
+ConversationAlign currently allows users to compute alignment dynamics
+across 30 different lexical, affective, and semantic dimensions.<a href="https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf">Click
+Here</a> to link to a variable key. <br></p></li>
+</ol>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Lewis, David D., et al. (2004) “Rcv1: A new benchmark collection for
+text categorization research.” Journal of machine learning research 5:
+361-397.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

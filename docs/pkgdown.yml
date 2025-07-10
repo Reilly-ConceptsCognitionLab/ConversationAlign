@@ -1,0 +1,13 @@
+pandoc: 3.7.0.2
+pkgdown: 2.1.3
+pkgdown_sha: ~
+articles:
+  CA_Intro: CA_Intro.html
+  CA_Step1_Read: CA_Step1_Read.html
+  CA_Step2_Prep: CA_Step2_Prep.html
+  CA_Step3_Summarize: CA_Step3_Summarize.html
+  CA_Step4_Analytics: CA_Step4_Analytics.html
+last_built: 2025-07-09T20:37Z
+urls:
+  reference: https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference
+  article: https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles
