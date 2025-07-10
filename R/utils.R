@@ -5,7 +5,6 @@
 #' @param data_folder Remote folder containing .rda files (default: "data/")
 #' @param envir Environment to load into (default: package namespace)
 #' @return Invisible TRUE if successful
-#' @examples
 #'
 load_github_data <- function(repo, branch = "main", data_folder = "data/", envir = asNamespace(pkgname)) {
   # Construct GitHub API URL to list files in the data folder
