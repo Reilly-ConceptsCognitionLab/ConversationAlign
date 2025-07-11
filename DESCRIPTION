@@ -21,7 +21,7 @@ Depends:
 Imports:
     DescTools,
     dplyr (>= 0.4.3),
-    jsonlite,
+    httr,
     magrittr,
     purrr,
     rlang,

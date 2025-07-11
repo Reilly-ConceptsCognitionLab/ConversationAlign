@@ -14,19 +14,15 @@ NULL
   # Create package environment
   pkg_env <- asNamespace(pkgname)
 
-  # Critical datasets (must match the .rda filenames exactly)
+  # Critical datasets
   critical_datasets <- c("MIT_stops", "lookup_Jul25", "SMART_stops",
                          "CA_orig_stops", "Temple_stops25")
 
-  # 1. Try loading from GitHub repo (primary source)
-  tryCatch({
-    # Use raw GitHub content URL
+  # Try loading from GitHub first
+  loaded_from <- tryCatch({
     repo_url <- "https://raw.githubusercontent.com/Reilly-ConceptsCognitionLab/ConversationAlign_Data/main/data/"
-
-    # Temporary directory for downloads
     temp_dir <- tempdir()
 
-    # Download and load each dataset
     for(ds in critical_datasets) {
       temp_file <- file.path(temp_dir, paste0(ds, ".rda"))
       utils::download.file(
@@ -36,60 +32,40 @@ NULL
         quiet = TRUE
       )
       load(temp_file, envir = pkg_env)
-      unlink(temp_file) # Clean up
+      unlink(temp_file)
     }
-
-    # Verify all datasets loaded
-    missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
-
-    if(length(missing_data) > 0) {
-      warning("These datasets failed to load: ", paste(missing_data, collapse = ", "),
-              immediate. = TRUE)
-    }
-
+    "github"
   }, error = function(e) {
-    warning("Primary data load failed: ", e$message, immediate. = TRUE)
-
-    # 2. Fallback to cached version if available
+    # Fallback to cache
     cache_dir <- tools::R_user_dir(pkgname, which = "cache")
     cached_files <- file.path(cache_dir, paste0(critical_datasets, ".rda"))
 
-    if(any(file.exists(cached_files))) {
-      for(cf in cached_files[file.exists(cached_files)]) {
+    available <- file.exists(cached_files)
+    if(any(available)) {
+      for(cf in cached_files[available]) {
         load(cf, envir = pkg_env)
       }
-      packageStartupMessage("Loaded cached version of datasets")
-
-      # Check if any datasets are still missing
-      still_missing <- setdiff(critical_datasets, ls(envir = pkg_env))
-      if(length(still_missing) > 0) {
-        packageStartupMessage(
-          "Warning: Critical datasets missing (", paste(still_missing, collapse = ", "), ").\n",
-          "Basic functionality will be impaired.\n",
-          "Please check your internet connection and try:\n",
-          "1. library(", pkgname, ")\n",
-          "2. Contact maintainers if problem persists"
-        )
-      }
+      "cache"
     } else {
-      packageStartupMessage(
-        "Warning: No data available - critical datasets missing.\n",
-        "Basic functionality will be impaired.\n",
-        "Please check your internet connection and try:\n",
-        "1. library(", pkgname, ")\n",
-        "2. Contact maintainers if problem persists"
-      )
+      "none"
     }
   })
 
-  # Set package options
-  options(
-    ConversationAlign.data_source = ifelse(
-      all(critical_datasets %in% ls(envir = pkg_env)),
-      "github",
-      ifelse(any(critical_datasets %in% ls(envir = pkg_env)),
-             "partial_cache",
-             "none")
+  # Set package option
+  options(ConversationAlign.data_source = loaded_from)
+
+  # Single, conditional startup message
+  still_missing <- setdiff(critical_datasets, ls(envir = pkg_env))
+  if(length(still_missing) > 0) {
+    packageStartupMessage(
+      if(loaded_from == "cache") "Note: Using cached datasets\n",
+      "Warning: Missing critical dataset",
+      if(length(still_missing) > 1) "s",
+      " (", paste(still_missing, collapse = ", "), ").\n",
+      "Some functionality may be limited.\n",
+      "To fix: \n",
+      "1. Check internet connection and reload package\n",
+      "2. Contact package maintainers if issue persists"
     )
-  )
+  }
 }

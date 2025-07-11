@@ -4,6 +4,7 @@
 #' @param branch Branch name (default: "main")
 #' @param data_folder Remote folder containing .rda files (default: "data/")
 #' @param envir Environment to load into (default: package namespace)
+#' @importFrom httr GET
 #' @return Invisible TRUE if successful
 #'
 

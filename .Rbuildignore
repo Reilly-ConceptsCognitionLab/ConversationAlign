@@ -7,4 +7,6 @@
 ^LICENSE\.md$
 ^data-raw$
 ^paper$
-
+^README\.Rmd$
+^_pkgdown\.yml$
+^doc$
