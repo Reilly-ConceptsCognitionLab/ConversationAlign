@@ -5,10 +5,10 @@
 \title{Load all .rda files from a GitHub data folder into the package environment}
 \usage{
 load_github_data(
-  repo,
+  repo = "Reilly-ConceptsCognitionLab/ConversationAlign_Data",
   branch = "main",
-  data_folder = "data/",
-  envir = asNamespace(pkgname)
+  data_folder = "data",
+  envir = parent.frame()
 )
 }
 \arguments{

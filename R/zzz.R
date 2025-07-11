@@ -13,60 +13,74 @@ NULL
   # Create package environment
   pkg_env <- asNamespace(pkgname)
 
-  if (!nzchar(Sys.getenv("GITHUB_PAT"))) {
-    Sys.setenv(GITHUB_PAT = "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")
-  }
-
-  # List of absolutely required datasets
+  # Critical datasets (must match the .rda filenames exactly)
   critical_datasets <- c("MIT_stops", "lookup_Jul25", "SMART_stops",
                          "CA_orig_stops", "Temple_stops25")
 
-  # Try loading from package's internal data first
-  data(list = critical_datasets, envir = pkg_env, package = pkgname)
+  # 1. Try loading from GitHub repo (primary source)
+  tryCatch({
+    # Use raw GitHub content URL
+    repo_url <- "https://raw.githubusercontent.com/Reilly-ConceptsCognitionLab/ConversationAlign_Data/main/data/"
 
-  # Check what's still missing
-  missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
+    # Temporary directory for downloads
+    temp_dir <- tempdir()
 
-  # If any datasets are missing, try loading from GitHub
-  if (length(missing_data) > 0) {
-    tryCatch({
-      load_github_data(
-        repo = "Reilly-ConceptsCognitionLab/ConversationAlign_Data",
-        branch = "main",
-        data_folder = "data",
-        envir = pkg_env
+    # Download and load each dataset
+    for(ds in critical_datasets) {
+      temp_file <- file.path(temp_dir, paste0(ds, ".rda"))
+      download.file(
+        url = paste0(repo_url, ds, ".rda"),
+        destfile = temp_file,
+        mode = "wb",
+        quiet = TRUE
       )
-      # Update missing list after GitHub load attempt
-      missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
-    }, error = function(e) {
-      warning("GitHub data load failed: ", e$message, immediate. = TRUE)
-    })
-  }
-
-  # If still missing, try local fallback
-  if (length(missing_data) > 0) {
-    local_file <- system.file("extdata", "fallback_data.rda", package = pkgname)
-    if (file.exists(local_file)) {
-      load(local_file, envir = pkg_env)
-      missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
+      load(temp_file, envir = pkg_env)
+      unlink(temp_file) # Clean up
     }
-  }
 
-  # Final check - error if critical datasets are missing
-  if ("MIT_stops" %in% missing_data) {
-    stop(
-      "Critical dataset 'MIT_stops' not found. Package cannot function without it.\n",
-      "Please:\n",
-      "1. Reinstall the package\n",
-      "2. Check internet connection if using GitHub data\n",
-      "3. Contact package maintainers"
+    # Verify all datasets loaded
+    missing_data <- setdiff(critical_datasets, ls(envir = pkg_env))
+
+    if(length(missing_data) > 0) {
+      warning("These datasets failed to load: ", paste(missing_data, collapse = ", "),
+              immediate. = TRUE)
+    }
+
+  }, error = function(e) {
+    warning("Primary data load failed: ", e$message, immediate. = TRUE)
+
+    # 2. Fallback to cached version if available
+    cache_dir <- tools::R_user_dir(pkgname, which = "cache")
+    cached_files <- file.path(cache_dir, paste0(critical_datasets, ".rda"))
+
+    if(any(file.exists(cached_files))) {
+      for(cf in cached_files[file.exists(cached_files)]) {
+        load(cf, envir = pkg_env)
+      }
+      message("Loaded cached version of datasets")
+    } else {
+      warning("No cached data available", immediate. = TRUE)
+    }
+  })
+
+  # 3. Final verification
+  if(!"MIT_stops" %in% ls(envir = pkg_env)) {
+    packageStartupMessage(
+      "Warning: Critical datasets missing. Basic functionality will be impaired.\n",
+      "Please check your internet connection and try:\n",
+      "1. library(yourpackage)\n",
+      "2. Contact maintainers if problem persists"
     )
   }
 
   # Set package options
   options(
-    ConversationAlign.verbose = TRUE,
-    ConversationAlign.data_source = ifelse(length(missing_data) > 0,
-                                           "fallback", "complete")
+    ConversationAlign.data_source = ifelse(
+      all(critical_datasets %in% ls(envir = pkg_env)),
+      "github",
+      ifelse(any(critical_datasets %in% ls(envir = pkg_env)),
+             "partial_cache",
+             "none")
+    )
   )
 }
