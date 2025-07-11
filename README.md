@@ -36,8 +36,17 @@ across \>40 possible dimensions via an embedded lookup database. There
 are a number of issues you should consider and steps you should take to
 prepare your data. <br> <br>
 
-# Installation
+# Installation and Technical Considerations
 
+One of the main features of the `ConversationAlign` algorithm involves
+yoking norms for many different lexical, affective, and semantic
+dimensions to each content word in your conversation transcripts of
+interest. We accomplish this by joining your data to several large
+lookup databases. These databases are too large to embed within
+`ConversationAlign`. When you load `ConversationAlign`, all of these
+databases should automatically download and load from an external
+repository `ConversationAlign_Data`. `ConversationAlign` needs these
+data, so you will need a decent internet connection to load the package.
 Install the development version of ConversationAlign from
 [GitHub](https://github.com/) using the `devtools` package.
 
@@ -138,8 +147,8 @@ word. -Retains metadata
 - `lemmatize` T/F (default=T) lemmatize strings converting each entry to
   its dictionary form
 - `which_stoplist` quoted argument specifying stopword list to apply,
-  options include `none`, `MIT_stops`, `SMART`, `CA_OriginalStops`, or
-  `Temple_stops25`. Default is `Temple_stops25`.
+  options include `none`, `MIT_stops`, `SMART_stops`,
+  `CA_OriginalStops`, or `Temple_stops25`. Default is `Temple_stops25`.
 
 ``` r
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")

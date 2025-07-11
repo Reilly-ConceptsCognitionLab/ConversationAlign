@@ -7,9 +7,8 @@ NULL
 #' from GitHub or local fallback files.
 #' @keywords internal
 #' @importFrom utils download.file
+#' @importFrom tools R_user_dir
 #' @noRd
-
-
 .onLoad <- function(libname, pkgname) {
   # Create package environment
   pkg_env <- asNamespace(pkgname)
@@ -54,18 +53,30 @@ NULL
   # Set package option
   options(ConversationAlign.data_source = loaded_from)
 
-  # Single, conditional startup message
+  # Only show message if critical datasets are missing
   still_missing <- setdiff(critical_datasets, ls(envir = pkg_env))
   if(length(still_missing) > 0) {
-    packageStartupMessage(
-      if(loaded_from == "cache") "Note: Using cached datasets\n",
-      "Warning: Missing critical dataset",
-      if(length(still_missing) > 1) "s",
-      " (", paste(still_missing, collapse = ", "), ").\n",
-      "Some functionality may be limited.\n",
-      "To fix: \n",
-      "1. Check internet connection and reload package\n",
-      "2. Contact package maintainers if issue persists"
+    # Construct appropriate message based on source
+    msg_type <- if(loaded_from == "none") "error" else "warning"
+    msg <- switch(
+      msg_type,
+      "error" = paste(
+        "Critical data missing:", paste(still_missing, collapse = ", "),
+        "\nPlease use refresh_data() or contact maintainers"
+      ),
+      "warning" = paste(
+        "Using cached data (missing:", paste(still_missing, collapse = ", "), ")",
+        "\nSome features unavailable - try refresh_data()"
+      )
     )
+
+    # Use packageStartupMessage for non-error cases
+    if(msg_type == "error") {
+      warning(msg, call. = FALSE, immediate. = TRUE)
+    } else {
+      packageStartupMessage(msg)
+    }
   }
+
+  # Silent success case requires no message
 }

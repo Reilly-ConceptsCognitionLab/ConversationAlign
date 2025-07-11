@@ -56,8 +56,8 @@ cat('</div>')  # Close flex container
 <br>
 <br>
 
-# Installation
-Install the development version of ConversationAlign from [GitHub](https://github.com/) using the ``devtools`` package.
+# Installation and Technical Considerations
+One of the main features of the `ConversationAlign` algorithm involves yoking norms for many different lexical, affective, and semantic dimensions to each content word in your conversation transcripts of interest. We accomplish this by joining your data to several large lookup databases. These databases are too large to embed within `ConversationAlign`. When you load `ConversationAlign`, all of these databases should automatically download and load from an external repository `ConversationAlign_Data`. `ConversationAlign` needs these data, so you will need a decent internet connection to load the package. Install the development version of ConversationAlign from [GitHub](https://github.com/) using the ``devtools`` package. 
 
 ```{r, message=FALSE, warning=F}
 # Check if devtools is installed, if not install it
