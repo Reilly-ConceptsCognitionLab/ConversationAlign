@@ -2,7 +2,7 @@
 NULL
 
 utils::globalVariables(
-  c('word',
+  c("CA_orig_stops",
     "clean_me",
     "clean_dyads",
     "df",
@@ -16,6 +16,7 @@ utils::globalVariables(
     "letter_count",
     "lex_freqlg10",
     "lex_n_morphemes",
+    "lookup_Jul25",
     "measure",
     "MIT_Stops",
     "morpheme_count",
@@ -27,19 +28,20 @@ utils::globalVariables(
     "phon_nsyll",
     "reshaped",
     "score",
+    "SMART_stops",
+    "stdev",
     "sumdat",
     "sumdat_only",
+    "summary_statistic",
     'switch_mark',
     "syllable_count",
-    "Temple_Stops25",
+    "Temple_stops25",
     "Text_Clean",
     "Text_Prep",
     "Text_Raw",
     "Turn_Count",
-    "SMART",
-    "stdev",
     "value",
-    "summary_statistic",
+    "word",
     "words_per_turn_clean",
     "words_per_turn_raw"
   ))

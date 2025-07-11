@@ -6,6 +6,7 @@ NULL
 #' @description Handles package initialization including loading required datasets
 #' from GitHub or local fallback files.
 #' @keywords internal
+#' @importFrom utils download.file
 #' @noRd
 
 
@@ -28,7 +29,7 @@ NULL
     # Download and load each dataset
     for(ds in critical_datasets) {
       temp_file <- file.path(temp_dir, paste0(ds, ".rda"))
-      download.file(
+      utils::download.file(
         url = paste0(repo_url, ds, ".rda"),
         destfile = temp_file,
         mode = "wb",
@@ -57,21 +58,29 @@ NULL
       for(cf in cached_files[file.exists(cached_files)]) {
         load(cf, envir = pkg_env)
       }
-      message("Loaded cached version of datasets")
+      packageStartupMessage("Loaded cached version of datasets")
+
+      # Check if any datasets are still missing
+      still_missing <- setdiff(critical_datasets, ls(envir = pkg_env))
+      if(length(still_missing) > 0) {
+        packageStartupMessage(
+          "Warning: Critical datasets missing (", paste(still_missing, collapse = ", "), ").\n",
+          "Basic functionality will be impaired.\n",
+          "Please check your internet connection and try:\n",
+          "1. library(", pkgname, ")\n",
+          "2. Contact maintainers if problem persists"
+        )
+      }
     } else {
-      warning("No cached data available", immediate. = TRUE)
+      packageStartupMessage(
+        "Warning: No data available - critical datasets missing.\n",
+        "Basic functionality will be impaired.\n",
+        "Please check your internet connection and try:\n",
+        "1. library(", pkgname, ")\n",
+        "2. Contact maintainers if problem persists"
+      )
     }
   })
-
-  # 3. Final verification
-  if(!"MIT_stops" %in% ls(envir = pkg_env)) {
-    packageStartupMessage(
-      "Warning: Critical datasets missing. Basic functionality will be impaired.\n",
-      "Please check your internet connection and try:\n",
-      "1. library(yourpackage)\n",
-      "2. Contact maintainers if problem persists"
-    )
-  }
 
   # Set package options
   options(

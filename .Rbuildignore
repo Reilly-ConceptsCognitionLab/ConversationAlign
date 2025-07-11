@@ -3,14 +3,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
-^_pkgdown\.yml$
 ^docs$
-^pkgdown$
 ^LICENSE\.md$
 ^data-raw$
-^README.Rmd$
-^NEWS\.md$
-"^CHANGELOG\\.md$"
 ^paper$
-^doc$
-^Meta$
+
