@@ -109,7 +109,8 @@ compute_auc <- function(df_prep) {
         # if time series has fewer points than the threshold, fill with NA
         if (max(domain_ts$Exchange_Count) < 3) { # hard coded to three exchanges
           #create a single row, single column dataframe with one empty value to fill in the AUC
-          doc_domain_auc_df <- data.frame(domain_auc = NA)
+          doc_domain_auc_df <- data.frame(domain_auc = NA,
+                                          Exchanges = max(domain_ts$Exchange_Count))
         }
         else {
           domain_ts <- data.frame(domain_ts) #make single emotion Time series a data frame
