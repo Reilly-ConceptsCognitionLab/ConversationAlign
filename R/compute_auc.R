@@ -109,7 +109,7 @@ compute_auc <- function(df_prep) {
         # if time series has fewer points than the threshold, fill with NA
         if (max(domain_ts$Exchange_Count) < 3) { # hard coded to three exchanges
           #create a single row, single column dataframe with one empty value to fill in the AUC
-          doc_domain_auc_df <- data.frame(domain_auc = NA,
+          doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
                                           Exchanges = max(domain_ts$Exchange_Count))
         }
         else {
@@ -125,7 +125,8 @@ compute_auc <- function(df_prep) {
         cat(paste("Results for dAUC will be filled with NA.\n\tTranscript: ",
                   doc_name, "\n\tDimension: ", dimension, "\n", sep = ""))
         # fill the result cell with NA
-        doc_domain_auc_df <- data.frame(domain_auc = NA, Exchanges = max(domain_ts$Exchange_Count))
+        doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
+                                        Exchanges = max(domain_ts$Exchange_Count))
         doc_domain_auc_df
       })
     }
