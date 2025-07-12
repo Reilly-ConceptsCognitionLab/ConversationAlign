@@ -1,10 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ConversationAlign
+<br> <br> <br>
+
+<h1 style="color: #8B0000;">
+
+ConversationAlign
+</h1>
 
 Open-source software for computing main effects and indices of alignment
-across coversation partners in dyadic conversation transcripts. <br>
+across coversation partners in dyadic conversation transcripts.
 
 # <a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/"><img src="man/figures/logo.png" align="left" height="138" alt="ConversationAlign website" style="margin-right: 20px; margin-bottom: 20px;" /></a>
 
