@@ -141,7 +141,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
 
       # Combine results
       dyad_covar <- dplyr::bind_cols(dyad_dim_list, Event_ID = unique(df$Event_ID))
-      dyad_covar$Talked_First <- participantvec[2]
+      dyad_covar$Talked_First <- participantvec[1]
       dyad_covar
     })
 
