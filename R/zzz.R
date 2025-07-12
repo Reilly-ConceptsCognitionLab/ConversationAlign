@@ -9,6 +9,7 @@ NULL
 #' @importFrom utils download.file
 #' @importFrom tools R_user_dir
 #' @noRd
+#'
 .onLoad <- function(libname, pkgname) {
   # Create package environment
   pkg_env <- asNamespace(pkgname)
@@ -52,11 +53,18 @@ NULL
 
   # Set package option
   options(ConversationAlign.data_source = loaded_from)
+}
 
-  # Only show message if critical datasets are missing
+.onAttach <- function(libname, pkgname) {
+  pkg_env <- asNamespace(pkgname)
+  critical_datasets <- c("MIT_stops", "lookup_Jul25", "SMART_stops",
+                         "CA_orig_stops", "Temple_stops25")
+
   still_missing <- setdiff(critical_datasets, ls(envir = pkg_env))
+
   if(length(still_missing) > 0) {
-    # Construct appropriate message based on source
+    loaded_from <- getOption("ConversationAlign.data_source", default = "none")
+
     msg_type <- if(loaded_from == "none") "error" else "warning"
     msg <- switch(
       msg_type,
@@ -70,13 +78,10 @@ NULL
       )
     )
 
-    # Use packageStartupMessage for non-error cases
     if(msg_type == "error") {
       warning(msg, call. = FALSE, immediate. = TRUE)
     } else {
       packageStartupMessage(msg)
     }
   }
-
-  # Silent success case requires no message
 }
