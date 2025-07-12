@@ -1,6 +1,5 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/404.html</loc></url>
-<url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/LICENSE-text.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles/CA_Intro.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles/CA_Step1_Read.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles/CA_Step2_Prep.html</loc></url>
@@ -15,6 +14,7 @@
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/NurseryRhymes_Prepped.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/corpus_analytics.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/index.html</loc></url>
+<url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/load_github_data.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/prep_dyads.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/read_1file.html</loc></url>
 <url><loc>https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/read_dyads.html</loc></url>

@@ -60,6 +60,12 @@ corpus_analytics <- function(dat_prep) {
     library(pkg, character.only = TRUE)
   }
 
+  if (!exists("lookup_Jul25", envir = asNamespace("ConversationAlign"))) {
+    stop("Required dataset 'lookup_Jul25' not found. ",
+         "Please reinstall the package or contact maintainers.")
+  }
+
+
   # Select and prepare data
   dat_prep <- dat_prep %>%
     dplyr::select(Event_ID, Participant_ID, Exchange_Count, Turn_Count, Text_Prep, Text_Clean,

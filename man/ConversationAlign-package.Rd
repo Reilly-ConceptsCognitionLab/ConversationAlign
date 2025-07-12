@@ -6,6 +6,8 @@
 \alias{ConversationAlign-package}
 \title{ConversationAlign: Process Text and Compute Linguistic Alignment in Conversation Transcripts}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 `ConversationAlign` imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. `ConversationAlign` then computes alignment indices between two interlocutors across each transcript for >40 possible semantic, lexical, and affective dimensions. In addition to alignment, `ConversationAlign` also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.
 }
 \seealso{

@@ -5,14 +5,20 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>ConversationAlign • ConversationAlign</title>
+<title>Process Text and Compute Linguistic Alignment in Conversation Transcripts • ConversationAlign</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="ConversationAlign">
-<meta name="description" content="Reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word. ConversationAlign computes alignment indices between two interlocutors across each transcript for up to 30 different psycholinguistic and affective lexical dimensions.">
-<meta property="og:description" content="Reads conversation transcripts into R, cleans and formats them, and yokes user-specified psycholinguistic database values to each word. ConversationAlign computes alignment indices between two interlocutors across each transcript for up to 30 different psycholinguistic and affective lexical dimensions.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Process Text and Compute Linguistic Alignment in Conversation Transcripts">
+<meta name="description" content="`ConversationAlign` imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. `ConversationAlign` then computes alignment indices between two interlocutors across each transcript for &gt;40 possible semantic, lexical, and affective dimensions. In addition to alignment, `ConversationAlign` also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.">
+<meta property="og:description" content="`ConversationAlign` imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. `ConversationAlign` then computes alignment indices between two interlocutors across each transcript for &gt;40 possible semantic, lexical, and affective dimensions. In addition to alignment, `ConversationAlign` also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.">
+<meta property="og:image" content="https://reilly-conceptscognitionlab.github.io/ConversationAlign/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -55,11 +61,18 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p><br><br></p>
-<div class="section level1">
-<div class="page-header"><h1 id="conversationalign">ConversationAlign<a class="anchor" aria-label="anchor" href="#conversationalign"></a>
-</h1></div>
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="conversationalign">ConversationAlign<a class="anchor" aria-label="anchor" href="#conversationalign"></a>
+</h1>
+</div>
 <p>Open-source software for computing main effects and indices of alignment across coversation partners in dyadic conversation transcripts. <br></p>
+</div>
+<div class="section level1">
+<h1 id="section"><a class="anchor" aria-label="anchor" href="#section"></a></h1>
+<div style="clear: both; margin-top: 30px;">
+
+</div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
 <p><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases" class="external-link"><img src="https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&amp;include_prereleases&amp;label=Release" alt="GitHub release"></a> <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/Reilly-ConceptsCognitionLab/ConversationAlign?style=social" alt="GitHub stars"></a></p>
 <p><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/graphs/commit-activity" class="external-link"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance"></a> <a href="https://www.gnu.org/licenses/gpl-3.0" class="external-link"><img src="https://img.shields.io/badge/License-GPL%20v3+-blue.svg" alt="License: GPL v3+"></a> <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></p>
@@ -72,9 +85,9 @@
 <p><code>ConversationAlign</code> analyzes alignment and computes main effects across more than 40 unique dimensions between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign transforms raw language data into simultaneous time series objects across &gt;40 possible dimensions via an embedded lookup database. There are a number of issues you should consider and steps you should take to prepare your data. <br><br></p>
 </div>
 <div class="section level1">
-<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h1 id="installation-and-technical-considerations">Installation and Technical Considerations<a class="anchor" aria-label="anchor" href="#installation-and-technical-considerations"></a>
 </h1>
-<p>Install the development version of ConversationAlign from <a href="https://github.com/" class="external-link">GitHub</a> using the <code>devtools</code> package.</p>
+<p>One of the main features of the <code>ConversationAlign</code> algorithm involves yoking norms for many different lexical, affective, and semantic dimensions to each content word in your conversation transcripts of interest. We accomplish this by joining your data to several large lookup databases. These databases are too large to embed within <code>ConversationAlign</code>. When you load <code>ConversationAlign</code>, all of these databases should automatically download and load from an external companionn repository <code>ConversationAlign_Data</code>. <code>ConversationAlign</code> needs these data, so you will need a decent internet connection to load the package. It might take a second or two to complete the download if Github is acting up. Install the development version of ConversationAlign from <a href="https://github.com/" class="external-link">GitHub</a> using the <code>devtools</code> package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check if devtools is installed, if not install it</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -220,7 +233,7 @@
 <li>
 <code>lemmatize</code> T/F (default=T) lemmatize strings converting each entry to its dictionary form</li>
 <li>
-<code>which_stoplist</code> quoted argument specifying stopword list to apply, options include <code>none</code>, <code>MIT_stops</code>, <code>SMART</code>, <code>CA_OriginalStops</code>, or <code>Temple_stops25</code>. Default is <code>Temple_stops25</code>.</li>
+<code>which_stoplist</code> quoted argument specifying stopword list to apply, options include <code>none</code>, <code>MIT_stops</code>, <code>SMART_stops</code>, <code>CA_OriginalStops</code>, or <code>Temple_stops25</code>. Default is <code>Temple_stops25</code>.</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">NurseryRhymes_Prepped</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prep_dyads.html">prep_dyads</a></span><span class="op">(</span>dat_read<span class="op">=</span><span class="va">NurseryRhymes</span>, lemmatize<span class="op">=</span><span class="cn">TRUE</span>, omit_stops<span class="op">=</span><span class="cn">T</span>, which_stoplist<span class="op">=</span><span class="st">"Temple_stops25"</span><span class="op">)</span></span></code></pre></div>
@@ -615,8 +628,7 @@ For bugs, feature requests, and general questions, reach out via one of the foll
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>GPL (&gt;= 3) + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li>GPL (&gt;= 3)</li>
 </ul>
 </div>
 

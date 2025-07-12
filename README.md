@@ -1,12 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<br> <br>
-
 # ConversationAlign
 
 Open-source software for computing main effects and indices of alignment
 across coversation partners in dyadic conversation transcripts. <br>
+
+# <a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/"><img src="man/figures/logo.png" align="left" height="138" alt="ConversationAlign website" style="margin-right: 20px; margin-bottom: 20px;" /></a>
+
+<div style="clear: both; margin-top: 30px;">
+
+</div>
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
 
@@ -36,10 +40,21 @@ across \>40 possible dimensions via an embedded lookup database. There
 are a number of issues you should consider and steps you should take to
 prepare your data. <br> <br>
 
-# Installation
+# Installation and Technical Considerations
 
-Install the development version of ConversationAlign from
-[GitHub](https://github.com/) using the `devtools` package.
+One of the main features of the `ConversationAlign` algorithm involves
+yoking norms for many different lexical, affective, and semantic
+dimensions to each content word in your conversation transcripts of
+interest. We accomplish this by joining your data to several large
+lookup databases. These databases are too large to embed within
+`ConversationAlign`. When you load `ConversationAlign`, all of these
+databases should automatically download and load from an external
+companionn repository `ConversationAlign_Data`. `ConversationAlign`
+needs these data, so you will need a decent internet connection to load
+the package. It might take a second or two to complete the download if
+Github is acting up. Install the development version of
+ConversationAlign from [GitHub](https://github.com/) using the
+`devtools` package.
 
 ``` r
 # Check if devtools is installed, if not install it
@@ -138,8 +153,8 @@ word. -Retains metadata
 - `lemmatize` T/F (default=T) lemmatize strings converting each entry to
   its dictionary form
 - `which_stoplist` quoted argument specifying stopword list to apply,
-  options include `none`, `MIT_stops`, `SMART`, `CA_OriginalStops`, or
-  `Temple_stops25`. Default is `Temple_stops25`.
+  options include `none`, `MIT_stops`, `SMART_stops`,
+  `CA_OriginalStops`, or `Temple_stops25`. Default is `Temple_stops25`.
 
 ``` r
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")

@@ -8,9 +8,6 @@
 #' @keywords internal
 #' @noRd
 
-#Example
-#result <- replacements_25(my_dataframe, "my_text_column")
-
 replacements_25 <- function(dat, wordcol) {
   # Load required packages
   my_packages <- c("data.table", "dplyr", "magrittr")

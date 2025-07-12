@@ -21,6 +21,7 @@ Depends:
 Imports:
     DescTools,
     dplyr (>= 0.4.3),
+    httr,
     magrittr,
     purrr,
     rlang,
@@ -42,5 +43,18 @@ Suggests:
 URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
 RoxygenNote: 7.3.2
 LazyData: true
-Config/testthat/edition: 3
 VignetteBuilder: knitr
+Collate: 
+    'ConversationAlign-package.R'
+    'compute_auc.R'
+    'compute_lagcorr.R'
+    'corpus_analytics.R'
+    'data.R'
+    'globals.R'
+    'prep_dyads.R'
+    'read_1file.R'
+    'read_dyads.R'
+    'replacements_25.R'
+    'summarize_dyads.R'
+    'utils.R'
+    'zzz.R'
