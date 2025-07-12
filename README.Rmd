@@ -12,11 +12,14 @@ knitr::opts_chunk$set(
   fig.align='left'
 )
 ```
-<br>
-<br>
 
 # ConversationAlign
 Open-source software for computing main effects and indices of alignment across coversation partners in dyadic conversation transcripts. <br>
+
+# <a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/"><img src="man/figures/logo.png" align="left" height="138" alt="ConversationAlign website" style="margin-right: 20px; margin-bottom: 20px;" /></a>
+
+<div style="clear: both; margin-top: 30px;"></div>
+
 
 ```{r echo=FALSE, results='asis'}
 # Get current package version from DESCRIPTION
@@ -57,7 +60,7 @@ cat('</div>')  # Close flex container
 <br>
 
 # Installation and Technical Considerations
-One of the main features of the `ConversationAlign` algorithm involves yoking norms for many different lexical, affective, and semantic dimensions to each content word in your conversation transcripts of interest. We accomplish this by joining your data to several large lookup databases. These databases are too large to embed within `ConversationAlign`. When you load `ConversationAlign`, all of these databases should automatically download and load from an external repository `ConversationAlign_Data`. `ConversationAlign` needs these data, so you will need a decent internet connection to load the package. Install the development version of ConversationAlign from [GitHub](https://github.com/) using the ``devtools`` package. 
+One of the main features of the `ConversationAlign` algorithm involves yoking norms for many different lexical, affective, and semantic dimensions to each content word in your conversation transcripts of interest. We accomplish this by joining your data to several large lookup databases. These databases are too large to embed within `ConversationAlign`. When you load `ConversationAlign`, all of these databases should automatically download and load from an external companionn repository `ConversationAlign_Data`. `ConversationAlign` needs these data, so you will need a decent internet connection to load the package. It might take a second or two to complete the download if Github is acting up. Install the development version of ConversationAlign from [GitHub](https://github.com/) using the ``devtools`` package. 
 
 ```{r, message=FALSE, warning=F}
 # Check if devtools is installed, if not install it

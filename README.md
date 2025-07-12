@@ -1,12 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<br> <br>
-
 # ConversationAlign
 
 Open-source software for computing main effects and indices of alignment
 across coversation partners in dyadic conversation transcripts. <br>
+
+# <a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/"><img src="man/figures/logo.png" align="left" height="138" alt="ConversationAlign website" style="margin-right: 20px; margin-bottom: 20px;" /></a>
+
+<div style="clear: both; margin-top: 30px;">
+
+</div>
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
 
@@ -45,10 +49,12 @@ interest. We accomplish this by joining your data to several large
 lookup databases. These databases are too large to embed within
 `ConversationAlign`. When you load `ConversationAlign`, all of these
 databases should automatically download and load from an external
-repository `ConversationAlign_Data`. `ConversationAlign` needs these
-data, so you will need a decent internet connection to load the package.
-Install the development version of ConversationAlign from
-[GitHub](https://github.com/) using the `devtools` package.
+companionn repository `ConversationAlign_Data`. `ConversationAlign`
+needs these data, so you will need a decent internet connection to load
+the package. It might take a second or two to complete the download if
+Github is acting up. Install the development version of
+ConversationAlign from [GitHub](https://github.com/) using the
+`devtools` package.
 
 ``` r
 # Check if devtools is installed, if not install it
