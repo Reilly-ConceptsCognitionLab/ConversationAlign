@@ -1,6 +1,6 @@
 # ConversationAlign 0.2.0
 
-# - 2025-6-8
+# - 2025-7-15
 
 ## Breaking changes
 
@@ -21,6 +21,7 @@ This is a major release. We have included many new features and fixed numerous b
 -   `summarize_dyads()` restructured in significant ways including the addition of three new arguments: `custom_lags` default lags for correlation are set at -2.0,2 users are free to specifiy additional lags , default is NULL, `sumdat_only` produces a summary dataframe with values averaged to two rows per conversation (one for each participant, `corr_type` specifies correlation to apply to lagged data 
 -    Resampling of AUC in `summarize_dyads()` has been omitted in favor of proportionally rescaling dAUC to a standardized/fixed number of turns (100)
 -    Modified internal lookup datase ``lookup_db``, replaced with ``lookup_Jul25``, includes many more dimensions and options for scaled vs. raw versions of variables
+-    Moved all internal data to a different repository (ConversationAlign_Data) in order to get the package within CRAN file size constraints.  Package now loads data from external HTTPs source
 
 ### Fixed
 -  Warnings and checks (variable names, etc) to read, clean, align functions
