@@ -4,25 +4,14 @@
 #'
 #' @name read_dyads
 #' @param my_path folder of conversation transcripts in csv or txt format
-#' @return a concatenated dataframe with each language transcript saved as a separate 'event_id'
+#' @returns
+#' a dataframe where each individual conversation transcript in a user's directory has been concatenated.
+#' read_dyads appends a unique document identifier to each conversation transcript appending its unique filename as a factor level to 'Event_ID'.
 #' @importFrom magrittr %>%
 #' @importFrom dplyr bind_rows
 #' @importFrom utils read.csv
 #' @export
-
-#defines three functions - the two that select and format txt and csv files, and the function that actually reads in the otter transcript txt file.
-
 read_dyads <- function(my_path = "my_transcripts") {
-
-  # Load required packages
-  my_packages <- c("dplyr", "magrittr")
-  for (pkg in my_packages) {
-    if (!requireNamespace(pkg, quietly = TRUE)) {
-      install.packages(pkg)
-    }
-    library(pkg, character.only = TRUE)
-  }
-
   read_otter_transcript <- function(file_path) {
     lines <- readLines(file_path) #read otter ai file
     #removes otter ai watermark if it is present

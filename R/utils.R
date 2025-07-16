@@ -4,9 +4,9 @@
 #' @param branch Branch name (default: "main")
 #' @param data_folder Remote folder containing .rda files (default: "data/")
 #' @param envir Environment to load into (default: package namespace)
+#' @returns
+#' nothing, loads data (as rda files) from github repository needed for other package functions
 #' @importFrom httr GET
-#' @return Invisible TRUE if successful
-#'
 
 load_github_data <- function(
     repo = "Reilly-ConceptsCognitionLab/ConversationAlign_Data",
