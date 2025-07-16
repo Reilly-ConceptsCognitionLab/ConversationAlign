@@ -22,6 +22,7 @@ This is a major release. We have included many new features and fixed numerous b
 -    Resampling of AUC in `summarize_dyads()` has been omitted in favor of proportionally rescaling dAUC to a standardized/fixed number of turns (100)
 -    Modified internal lookup datase ``lookup_db``, replaced with ``lookup_Jul25``, includes many more dimensions and options for scaled vs. raw versions of variables
 -    Moved all internal data to a different repository (ConversationAlign_Data) in order to get the package within CRAN file size constraints.  Package now loads data from external HTTPs source
+-    Omitted outside calls to libraries from functions
 
 ### Fixed
 -  Warnings and checks (variable names, etc) to read, clean, align functions
