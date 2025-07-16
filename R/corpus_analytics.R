@@ -3,7 +3,8 @@
 #' Produces a table of corpus analytics including numbers of complete observations at each step, word counts, lexical diversity (e.g., TTR), stopword ratios, etc. Granularity of the summary statistics are guided by the user (e.g., by conversation, by conversation and speaker, collapsed all)
 #' @name corpus_analytics
 #' @param dat_prep takes dataframe produced from the df_prep() function
-#' @return dataframe with summary analytics for a conversation corpus
+#' @returns
+#' dataframe with summary statistics (mean, SD, range) for numerous corpus analytics (e.g., token count, type-token-ratio, word-count-per-turn) for the target conversation corpus. Summary data structured in table format for easy export to a journal method section.
 #' @importFrom dplyr across
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr everything
@@ -51,21 +52,6 @@
 # TTR (clean): Group by Event_ID, distinct Text_Clean divided by Text_Clean
 
 corpus_analytics <- function(dat_prep) {
-  # Load required packages
-  my_packages <- c("dplyr", "magrittr", "stringr", "tibble", "tidyr", "purrr", "stats", "tidyselect")
-  for (pkg in my_packages) {
-    if (!requireNamespace(pkg, quietly = TRUE)) {
-      install.packages(pkg)
-    }
-    library(pkg, character.only = TRUE)
-  }
-
-  if (!exists("lookup_Jul25", envir = asNamespace("ConversationAlign"))) {
-    stop("Required dataset 'lookup_Jul25' not found. ",
-         "Please reinstall the package or contact maintainers.")
-  }
-
-
   # Select and prepare data
   dat_prep <- dat_prep %>%
     dplyr::select(Event_ID, Participant_ID, Exchange_Count, Turn_Count, Text_Prep, Text_Clean,

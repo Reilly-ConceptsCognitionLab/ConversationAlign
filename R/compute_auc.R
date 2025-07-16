@@ -1,17 +1,18 @@
 #' compute_auc
 #'
-#' computes auc between conversation partners for each dyad
+#' internal function that computes two indices of global alignment (auc) between conversation partners for each dyad
 #' @name compute_spearman
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
+#' @returns
+#' nothing - internal function used for intermediary computation piped into summarize_dyads function
 #' @keywords internal
 #' @noRd
 
-
-compute_auc <- function(df_prep) {
-  #selects align_var by greppin on possible prefixes of dimensions
+compute_auc <- function(df_prep, verbose = TRUE) {
+  # selects align_var by grepping on possible prefixes of dimensions
   align_var <- grep("^(emo_|lex_|sem_|phon_)", colnames(df_prep), value = TRUE, ignore.case = TRUE)
 
   # split the data frame into a list by event id
@@ -26,7 +27,7 @@ compute_auc <- function(df_prep) {
 
   df_speakvar <- dplyr::bind_rows(df_list_speakvar)
 
-  # group by turn then take the average score for each turn count,then pivot on pids
+  # group by turn then take the average score for each turn count, then pivot on pids
   df_wide <- df_speakvar %>% dplyr::group_by(Event_ID, Exchange_Count, Participant_ID) %>%
     dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
                      participant_var = dplyr::first(participant_var), Participant_Pair = dplyr::first(Participant_Pair),
@@ -121,9 +122,10 @@ compute_auc <- function(df_prep) {
         doc_domain_auc_df
       },
       error = function(e) {
-        # print file name and dimension that are behaving unexpectedly
-        cat(paste("Results for dAUC will be filled with NA.\n\tTranscript: ",
-                  doc_name, "\n\tDimension: ", dimension, "\n", sep = ""))
+        if (verbose) {
+          message(paste("Results for dAUC will be filled with NA.\n\tTranscript:",
+                        doc_name, "\n\tDimension:", dimension))
+        }
         # fill the result cell with NA
         doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
                                         Exchanges = max(domain_ts$Exchange_Count))
@@ -157,8 +159,10 @@ compute_auc <- function(df_prep) {
   # throw warning if any dyads are fewer than 50 exchanges
   small_dyads <- all_domain_df[which(all_domain_df$Exchanges < 50), "Event_ID"]
   if (length(small_dyads) > 0) {
-    warning(paste0("Some conversations are shorter than 50 exchanges (100 turns). It is recomended that conversations are longer than 50 exchanges. Attached is a list of conversations with fewer than 50 exchanges:\n",
-                   paste(small_dyads, collapse = "\n")))
+    warning(paste0("Some conversations are shorter than 50 exchanges (100 turns). ",
+                   "It is recommended that conversations are longer than 50 exchanges. ",
+                   "Affected conversations:\n",
+                   paste(small_dyads, collapse = ", ")))
   }
   # standardize each AUC to 50
   all_domain_df_s <- all_domain_df %>%

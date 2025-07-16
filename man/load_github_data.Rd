@@ -21,7 +21,7 @@ load_github_data(
 \item{envir}{Environment to load into (default: package namespace)}
 }
 \value{
-Invisible TRUE if successful
+nothing, loads data (as rda files) from github repository needed for other package functions
 }
 \description{
 Load all .rda files from a GitHub data folder into the package environment

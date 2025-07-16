@@ -3,8 +3,9 @@
 #' Reads pre-formatted dyadic (2 interlocutor) conversation transcript already imported into your R environment.
 #'
 #' @name read_1file
-#' @param my_dat conversation transcript in csv or txt format
-#' @return a dataframe formatted with 'Event_ID', "Participant_ID", "RawText" -- ready for clean_dyads()
+#' @param my_dat one conversation transcript already in the R environment
+#' @returns
+#' a dataframe formatted with 'Event_ID', "Participant_ID", "Text_Raw" fields -- ready for clean_dyads()
 #' @export
 
 read_1file <- function(my_dat) {

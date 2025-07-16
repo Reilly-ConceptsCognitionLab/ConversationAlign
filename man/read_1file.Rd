@@ -7,10 +7,10 @@
 read_1file(my_dat)
 }
 \arguments{
-\item{my_dat}{conversation transcript in csv or txt format}
+\item{my_dat}{one conversation transcript already in the R environment}
 }
 \value{
-a dataframe formatted with 'Event_ID', "Participant_ID", "RawText" -- ready for clean_dyads()
+a dataframe formatted with 'Event_ID', "Participant_ID", "Text_Raw" fields -- ready for clean_dyads()
 }
 \description{
 Reads pre-formatted dyadic (2 interlocutor) conversation transcript already imported into your R environment.

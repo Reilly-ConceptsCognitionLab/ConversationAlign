@@ -6,6 +6,8 @@ NULL
 #' @description Handles package initialization including loading required datasets
 #' from GitHub or local fallback files.
 #' @keywords internal
+#' @returns
+#' nothing, loads data from external repository that will be needed by other package functions
 #' @importFrom utils download.file
 #' @importFrom tools R_user_dir
 #' @noRd
@@ -18,7 +20,7 @@ NULL
   critical_datasets <- c("MIT_stops", "lookup_Jul25", "SMART_stops",
                          "CA_orig_stops", "Temple_stops25")
 
-  # Try loading from GitHub first
+  #load from GitHub repo
   loaded_from <- tryCatch({
     repo_url <- "https://raw.githubusercontent.com/Reilly-ConceptsCognitionLab/ConversationAlign_Data/main/data/"
     temp_dir <- tempdir()

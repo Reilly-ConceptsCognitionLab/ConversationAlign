@@ -8,21 +8,28 @@ prep_dyads(
   dat_read,
   lemmatize = TRUE,
   omit_stops = TRUE,
-  which_stoplist = "Temple_stops25"
+  which_stoplist = "Temple_stops25",
+  verbose = TRUE
 )
 }
 \arguments{
-\item{dat_read}{data frame produced from the read_dyads() function}
+\item{dat_read}{dataframe produced from read_dyads() function}
 
 \item{lemmatize}{logical, should words be lemmatized (switched to base morphological form), default is TRUE}
 
-\item{omit_stops}{remove stopwords, default TRUE}
+\item{omit_stops}{option to remove stopwords, default TRUE}
 
-\item{which_stoplist}{user specifies stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25". "Temple_Stopwords25 is the default list}
+\item{which_stoplist}{user-specified stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25".
+"Temple_Stopwords25 is the default list}
 }
 \value{
-dataframe with cleaned text data, formatted with one word per row
+dataframe with text cleaned and vectorized to a one word per-row format.
+Lexical norms and metadata are appended to each content word. Cleaned text appears under a new column
+called 'Text_Clean'. Any selected dimensions (e.g., word length) and metadata are also appended to each word along
+with speaker identity, turn, and Event_ID (conversation identifier).
 }
 \description{
-Cleans, vectorizes and appends lexical norms to all content words in a language corpus. User guides options for stopword removal and lemmatization. User selects up to three psycholinguistic dimensions to yoke norms on each content word in the transcript.
+Cleans, vectorizes and appends lexical norms to all content words in a language corpus.
+User guides options for stopword removal and lemmatization. User selects up to three psycholinguistic dimensions to yoke norms
+on each content word in the original conversation transcript.
 }

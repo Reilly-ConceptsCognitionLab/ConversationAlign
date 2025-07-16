@@ -2,6 +2,8 @@
 #'
 #' String replacement for pattern matching and expanding lots of contractions
 #' @name replacements_25
+#' @returns
+#' nothing, internal function that applies a target list of contractions (e.g., it's) for replacement to prep_dyads
 #' @importFrom dplyr mutate
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
@@ -9,15 +11,6 @@
 #' @noRd
 
 replacements_25 <- function(dat, wordcol) {
-  # Load required packages
-  my_packages <- c("data.table", "dplyr", "magrittr")
-  for (pkg in my_packages) {
-    if (!requireNamespace(pkg, quietly = TRUE)) {
-      install.packages(pkg)
-    }
-    library(pkg, character.only = TRUE)
-  }
-
   # Apply all replacements in sequence
   dat %>%
     # Contractions starting with a/i

@@ -1,6 +1,8 @@
 #'
 #' computes lagged correlations alignment measure across partners within each conversation
 #' @name compute_lagcorr
+#' @returns
+#' internal function to summarize_dyads that produces a dataframe with lagged correlations across turns (-2,0,2 as default) for each dimension of interest.
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
