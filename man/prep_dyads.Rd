@@ -21,6 +21,8 @@ prep_dyads(
 
 \item{which_stoplist}{user-specified stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25".
 "Temple_Stopwords25 is the default list}
+
+\item{verbose}{display detailed output such as error messages and progress (default is TRUE)}
 }
 \value{
 dataframe with text cleaned and vectorized to a one word per-row format.

@@ -9,6 +9,7 @@
 #' @param lemmatize logical, should words be lemmatized (switched to base morphological form), default is TRUE
 #' @param which_stoplist user-specified stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25".
 #' "Temple_Stopwords25 is the default list
+#' @param verbose display detailed output such as error messages and progress (default is TRUE)
 #' @returns
 #' dataframe with text cleaned and vectorized to a one word per-row format.
 #' Lexical norms and metadata are appended to each content word. Cleaned text appears under a new column
