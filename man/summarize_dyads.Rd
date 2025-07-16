@@ -20,6 +20,11 @@ summarize_dyads(
 
 \item{corr_type}{option for computing lagged correlations turn-by-turn covariance (default='Pearson')}
 }
+\value{
+either:
+- a grouped dataframe with summary data aggregated by converation (Event_ID) and participant if sumdat_only=T.
+- the origoinal dataframe 'filled down' with summary data (e.g., AUC, turn-by-turn correlations) for each conversation is sumdat_only=F.
+}
 \description{
-Calculates and appends 3 measures for quantifying alignment. Appends the mean score for each dimension by turn. Calculates and Spearman's rank correlation between interlocutor time series and appends by transcript. Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Spearman's rank correlation and area under the curve become less reliable for dyads under 30 exchanges.
+Calculates and appends 3 measures for quantifying alignment. Appends the averaged value for each selected dimension by turn and speaker. Calculates and Spearman's rank correlation between interlocutor time series and appends by transcript. Calculates the area under the curve of the absolute difference time series between interlocutor time series. The length of the difference time series can be standardized the shortest number of exchanges present in the group using an internally defined resampling function, called with resample = TRUE. Spearman's rank correlation and area under the curve become less reliable for dyads under 30 exchanges.
 }
