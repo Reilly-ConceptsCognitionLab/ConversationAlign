@@ -29,7 +29,6 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr separate
 #' @importFrom tidyselect where
-#' @importFrom utils install.packages
 #' @export
 
 #Text_Prep (just with contractions split), Text_Clean (no stopwords), Any dimension in dataframe counts (emo_, phono_, lex_, sem_)
