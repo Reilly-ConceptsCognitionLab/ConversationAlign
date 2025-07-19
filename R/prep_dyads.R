@@ -32,7 +32,6 @@
 #' @importFrom tidyselect all_of
 #' @importFrom tidyselect any_of
 #' @importFrom tidyselect contains
-#' @importFrom utils install.packages
 #' @importFrom utils select.list
 #' @export
 
