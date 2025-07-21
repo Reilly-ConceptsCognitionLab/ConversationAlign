@@ -44,7 +44,12 @@ partners) engaged in two-person conversations. ConversationAlign
 transforms raw language data into simultaneous time series objects
 across \>40 possible dimensions via an embedded lookup database. There
 are a number of issues you should consider and steps you should take to
-prepare your data. <br> <br>
+prepare your data. <br>
+
+# License
+
+`ConversationAlign` is licensed under the [GNU LGPL
+v3.0](https://www.gnu.org/licenses/lgpl-3.0). <br>
 
 # Installation and Technical Considerations
 
