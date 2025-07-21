@@ -1,7 +1,7 @@
 Package: ConversationAlign
 Type: Package
 Title: Process Text and Compute Linguistic Alignment in Conversation Transcripts
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
      person("Jamie", "Reilly", 
            role = c("aut", "cre"), 
