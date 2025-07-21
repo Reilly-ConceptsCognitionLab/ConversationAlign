@@ -25,16 +25,15 @@ Open-source software for computing main effects and indices of alignment across 
 
 
 ```{r echo=FALSE, results='asis'}
-# Get current package version from DESCRIPTION
-if (!requireNamespace("desc", quietly = TRUE)) {
-  install.packages("desc")
-}
-
 # Generate badges with HTML wrapper for horizontal layout
 cat('<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">')
 
 # Simplified GitHub Release badge (let Shields.io auto-detect version)
 cat('[![GitHub release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)')
+
+#JOSS submission badge
+cat('[![status](https://joss.theoj.org/papers/839ab720504a5c966b4b2893f78ec2b2/status.svg)](https://joss.theoj.org/papers/839ab720504a5c966b4b2893f78ec2b2)
+')
 
 # GitHub Stars badge
 cat('
