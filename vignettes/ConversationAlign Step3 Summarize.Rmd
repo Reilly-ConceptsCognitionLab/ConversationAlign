@@ -1,5 +1,5 @@
 ---
-title: CA Step 3 Summarize Dyads
+title: ConversationAlign Step3 Summarize
 subtitle: summarize_dyads()
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
@@ -10,7 +10,7 @@ output:
     toc: yes
 vignette: |
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{CA Step 3 Summarize Dyads}
+  %\VignetteIndexEntry{ConversationAlign Step3 Summarize}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -26,7 +26,6 @@ knitr::opts_chunk$set(
 library(ConversationAlign)
 ```
 
-## summarize_dyads()
 This is the final step where `ConversationAlign` will compute summary statistics including main effects and alignment statistics for the vectorized dataframe you produced using `prep_dyads()`. Users have several options for how to output their data, and these choices should be guided by your analysis strategy. For example, a linear mixed effects approach might involve modeling the rise and fall of values across turns. In contrast, a standard ANOVA would work on grouped summary data.  
 
 - Main effects for each dimension of interest aggregated by Conversation (Event_ID) and Person (Participant_ID). For example, main effects of concreteness would involve aggregated means of all the concreteness values for words produced by Mary vs words produced by Dave in an individual conversation.

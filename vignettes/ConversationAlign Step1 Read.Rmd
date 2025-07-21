@@ -1,5 +1,5 @@
 ---
-title: CA Step 1 Read_Dyads
+title: ConversationAlign Step1 Read
 subtitle: Read and Format Data for ConversationAlign
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r Sys.Date()`"
@@ -10,7 +10,7 @@ output:
     toc: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{CA Step 1 Read_Dyads}
+  %\VignetteIndexEntry{ConversationAlign Step1 Read}
   %\VignetteEncoding{UTF-8}
 ---
 

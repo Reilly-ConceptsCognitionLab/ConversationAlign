@@ -1,5 +1,5 @@
 ---
-title: CA Step 2 Prep Data
+title: ConversationAlign Step2 Prep
 subtitle: prep_dyads()
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
@@ -10,7 +10,7 @@ output:
     toc: yes
 vignette: |
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Step_2 Prep_Dyads}
+  %\VignetteIndexEntry{ConversationAlign Step2 Prep}
   %\VignetteEncoding{UTF-8}
 ---
 

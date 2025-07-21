@@ -1,5 +1,5 @@
 ---
-title: CA Step 4 Corpus Analytics
+title: ConversationAlign Step4 Analytics
 subtitle: corpus_analytics()
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
@@ -10,7 +10,7 @@ output:
     toc: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{CA Step 4 Corpus Analytics}
+  %\VignetteIndexEntry{ConversationAlign Step4 Analytics}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -26,8 +26,6 @@ knitr::opts_chunk$set(
 library(ConversationAlign)
 ```
 
-# Generate corpus analytics
-## `corpus_analytics()`
 This is a helpful addition to `ConversationAlign` that will generate a variety of corpus analytics (e.g., word count, type-token-ratio) for your conversation corpus. The output is in a summary table that is readily exportable to to the specific journal format of your choice using any number of packages such as `flextable` or `tinytable`. <br>
 
 Generate your corpus analytics on the dataframe you created with `prep_dyads`.

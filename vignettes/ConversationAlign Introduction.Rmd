@@ -1,5 +1,5 @@
 ---
-title: ConversationAlign Intro
+title: ConversationAlign Introduction
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 show_toc: true
@@ -9,7 +9,7 @@ output:
     toc: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Intro}
+  %\VignetteIndexEntry{ConversationAlign Introduction}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Intro to ConversationAlign
 A good conversation is a cooperative endeavor where both parties modify the form and content of their own production to align with each other. This is a phenomenon known as alignment. People align across many dimensions including the words they choose and the affective tenor of their prosody. ``ConversationAlign`` measures dynamics of lexical use between conversation partners across more than 40 semantic, lexical, phonological, and affective dimensions. Before launching into your analyses, there are some important use caveats to consider.
 
 ## Caveats for Using ConversationAlign
