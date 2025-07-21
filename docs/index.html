@@ -16,8 +16,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Process Text and Compute Linguistic Alignment in Conversation Transcripts">
-<meta name="description" content="`ConversationAlign` imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. `ConversationAlign` then computes alignment indices between two interlocutors across each transcript for &gt;40 possible semantic, lexical, and affective dimensions. In addition to alignment, `ConversationAlign` also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.">
-<meta property="og:description" content="`ConversationAlign` imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. `ConversationAlign` then computes alignment indices between two interlocutors across each transcript for &gt;40 possible semantic, lexical, and affective dimensions. In addition to alignment, `ConversationAlign` also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.">
+<meta name="description" content="Imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. ConversationAlign then computes alignment indices between two interlocutors across each transcript for &gt;40 possible semantic, lexical, and affective dimensions. In addition to alignment, ConversationAlign also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.">
+<meta property="og:description" content="Imports conversation transcripts into R, concatenates them into a single dataframe appending event identifiers, cleans and formats the text, then yokes user-specified psycholinguistic database values to each word. ConversationAlign then computes alignment indices between two interlocutors across each transcript for &gt;40 possible semantic, lexical, and affective dimensions. In addition to alignment, ConversationAlign also produces a table of analytics (e.g., token count, type-token-ratio) in a summary table describing your particular text corpus.">
 <meta property="og:image" content="https://reilly-conceptscognitionlab.github.io/ConversationAlign/logo.png">
 </head>
 <body>
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ConversationAlign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@ ConversationAlign
 
 </div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-<p><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases" class="external-link"><img src="https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&amp;include_prereleases&amp;label=Release" alt="GitHub release"></a> <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/Reilly-ConceptsCognitionLab/ConversationAlign?style=social" alt="GitHub stars"></a></p>
+<p><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases" class="external-link"><img src="https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&amp;include_prereleases&amp;label=Release" alt="GitHub release"></a><a href="https://joss.theoj.org/papers/839ab720504a5c966b4b2893f78ec2b2" class="external-link"><img src="https://joss.theoj.org/papers/839ab720504a5c966b4b2893f78ec2b2/status.svg" alt="status"></a></p>
+<p><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/Reilly-ConceptsCognitionLab/ConversationAlign?style=social" alt="GitHub stars"></a></p>
 <p><a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/graphs/commit-activity" class="external-link"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance"></a> <a href="https://www.gnu.org/licenses/gpl-3.0" class="external-link"><img src="https://img.shields.io/badge/License-GPL%20v3+-blue.svg" alt="License: GPL v3+"></a> <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></p>
 </div>
 <p><img src="reference/figures/convo_demo.jpg" alt="illustration of processing pipeline used by ConversationAlign" style="float: right; width: 50%; margin-left: 20px; margin-bottom: 10px;"></p>
@@ -82,7 +83,12 @@ ConversationAlign
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h1>
-<p><code>ConversationAlign</code> analyzes alignment and computes main effects across more than 40 unique dimensions between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign transforms raw language data into simultaneous time series objects across &gt;40 possible dimensions via an embedded lookup database. There are a number of issues you should consider and steps you should take to prepare your data. <br><br></p>
+<p><code>ConversationAlign</code> analyzes alignment and computes main effects across more than 40 unique dimensions between interlocutors (conversation partners) engaged in two-person conversations. ConversationAlign transforms raw language data into simultaneous time series objects across &gt;40 possible dimensions via an embedded lookup database. There are a number of issues you should consider and steps you should take to prepare your data. <br></p>
+</div>
+<div class="section level1">
+<h1 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h1>
+<p><code>ConversationAlign</code> is licensed under the <a href="https://www.gnu.org/licenses/lgpl-3.0" class="external-link">GNU LGPL v3.0</a>. <br></p>
 </div>
 <div class="section level1">
 <h1 id="installation-and-technical-considerations">Installation and Technical Considerations<a class="anchor" aria-label="anchor" href="#installation-and-technical-considerations"></a>
@@ -420,7 +426,7 @@ ConversationAlign
 <td align="right">0.001</td>
 <td align="right">0.783</td>
 <td align="right">1.630</td>
-<td align="left">Maya</td>
+<td align="left">Yin</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
@@ -432,7 +438,7 @@ ConversationAlign
 <td align="right">-0.033</td>
 <td align="right">0.783</td>
 <td align="right">1.630</td>
-<td align="left">Maya</td>
+<td align="left">Yin</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
@@ -444,7 +450,7 @@ ConversationAlign
 <td align="right">-0.066</td>
 <td align="right">3.729</td>
 <td align="right">4.662</td>
-<td align="left">Ana</td>
+<td align="left">Franklin</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -456,7 +462,7 @@ ConversationAlign
 <td align="right">0.030</td>
 <td align="right">3.729</td>
 <td align="right">4.662</td>
-<td align="left">Ana</td>
+<td align="left">Franklin</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -468,7 +474,7 @@ ConversationAlign
 <td align="right">-0.001</td>
 <td align="right">1.486</td>
 <td align="right">1.486</td>
-<td align="left">Dave</td>
+<td align="left">Mary</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -480,7 +486,7 @@ ConversationAlign
 <td align="right">-0.031</td>
 <td align="right">1.486</td>
 <td align="right">1.486</td>
-<td align="left">Dave</td>
+<td align="left">Mary</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -628,7 +634,8 @@ For bugs, feature requests, and general questions, reach out via one of the foll
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>GPL (&gt;= 3)</li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small>LGPL (&gt;= 3)</small></li>
 </ul>
 </div>
 
