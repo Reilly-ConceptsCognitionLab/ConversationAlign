@@ -20,7 +20,8 @@ across coversation partners in dyadic conversation transcripts.
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
 
 [![GitHub
-release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)
+release](https://img.shields.io/github/v/release/Reilly-ConceptsCognitionLab/ConversationAlign?color=blue&include_prereleases&label=Release)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/releases)[![status](https://joss.theoj.org/papers/839ab720504a5c966b4b2893f78ec2b2/status.svg)](https://joss.theoj.org/papers/839ab720504a5c966b4b2893f78ec2b2)
+
 [![GitHub
 stars](https://img.shields.io/github/stars/Reilly-ConceptsCognitionLab/ConversationAlign?style=social)](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/stargazers)
 
@@ -225,12 +226,12 @@ knitr::kable(head(MarySumDat, 10), format = "simple", digits = 3)
 
 | Event_ID | Participant_ID | Dimension | Dimension_Mean | AUC_raw | AUC_scaled100 | Talked_First | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
 |:---|:---|:---|---:|---:|---:|:---|---:|---:|---:|
-| ItsySpider | Maya | emo_anger | 0.001 | 0.783 | 1.630 | Maya | -1 | -1 | -1 |
-| ItsySpider | Yin | emo_anger | -0.033 | 0.783 | 1.630 | Maya | -1 | -1 | -1 |
-| JackJill | Ana | emo_anger | -0.066 | 3.729 | 4.662 | Ana | 1 | 1 | 1 |
-| JackJill | Franklin | emo_anger | 0.030 | 3.729 | 4.662 | Ana | 1 | 1 | 1 |
-| LittleLamb | Dave | emo_anger | -0.001 | 1.486 | 1.486 | Dave | NA | NA | NA |
-| LittleLamb | Mary | emo_anger | -0.031 | 1.486 | 1.486 | Dave | NA | NA | NA |
+| ItsySpider | Maya | emo_anger | 0.001 | 0.783 | 1.630 | Yin | -1 | -1 | -1 |
+| ItsySpider | Yin | emo_anger | -0.033 | 0.783 | 1.630 | Yin | -1 | -1 | -1 |
+| JackJill | Ana | emo_anger | -0.066 | 3.729 | 4.662 | Franklin | 1 | 1 | 1 |
+| JackJill | Franklin | emo_anger | 0.030 | 3.729 | 4.662 | Franklin | 1 | 1 | 1 |
+| LittleLamb | Dave | emo_anger | -0.001 | 1.486 | 1.486 | Mary | NA | NA | NA |
+| LittleLamb | Mary | emo_anger | -0.031 | 1.486 | 1.486 | Mary | NA | NA | NA |
 
 # Optional: Generate corpus analytics
 

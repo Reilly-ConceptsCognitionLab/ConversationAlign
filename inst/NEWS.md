@@ -1,3 +1,20 @@
+# ConversationAlign 0.3.0
+
+# - 2025-7-21
+
+## Breaking changes
+
+This is a minor release involving mostly optimization of functions. 
+
+### Added
+-   Software license now LGPL 3.0
+
+### Modified
+-   Omitted prior GPL software license
+-   Path to Journal of Open Source Software (JOSS) now points to main
+
+
+
 # ConversationAlign 0.2.0
 
 # - 2025-7-15
