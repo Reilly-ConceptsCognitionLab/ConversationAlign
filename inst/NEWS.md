@@ -1,3 +1,17 @@
+# ConversationAlign 0.3.1
+
+# - 2025-7-29
+
+## Breaking changes
+
+This is a minor release involving one bug repair
+
+
+### Modified
+-  prep_dyads() added several missing cleaning functions that had been inadvertantly omitted during an earlier merge in preparation for CRAN
+
+
+
 # ConversationAlign 0.3.0
 
 # - 2025-7-21
