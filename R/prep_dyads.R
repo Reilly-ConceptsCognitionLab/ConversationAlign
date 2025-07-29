@@ -69,7 +69,50 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE,
     which_stoplist <- c("Temple_stops25", "MIT_stops", "SMART_stops", "CA_orig_stops")[as.integer(choice)]
   }
 
-  # [Rest of the data processing steps remain unchanged until variable selection]
+  # create Turn_Count variable
+  dat_prep <- dat_read %>% group_by(Event_ID) %>%
+    mutate(switch_mark = Participant_ID != dplyr::lag(Participant_ID, default = first(Participant_ID)),
+           Turn_Count = cumsum(switch_mark) + 1) %>% select(-switch_mark) %>% ungroup()
+
+  # Text Processing Pipeline
+  dat_prep <- dat_prep %>% mutate(Participant_ID = as.factor(Participant_ID),
+                                  Event_ID = as.factor(Event_ID), Text_Prep = tolower(Text_Raw)) %>% select(-Text_Raw)
+
+  # Standardize apostrophes
+  dat_prep <- dat_prep %>%
+    mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[\u2018\u2019\u02BC\u201B\uFF07\u0092\u0091\u0060\u00B4\u2032\u2035]", "'"))
+
+  # Remove non-alphabetic characters except apostrophes
+  dat_prep <- dat_prep %>% mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[^a-zA-Z']", " "))
+
+  # Clean whitespace
+  dat_prep <- dat_prep %>% mutate(Text_Prep = str_squish(gsub("\\s+", " ", Text_Prep)))
+
+  # Split into words
+  dat_prep <- dat_prep %>% tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")
+
+  # Clean text
+  dat_prep <- dat_prep %>% mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[^a-z']", ""))
+
+  # ASCII conversion
+  dat_prep <- dat_prep %>% mutate(Text_Prep = iconv(Text_Prep, to = "ASCII//TRANSLIT", sub = ""),
+                                  Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[^[:alnum:]']", ""))
+
+  # Apply contractions replacement do NOT quote the column name
+  dat_prep <- replacements_25(dat = dat_prep, wordcol = Text_Prep)
+
+  # Split again after contractions
+  dat_prep <- dat_prep %>% tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")
+
+  # Final processing and lemmatization
+  df_prep <- dat_prep %>% mutate(Text_Clean = ifelse(stringi::stri_isempty(Text_Prep), NA, Text_Prep),
+                                 Text_Clean = if(lemmatize) textstem::lemmatize_strings(Text_Clean) else Text_Clean)
+
+  # Stopword removal
+  if (omit_stops) {
+    stopwords <- stopwords_lists[[which_stoplist]]$word
+    df_prep <- df_prep %>% mutate(Text_Clean = ifelse(Text_Clean %in% stopwords, NA, Text_Clean))
+  }
 
   # Variable selection
   possible_vars <- setdiff(colnames(lookup_Jul25), "word")
