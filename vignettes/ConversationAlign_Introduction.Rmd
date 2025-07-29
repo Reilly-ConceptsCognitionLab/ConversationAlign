@@ -1,5 +1,5 @@
 ---
-title: ConversationAlign Introduction
+title: ConversationAlign_Introduction
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 show_toc: true
@@ -9,7 +9,7 @@ output:
     toc: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Introduction}
+  %\VignetteIndexEntry{ConversationAlign_Introduction}
   %\VignetteEncoding{UTF-8}
 ---
 

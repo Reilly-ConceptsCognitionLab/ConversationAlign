@@ -1,16 +1,15 @@
 ---
-title: ConversationAlign Step1 Read
+title: ConversationAlign_Step1_Read
 subtitle: Read and Format Data for ConversationAlign
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r Sys.Date()`"
 show_toc: true
-slug: ConversationAlign Read
 output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Step1 Read}
+  %\VignetteIndexEntry{ConversationAlign_Step1_Read}
   %\VignetteEncoding{UTF-8}
 ---
 

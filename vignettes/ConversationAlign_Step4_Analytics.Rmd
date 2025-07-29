@@ -1,16 +1,15 @@
 ---
-title: ConversationAlign Step4 Analytics
+title: ConversationAlign_Step4_Analytics
 subtitle: corpus_analytics()
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 show_toc: true
-slug: ConversationAlign Analytics
 output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Step4 Analytics}
+  %\VignetteIndexEntry{ConversationAlign_Step4_Analytics}
   %\VignetteEncoding{UTF-8}
 ---
 

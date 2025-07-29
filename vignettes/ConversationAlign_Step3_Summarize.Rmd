@@ -1,16 +1,15 @@
 ---
-title: ConversationAlign Step3 Summarize
+title: ConversationAlign_Step3_Summarize
 subtitle: summarize_dyads()
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 show_toc: true
-slug: ConversationAlign Summarize
 output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: |
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Step3 Summarize}
+  %\VignetteIndexEntry{ConversationAlign_Step3_Summarize}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -4188,6 +4188,56 @@
       "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
       "Repository": "CRAN"
     },
+    "rhub": {
+      "Package": "rhub",
+      "Version": "2.0.1",
+      "Source": "Repository",
+      "Title": "Tools for R Package Developers",
+      "Authors@R": "c( person(\"Gábor\", \"Csárdi\",, \"csardi.gabor@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Maëlle\", \"Salmon\", role = \"aut\", email = \"maelle.salmon@yahoo.se\", comment = c(ORCID = \"0000-0002-2815-0399\")), person(\"R Consortium\", role = c(\"fnd\")))",
+      "Description": "R-hub v2 uses GitHub Actions to run 'R CMD check' and similar package checks. The 'rhub' package helps you set up R-hub v2 for your R package, and start running checks.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/r-hub/rhub, https://r-hub.github.io/rhub/",
+      "BugReports": "https://github.com/r-hub/rhub/issues",
+      "RoxygenNote": "7.3.2",
+      "Depends": [
+        "R (>= 4.0)"
+      ],
+      "Imports": [
+        "callr",
+        "cli",
+        "curl",
+        "desc",
+        "gert",
+        "glue",
+        "gitcreds",
+        "jsonlite",
+        "pkgbuild",
+        "processx",
+        "rappdirs",
+        "rematch",
+        "R6",
+        "rprojroot",
+        "utils",
+        "whoami"
+      ],
+      "Suggests": [
+        "asciicast",
+        "debugme",
+        "knitr",
+        "mockery",
+        "pillar",
+        "rmarkdown",
+        "testthat (>= 3.0.0)",
+        "webfakes",
+        "withr"
+      ],
+      "Encoding": "UTF-8",
+      "Config/testthat/edition": "3",
+      "NeedsCompilation": "no",
+      "Author": "Gábor Csárdi [aut, cre], Maëlle Salmon [aut] (<https://orcid.org/0000-0002-2815-0399>), R Consortium [fnd]",
+      "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
+      "Repository": "CRAN"
+    },
     "rlang": {
       "Package": "rlang",
       "Version": "1.1.6",
@@ -4453,6 +4503,44 @@
       "Encoding": "UTF-8",
       "NeedsCompilation": "no",
       "Author": "Kevin Ushey [aut, cre], JJ Allaire [aut], Hadley Wickham [aut], Gary Ritchie [aut], RStudio [cph]",
+      "Repository": "CRAN"
+    },
+    "rticles": {
+      "Package": "rticles",
+      "Version": "0.27",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Article Formats for R Markdown",
+      "Authors@R": "c( person(\"JJ\", \"Allaire\", , \"jj@posit.co\", role = \"aut\"), person(\"Yihui\", \"Xie\", , \"xie@yihui.name\", role = \"aut\", comment = c(ORCID = \"0000-0003-0645-5666\")), person(\"Christophe\", \"Dervieux\", , \"cderv@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-4474-2498\")), person(given = \"Posit Software, PBC\", role = c(\"cph\", \"fnd\")), person(, \"R Foundation\", role = c(\"aut\", \"cph\")), person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\"), person(, \"Journal of Statistical Software\", role = c(\"aut\", \"cph\")), person(\"Ramnath \", \"Vaidyanathan\", , \"ramnath.vaidya@gmail.com\", role = c(\"aut\", \"cph\")), person(, \"Association for Computing Machinery\", role = c(\"aut\", \"cph\")), person(\"Carl\", \"Boettiger\", , \"cboettig@gmail.com\", role = c(\"aut\", \"cph\")), person(, \"Elsevier\", role = c(\"aut\", \"cph\")), person(\"Karl\", \"Broman\", , \"kbroman@gmail.com\", role = c(\"aut\", \"cph\")), person(\"Kirill\", \"Mueller\", , \"kirill.mueller@ivt.baug.ethz.ch\", role = c(\"aut\", \"cph\")), person(\"Bastiaan\", \"Quast\", , \"bquast@gmail.com\", role = c(\"aut\", \"cph\")), person(\"Randall \", \"Pruim\", , \"rpruim@gmail.com\", role = c(\"aut\", \"cph\")), person(\"Ben\", \"Marwick\", , \"bmarwick@uw.edu\", role = c(\"aut\", \"cph\")), person(\"Charlotte\", \"Wickham\", , \"cwickham@gmail.com\", role = c(\"aut\", \"cph\")), person(\"Oliver\", \"Keyes\", , \"okeyes@wikimedia.org\", role = c(\"aut\", \"cph\")), person(\"Miao\", \"Yu\", , \"yufreecas@gmail.com\", role = c(\"aut\", \"cph\")), person(\"Daniel\", \"Emaasit\", , \"daniel.emaasit@gmail.com\", role = c(\"aut\", \"cph\")), person(\"Thierry\", \"Onkelinx\", , \"thierry.onkelinx@inbo.be\", role = c(\"aut\", \"cph\")), person(\"Alessandro\", \"Gasparini\", , \"ellessenne@gmail.com\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0002-8319-7624\")), person(\"Marc-Andre\", \"Desautels\", , \"marc-andre.desautels@cstjean.qc.ca\", role = c(\"aut\", \"cph\")), person(\"Dominik\", \"Leutnant\", , \"leutnant@fh-muenster.de\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0003-3293-2315\")), person(, \"MDPI\", role = c(\"aut\", \"cph\")), person(, \"Taylor and Francis\", role = c(\"aut\", \"cph\")), person(\"Oğuzhan\", \"Öğreden\", role = \"aut\", comment = c(ORCID = \"0000-0002-9949-3348\")), person(\"Dalton\", \"Hance\", , \"dhance@usgs.gov\", role = \"aut\"), person(\"Daniel\", \"Nüst\", , \"daniel.nuest@uni-muenster.de\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0002-0024-5046\")), person(\"Petter\", \"Uvesten\", , \"petter.uvesten.7362@student.lu.se\", role = c(\"aut\", \"cph\")), person(\"Elio\", \"Campitelli\", , \"elio.campitelli@cima.fcen.uba.ar\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0002-7742-9230\")), person(\"John\", \"Muschelli\", , \"muschellij2@gmail.com\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0001-6469-1750\")), person(\"Alex\", \"Hayes\", , \"alexpghayes@gmail.com\", role = \"aut\", comment = c(ORCID = \"0000-0002-4985-5160\")), person(\"Zhian N.\", \"Kamvar\", , \"zkamvar@gmail.com\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0003-1458-7108\")), person(\"Noam\", \"Ross\", , \"noam.ross@gmail.com\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0002-2136-0000\")), person(\"Robrecht\", \"Cannoodt\", , \"rcannood@gmail.com\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0003-3641-729X\", github = \"rcannood\")), person(\"Duncan\", \"Luguern\", , \"duncan.luguern@gmail.com\", role = \"aut\"), person(\"David M.\", \"Kaplan\", , \"dmkaplan2000@gmail.com\", role = c(\"aut\", \"ctb\"), comment = c(ORCID = \"0000-0001-6087-359X\", github = \"dmkaplan2000\")), person(\"Sebastian\", \"Kreutzer\", , \"sebastian.kreutzer@aber.ac.uk\", role = \"aut\", comment = c(ORCID = \"0000-0002-0734-2199\")), person(\"Shixiang\", \"Wang\", , \"w_shixiang@163.com\", role = c(\"aut\", \"ctb\"), comment = c(ORCID = \"0000-0001-9855-7357\")), person(\"Jay\", \"Hesselberth\", , \"jay.hesselberth@gmail.com\", role = c(\"aut\", \"ctb\"), comment = c(ORCID = \"0000-0002-6299-179X\")), person(\"Alfredo\", \"Hernández\", , \"aldomann.designs@gmail.com\", role = \"ctb\", comment = c(ORCID = \"0000-0002-2660-4545\")), person(\"Stefano\", \"Coretta\", , \"stefano.coretta@gmail.com\", role = \"ctb\", comment = c(ORCID = \"0000-0001-9627-5532\", github = \"stefanocoretta\")), person(\"Greg\", \"Macfarlane\", , \"gregmacfarlane@gmail.com\", role = \"ctb\", comment = c(github = \"gregmacfarlane\")), person(\"Matthias\", \"Templ\", , \"matthias.templ@gmail.com\", role = \"ctb\", comment = c(ORCID = \"0000-0002-8638-5276\", github = \"matthias-da\")), person(\"Alvaro\", \"Uzaheta\", , \"alvaro.uzaheta@gess.ethz.ch\", role = \"ctb\", comment = c(github = \"auzaheta\")), person(\"JooYoung\", \"Seo\", , \"jseo1005@illinois.edu\", role = \"ctb\", comment = c(ORCID = \"0000-0002-4064-6012\")), person(\"Callum\", \"Arnold\", , \"cal.rk.arnold@gmail.com\", role = \"ctb\", comment = c(github = \"arnold-c\")), person(\"Rob\", \"Hyndman\", , \"Rob.Hyndman@monash.edu\", role = \"aut\", comment = c(ORCID = \"0000-0002-2140-5352\")), person(\"Dmytro\", \"Perepolkin\", , \"dperepolkin@gmail.com\", role = \"ctb\", comment = c(ORCID = \"0000-0001-8558-6183\", github = \"dmi3kno\")), person(\"Tom\", \"Palmer\", , \"remlapmot@hotmail.com\", role = \"ctb\", comment = c(ORCID = \"0000-0003-4655-4511\", github = \"remlapmot\")) )",
+      "Description": "A suite of custom R Markdown formats and templates for authoring journal articles and conference submissions.",
+      "License": "GPL-3",
+      "URL": "https://github.com/rstudio/rticles, https://pkgs.rstudio.com/rticles/",
+      "BugReports": "https://github.com/rstudio/rticles/issues",
+      "Imports": [
+        "knitr (>= 1.30)",
+        "lifecycle",
+        "rmarkdown (>= 2.14)",
+        "tinytex (>= 0.30)",
+        "utils",
+        "xfun",
+        "yaml"
+      ],
+      "Suggests": [
+        "bookdown",
+        "withr",
+        "covr",
+        "testit",
+        "testthat (>= 3.2.0)",
+        "xtable"
+      ],
+      "Config/Needs/website": "magick, pdftools, gifski, tidyverse/tidytemplate, rstudio/quillt",
+      "Config/testthat/edition": "3",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.3.1",
+      "SystemRequirements": "GNU make",
+      "NeedsCompilation": "no",
+      "Author": "JJ Allaire [aut], Yihui Xie [aut] (<https://orcid.org/0000-0003-0645-5666>), Christophe Dervieux [aut, cre] (<https://orcid.org/0000-0003-4474-2498>), Posit Software, PBC [cph, fnd], R Foundation [aut, cph], Hadley Wickham [aut], Journal of Statistical Software [aut, cph], Ramnath Vaidyanathan [aut, cph], Association for Computing Machinery [aut, cph], Carl Boettiger [aut, cph], Elsevier [aut, cph], Karl Broman [aut, cph], Kirill Mueller [aut, cph], Bastiaan Quast [aut, cph], Randall Pruim [aut, cph], Ben Marwick [aut, cph], Charlotte Wickham [aut, cph], Oliver Keyes [aut, cph], Miao Yu [aut, cph], Daniel Emaasit [aut, cph], Thierry Onkelinx [aut, cph], Alessandro Gasparini [aut, cph] (<https://orcid.org/0000-0002-8319-7624>), Marc-Andre Desautels [aut, cph], Dominik Leutnant [aut, cph] (<https://orcid.org/0000-0003-3293-2315>), MDPI [aut, cph], Taylor and Francis [aut, cph], Oğuzhan Öğreden [aut] (<https://orcid.org/0000-0002-9949-3348>), Dalton Hance [aut], Daniel Nüst [aut, cph] (<https://orcid.org/0000-0002-0024-5046>), Petter Uvesten [aut, cph], Elio Campitelli [aut, cph] (<https://orcid.org/0000-0002-7742-9230>), John Muschelli [aut, cph] (<https://orcid.org/0000-0001-6469-1750>), Alex Hayes [aut] (<https://orcid.org/0000-0002-4985-5160>), Zhian N. Kamvar [aut, cph] (<https://orcid.org/0000-0003-1458-7108>), Noam Ross [aut, cph] (<https://orcid.org/0000-0002-2136-0000>), Robrecht Cannoodt [aut, cph] (<https://orcid.org/0000-0003-3641-729X>, rcannood), Duncan Luguern [aut], David M. Kaplan [aut, ctb] (<https://orcid.org/0000-0001-6087-359X>, dmkaplan2000), Sebastian Kreutzer [aut] (<https://orcid.org/0000-0002-0734-2199>), Shixiang Wang [aut, ctb] (<https://orcid.org/0000-0001-9855-7357>), Jay Hesselberth [aut, ctb] (<https://orcid.org/0000-0002-6299-179X>), Alfredo Hernández [ctb] (<https://orcid.org/0000-0002-2660-4545>), Stefano Coretta [ctb] (<https://orcid.org/0000-0001-9627-5532>, stefanocoretta), Greg Macfarlane [ctb] (gregmacfarlane), Matthias Templ [ctb] (<https://orcid.org/0000-0002-8638-5276>, matthias-da), Alvaro Uzaheta [ctb] (auzaheta), JooYoung Seo [ctb] (<https://orcid.org/0000-0002-4064-6012>), Callum Arnold [ctb] (arnold-c), Rob Hyndman [aut] (<https://orcid.org/0000-0002-2140-5352>), Dmytro Perepolkin [ctb] (<https://orcid.org/0000-0001-8558-6183>, dmi3kno), Tom Palmer [ctb] (<https://orcid.org/0000-0003-4655-4511>, remlapmot)",
+      "Maintainer": "Christophe Dervieux <cderv@posit.co>",
       "Repository": "CRAN"
     },
     "rversions": {
@@ -5792,6 +5880,34 @@
       "NeedsCompilation": "no",
       "Repository": "CRAN",
       "Encoding": "UTF-8"
+    },
+    "whoami": {
+      "Package": "whoami",
+      "Version": "1.3.0",
+      "Source": "Repository",
+      "Title": "Username, Full Name, Email Address, 'GitHub' Username of the Current User",
+      "Authors@R": "c(person(given = \"Gábor\", family = \"Csárdi\",  email = \"csardi.gabor@gmail.com\",  role = c(\"aut\", \"cre\")), person(given = \"Maëlle\", family = \"Salmon\", role = \"ctb\"))",
+      "Description": "Look up the username and full name of the current user, the current user's email address and 'GitHub' username, using various sources of system and configuration information.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/r-lib/whoami#readme",
+      "BugReports": "https://github.com/r-lib/whoami/issues",
+      "Imports": [
+        "httr",
+        "jsonlite",
+        "utils"
+      ],
+      "Suggests": [
+        "covr",
+        "mockery",
+        "testthat",
+        "withr"
+      ],
+      "Encoding": "UTF-8",
+      "RoxygenNote": "6.1.1",
+      "NeedsCompilation": "no",
+      "Author": "Gábor Csárdi [aut, cre], Maëlle Salmon [ctb]",
+      "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
+      "Repository": "CRAN"
     },
     "withr": {
       "Package": "withr",

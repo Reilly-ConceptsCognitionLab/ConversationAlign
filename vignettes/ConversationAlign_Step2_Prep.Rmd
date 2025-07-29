@@ -1,16 +1,15 @@
 ---
-title: ConversationAlign Step2 Prep
+title: ConversationAlign_Step2_Prep
 subtitle: prep_dyads()
 author: Jamie Reilly, Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 show_toc: true
-slug: ConversationAlign Prep
 output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: |
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ConversationAlign Step2 Prep}
+  %\VignetteIndexEntry{ConversationAlign_Step2_Prep}
   %\VignetteEncoding{UTF-8}
 ---
 
