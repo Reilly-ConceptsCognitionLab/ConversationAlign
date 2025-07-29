@@ -2,12 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  ConversationAlign Introduction: ConversationAlign Introduction.html
-  ConversationAlign Step1 Read: ConversationAlign Step1 Read.html
-  ConversationAlign Step2 Prep: ConversationAlign Step2 Prep.html
-  ConversationAlign Step3 Summarize: ConversationAlign Step3 Summarize.html
-  ConversationAlign Step4 Analytics: ConversationAlign Step4 Analytics.html
-last_built: 2025-07-29T19:12Z
+  ConversationAlign_Introduction: ConversationAlign_Introduction.html
+  ConversationAlign_Step1_Read: ConversationAlign_Step1_Read.html
+  ConversationAlign_Step2_Prep: ConversationAlign_Step2_Prep.html
+  ConversationAlign_Step3_Summarize: ConversationAlign_Step3_Summarize.html
+  ConversationAlign_Step4_Analytics: ConversationAlign_Step4_Analytics.html
+last_built: 2025-07-29T19:30Z
 urls:
   reference: https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference
   article: https://reilly-conceptscognitionlab.github.io/ConversationAlign/articles
