@@ -129,7 +129,8 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
   # Combine all data frames - with conditional join
   df_summarize <- av_df %>%
     dplyr::left_join(auc_df_long, by = c("Event_ID", "Dimension")) %>%
-    dplyr::left_join(covar_df, by = c("Event_ID", "Dimension"))
+    dplyr::left_join(covar_df, by = c("Event_ID", "Dimension")) %>%
+    dplyr::relocate(Talked_First, .after = Participant_ID) # move Talked_First to after Participant ID
 
   # Only join metadata if there were columns to summarize
   if (length(meta_cols) > 0) {
