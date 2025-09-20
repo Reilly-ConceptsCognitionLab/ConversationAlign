@@ -41,6 +41,8 @@
 #' @export summarize_dyads
 
 summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, corr_type = 'Pearson') {
+  # prevent note - no visible binding
+  Lag <- Talked_First <- NULL
   # Validate correlation type at the start
   if (!corr_type %in% c("Pearson", "Spearman")) {
     stop("corr_type must be either 'Pearson' or 'Spearman'")
