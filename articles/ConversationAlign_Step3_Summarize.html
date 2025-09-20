@@ -63,7 +63,7 @@
                         <h4 data-toc-skip class="author">Jamie Reilly,
 Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
             
-            <h4 data-toc-skip class="date">July 30, 2025</h4>
+            <h4 data-toc-skip class="date">September 20, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/vignettes/ConversationAlign_Step3_Summarize.Rmd" class="external-link"><code>vignettes/ConversationAlign_Step3_Summarize.Rmd</code></a></small>
       <div class="d-none name"><code>ConversationAlign_Step3_Summarize.Rmd</code></div>
@@ -118,20 +118,24 @@ for each dimension of interest.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MarySumDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span>df_prep <span class="op">=</span> <span class="va">NurseryRhymes_Prepped</span>, custom_lags<span class="op">=</span><span class="cn">NULL</span>, sumdat_only <span class="op">=</span> <span class="cn">TRUE</span>, corr_type<span class="op">=</span><span class="st">'Pearson'</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">MarySumDat</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "Event_ID"           "Participant_ID"     "Dimension"         </span></span>
-<span><span class="co">#&gt;  [4] "Dimension_Mean"     "AUC_raw"            "AUC_scaled100"     </span></span>
-<span><span class="co">#&gt;  [7] "Talked_First"       "TurnCorr_Lead2"     "TurnCorr_Immediate"</span></span>
-<span><span class="co">#&gt; [10] "TurnCorr_Lag2"</span></span>
+<span><span class="co">#&gt;  [1] "Event_ID"                "Participant_ID"         </span></span>
+<span><span class="co">#&gt;  [3] "Talked_First"            "Dimension"              </span></span>
+<span><span class="co">#&gt;  [5] "Dimension_Mean"          "AUC_raw_Immediate"      </span></span>
+<span><span class="co">#&gt;  [7] "AUC_scaled100_Immediate" "AUC_raw_Lag1"           </span></span>
+<span><span class="co">#&gt;  [9] "AUC_scaled100_Lag1"      "TurnCorr_Lead2"         </span></span>
+<span><span class="co">#&gt; [11] "TurnCorr_Immediate"      "TurnCorr_Lag2"</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MarySumDat</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"simple"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Event_ID</th>
 <th align="left">Participant_ID</th>
+<th align="left">Talked_First</th>
 <th align="left">Dimension</th>
 <th align="right">Dimension_Mean</th>
-<th align="right">AUC_raw</th>
-<th align="right">AUC_scaled100</th>
-<th align="left">Talked_First</th>
+<th align="right">AUC_raw_Immediate</th>
+<th align="right">AUC_scaled100_Immediate</th>
+<th align="right">AUC_raw_Lag1</th>
+<th align="right">AUC_scaled100_Lag1</th>
 <th align="right">TurnCorr_Lead2</th>
 <th align="right">TurnCorr_Immediate</th>
 <th align="right">TurnCorr_Lag2</th>
@@ -140,11 +144,13 @@ for each dimension of interest.</p>
 <tr class="odd">
 <td align="left">ItsySpider</td>
 <td align="left">Maya</td>
+<td align="left">Yin</td>
 <td align="left">emo_anger</td>
 <td align="right">0.001</td>
 <td align="right">0.783</td>
 <td align="right">1.630</td>
-<td align="left">Yin</td>
+<td align="right">0.749</td>
+<td align="right">1.560</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
@@ -152,11 +158,13 @@ for each dimension of interest.</p>
 <tr class="even">
 <td align="left">ItsySpider</td>
 <td align="left">Yin</td>
+<td align="left">Yin</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.033</td>
 <td align="right">0.783</td>
 <td align="right">1.630</td>
-<td align="left">Yin</td>
+<td align="right">0.749</td>
+<td align="right">1.560</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
@@ -164,11 +172,13 @@ for each dimension of interest.</p>
 <tr class="odd">
 <td align="left">JackJill</td>
 <td align="left">Ana</td>
+<td align="left">Franklin</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.066</td>
 <td align="right">3.729</td>
 <td align="right">4.662</td>
-<td align="left">Franklin</td>
+<td align="right">3.634</td>
+<td align="right">4.542</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -176,11 +186,13 @@ for each dimension of interest.</p>
 <tr class="even">
 <td align="left">JackJill</td>
 <td align="left">Franklin</td>
+<td align="left">Franklin</td>
 <td align="left">emo_anger</td>
 <td align="right">0.030</td>
 <td align="right">3.729</td>
 <td align="right">4.662</td>
-<td align="left">Franklin</td>
+<td align="right">3.634</td>
+<td align="right">4.542</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -188,11 +200,13 @@ for each dimension of interest.</p>
 <tr class="odd">
 <td align="left">LittleLamb</td>
 <td align="left">Dave</td>
+<td align="left">Mary</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.001</td>
 <td align="right">1.486</td>
 <td align="right">1.486</td>
-<td align="left">Mary</td>
+<td align="right">1.456</td>
+<td align="right">1.456</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -200,11 +214,13 @@ for each dimension of interest.</p>
 <tr class="even">
 <td align="left">LittleLamb</td>
 <td align="left">Mary</td>
+<td align="left">Mary</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.031</td>
 <td align="right">1.486</td>
 <td align="right">1.486</td>
-<td align="left">Mary</td>
+<td align="right">1.456</td>
+<td align="right">1.456</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
