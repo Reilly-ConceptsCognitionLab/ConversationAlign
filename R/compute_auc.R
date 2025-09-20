@@ -1,22 +1,76 @@
 #' compute_auc
 #'
 #' internal function that computes two indices of global alignment (auc) between conversation partners for each dyad
-#' @name compute_spearman
+#' @name compute_auc
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_cols
+#' @importFrom dplyr left_join
 #' @importFrom dplyr mutate
+#' @importFrom dplyr lag
 #' @importFrom dplyr select
+#' @importFrom dplyr group_by
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr summarize
+#' @importFrom dplyr first
+#' @importFrom dplyr rename_with
+#' @importFrom dplyr across
+#' @importFrom dplyr everything
+#' @importFrom tidyselect contains
+#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr fill
 #' @importFrom magrittr %>%
+#' @importFrom zoo na.approx
+#' @importFrom DescTools AUC
 #' @returns
 #' nothing - internal function used for intermediary computation piped into summarize_dyads function
 #' @keywords internal
 #' @noRd
 
 compute_auc <- function(df_prep, verbose = TRUE) {
+  # additional_lags can be added as a parameter, and will accept a vector of ints
+  additional_lags = c(1)
+  # define the internal functions here:
+  # function to calculate AUC for single time series, return NA if there is an error
+  calculate_auc <- function(domain_ts, doc_name, dimension, verbose) {
+    tryCatch({
+      # if time series has fewer points than the threshold, fill with NA
+      if (max(domain_ts$Exchange_Count) < 3) { # hard coded to three exchanges
+        #create a single row, single column dataframe with one empty value to fill in the AUC
+        doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
+                                        Exchanges = max(domain_ts$Exchange_Count))
+      }
+      else {
+        domain_ts <- data.frame(domain_ts) #make single emotion Time series a data frame
+        # na.rm is enabled, which will drop any NA values, so any differences where one of the original scores=NA
+        domain_auc <- DescTools::AUC(x = domain_ts[,1], y = domain_ts[,2],
+                                     method = "trapezoid", na.rm = T)
+        doc_domain_auc_df <- data.frame(domain_auc,
+                                        Exchanges = max(domain_ts$Exchange_Count)) #make data frame of AUC, replicated once
+      }
+      doc_domain_auc_df
+    },
+    error = function(e) {
+      if (verbose) {
+        message(paste("Results for dAUC will be filled with NA.\n\tTranscript:",
+                      doc_name, "\n\tDimension:", dimension))
+      }
+      # fill the result cell with NA
+      doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
+                                      Exchanges = max(domain_ts$Exchange_Count))
+      doc_domain_auc_df
+    })
+  } # end of ccalculate_auc()
+
   # selects align_var by grepping on possible prefixes of dimensions
   align_var <- grep("^(emo_|lex_|sem_|phon_)", colnames(df_prep), value = TRUE, ignore.case = TRUE)
 
   # split the data frame into a list by event id
   df_list <- split(df_prep, f = df_prep$Event_ID)
+
+  # create a list of the first speaker in each dyad (S1) - for appending at end
+  s1_col <- df_prep %>%
+    dplyr::group_by(Event_ID) %>%
+    dplyr::summarize(S1 = unique(Participant_ID)[1])
 
   # iterate over each event, replacing participant names with a transient filler variable
   df_list_speakvar <- lapply(df_list, function(df){
@@ -76,101 +130,137 @@ compute_auc <- function(df_prep, verbose = TRUE) {
   # join the two participant data frame together by dyad and Exchange_Count
   widedf <- dplyr::left_join(split_pid_df_list[[1]], split_pid_df_list[[2]], by = c("Event_ID", "Participant_Pair", "Exchange_Count"))
 
-  #iterate over each aligned dimension, selecting only the scores for that dimension and pulling a difference value and subbing it in for the actual values
-  for (dimension in align_var){
-    both_participant_cols <- widedf %>%
-      dplyr::select(starts_with(dimension))
-    # add a count to the data frame (x-axis)
-
-    absdiffcol <- data.frame(dimension = abs(both_participant_cols[,1] - both_participant_cols[,2]))
-    widedf[which(colnames(widedf) %in% paste(dimension, c("S1", "S2"), sep = "_"))] <- absdiffcol
+  # create a list of wide data frames
+  wide_df_list <- list(widedf)
+  # get the length of the wide df list before adding lags - for naming columns
+  start_wide_df_length <- length(wide_df_list)
+  # if given, lag time series in widedf and add to list
+  if (length(additional_lags > 0)) {
+    # iteration for additional
+    for (lag in additional_lags){
+      lagdf <- widedf
+      val <- abs(lag)
+      # if positive lag all S1, if negative, lag all S2
+      if (lag > 0) {
+        lagdf <- widedf %>%
+          dplyr::group_by(Event_ID) %>%
+          dplyr::mutate(dplyr::across(tidyselect::contains("S1"), ~dplyr::lag(., n = val))) %>%
+          dplyr::ungroup()
+      }
+      else if (lag < 0) {
+        lagdf <- widedf %>%
+          dplyr::group_by(Event_ID) %>%
+          dplyr::mutate(dplyr::across(tidyselect::contains("S2"), ~dplyr::lag(., n = val))) %>%
+          dplyr::ungroup()
+      }
+      wide_df_list[[length(wide_df_list)+1]] <- lagdf
+    }
   }
 
-  long_diff_df <- widedf %>%
-    tidyr::pivot_longer(cols = c(ends_with("_S1") | ends_with("_S2")),
-                        names_to = c("dimension", "Participant_ID"),
-                        names_pattern = "(.*)_([^_]+)$",
-                        values_to = "score") %>% # pivot longer by dimension and pid
-    # pivot each dimension to a column
-    tidyr::pivot_wider(names_from = dimension, values_from = score) %>%
-    dplyr::filter(Participant_ID == "S1") %>% # remove every second row per turn
-    dplyr::select(-Participant_ID) # remove pid column
-  # split the difference data frame into a list based on event id
-  long_diff_df_list <- split(long_diff_df, f = long_diff_df$Event_ID)
+  # iterate over the full computation of dAUC for each lag
+  list_of_each_dauc_df <- lapply(seq_along(wide_df_list), function(i) {
+    widedf <- wide_df_list[[i]]
 
-  # grab the aligned dimensions as a vector to iterate over
-  xdimensions <- colnames(long_diff_df)[which(colnames(long_diff_df) %in% align_var)]
+    #iterate over each aligned dimension, selecting only the scores for that dimension and pulling a difference value and subbing it in for the actual values
+    for (dimension in align_var){
+      both_participant_cols <- widedf %>%
+        dplyr::select(starts_with(dimension))
+      absdiffcol <- data.frame(dimension = abs(both_participant_cols[,1] - both_participant_cols[,2]))
+      widedf[which(colnames(widedf) %in% paste(dimension, c("S1", "S2"), sep = "_"))] <- absdiffcol
+    }
 
-  domain_auc_list <- lapply(xdimensions, function(dimension){ #iterate over emotion
-    # now iterate over each dyad in the corpus
+    long_diff_df <- widedf %>%
+      tidyr::pivot_longer(cols = c(ends_with("_S1") | ends_with("_S2")),
+                          names_to = c("dimension", "Participant_ID"),
+                          names_pattern = "(.*)_([^_]+)$",
+                          values_to = "score") %>% # pivot longer by dimension and pid
+      # pivot each dimension to a column
+      tidyr::pivot_wider(names_from = dimension, values_from = score) %>%
+      dplyr::filter(Participant_ID == "S1") %>% # remove every second row per turn
+      dplyr::select(-Participant_ID) # remove pid column
+    # split the difference data frame into a list based on event id
+    long_diff_df_list <- split(long_diff_df, f = long_diff_df$Event_ID)
 
-    # function to calculate AUC for single time series, return NA if there is an error
-    calculate_auc <- function(domain_ts, doc_name, dimension) {
-      tryCatch({
-        # if time series has fewer points than the threshold, fill with NA
-        if (max(domain_ts$Exchange_Count) < 3) { # hard coded to three exchanges
-          #create a single row, single column dataframe with one empty value to fill in the AUC
-          doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
-                                          Exchanges = max(domain_ts$Exchange_Count))
-        }
-        else {
-          domain_ts <- data.frame(domain_ts) #make single emotion Time series a data frame
-          domain_auc <- DescTools::AUC(x = domain_ts[,1], y = domain_ts[,2], method = "trapezoid")
-          doc_domain_auc_df <- data.frame(domain_auc,
-                                          Exchanges = max(domain_ts$Exchange_Count)) #make data frame of AUC, replicated once
-        }
-        doc_domain_auc_df
-      },
-      error = function(e) {
-        if (verbose) {
-          message(paste("Results for dAUC will be filled with NA.\n\tTranscript:",
-                        doc_name, "\n\tDimension:", dimension))
-        }
-        # fill the result cell with NA
-        doc_domain_auc_df <- data.frame(domain_auc = as.double(NA),
-                                        Exchanges = max(domain_ts$Exchange_Count))
-        doc_domain_auc_df
+    # grab the aligned dimensions as a vector to iterate over
+    xdimensions <- colnames(long_diff_df)[which(colnames(long_diff_df) %in% align_var)]
+
+    # NOTE: calculate_auc function is defined here
+
+    domain_auc_list <- lapply(xdimensions, function(dimension){ #iterate over emotion
+      # iterate over each document
+      single_doc_auc <- lapply(long_diff_df_list, function(df_prep){
+
+        domain_ts <- df_prep %>%
+          dplyr::select(Exchange_Count,
+                        tidyselect::contains(dimension)) # take dimension and time
+
+        # put the function in here
+        single_doc_domain_auc <- calculate_auc(domain_ts,
+                                               doc_name = as.character(df_prep$Event_ID)[1],
+                                               dimension = dimension,
+                                               verbose = verbose)
       })
-    }
-
-    # iterate over each document
-    single_doc_auc <- lapply(long_diff_df_list, function(df_prep){
-
-      domain_ts <- df_prep %>%
-        dplyr::select(Exchange_Count,
-                      tidyselect::contains(dimension)) # take dimension and time
-
-      # put the function in here
-      single_doc_domain_auc <- calculate_auc(domain_ts,
-                                             doc_name = as.character(df_prep$Event_ID)[1],
-                                             dimension = dimension)
+      #bind all docs AUCs for emotion into one column and add column prefix
+      all_doc_domain_auc_df <- dplyr::bind_rows(single_doc_auc)
+      # drop exchange column for all but first dimension
+      if (dimension != xdimensions[1]) {
+        all_doc_domain_auc_df <- data.frame(all_doc_domain_auc_df[,1])
+      }
+      colnames(all_doc_domain_auc_df)[1] <- paste("AUC", dimension, sep = "_")
+      all_doc_domain_auc_df
     })
-    #bind all docs AUCs for emotion into one column and add column prefix
-    all_doc_domain_auc_df <- dplyr::bind_rows(single_doc_auc)
-    # drop exchange column for all but first dimension
-    if (dimension != xdimensions[1]) {
-      all_doc_domain_auc_df <- data.frame(all_doc_domain_auc_df[,1])
+
+    all_domain_df <- dplyr::bind_cols(domain_auc_list, data.frame(Event_ID = names(long_diff_df_list))) #bind all columns of AUCs into one data frame
+    # standardize each AUC to 50
+    all_domain_df_s <- all_domain_df %>%
+      dplyr::mutate(dplyr::across(tidyselect::contains("AUC"), ~ (50 * .x) / Exchanges)) %>%
+      dplyr::select(-Exchanges)
+
+    output_auc <- dplyr::left_join(all_domain_df, all_domain_df_s,
+                                   by = "Event_ID", suffix = c("_raw", "_scaled100")) %>%
+      dplyr::select(c(Event_ID, Exchanges, dplyr::everything()))
+
+
+    # add lag to columns if there is a lag
+    if (i > start_wide_df_length) {
+      # get lag from index
+      lag_index <- i - start_wide_df_length
+      output_auc <- output_auc %>%
+        dplyr::rename_with(~ paste0(., "_Lag",
+                                    as.character(additional_lags[lag_index])),
+                           tidyselect::starts_with("AUC"))
     }
-    colnames(all_doc_domain_auc_df)[1] <- paste("AUC", dimension, sep = "_")
-    all_doc_domain_auc_df
+    # if not the first iteration, remove event id and exchanges
+    if (i > 1) {
+      output_auc <- output_auc %>%
+        dplyr::select(-c(Event_ID, Exchanges))
+    }
+    output_auc
   })
 
-  all_domain_df <- dplyr::bind_cols(domain_auc_list, data.frame(Event_ID = names(long_diff_df_list))) #bind all columns of AUCs into one data frame
+  # combine the data frames from different lagged time series
+  combined_lag_df <- dplyr::bind_cols(list_of_each_dauc_df) %>%
+    dplyr::mutate(Talked_First = s1_col$S1, .after = Exchanges)
+  # sub out negative lag colnames for lead
+  colnames(combined_lag_df) <- gsub("_Lag-", "_Lead", colnames(combined_lag_df))
+  # set the names of zero lag columsn to immediate
+  immediate_ind <- grep(".*(raw|scaled100)$", colnames(combined_lag_df), ignore.case = F)
+  #print(immediate_ind)
+  colnames(combined_lag_df)[immediate_ind] <- sapply(colnames(combined_lag_df)[immediate_ind], function(x){
+    paste0(x, "_Immediate")
+  })
+
+  #colnames(combined_lag_df)[immediate_ind] <- new_names
+
   # throw warning if any dyads are fewer than 50 exchanges
-  small_dyads <- all_domain_df[which(all_domain_df$Exchanges < 50), "Event_ID"]
+  small_dyads <- combined_lag_df[which(combined_lag_df$Exchanges < 50), "Event_ID"]
+  small_dyads <- unique(small_dyads)
   if (length(small_dyads) > 0) {
     warning(paste0("Some conversations are shorter than 50 exchanges (100 turns). ",
                    "It is recommended that conversations are longer than 50 exchanges. ",
                    "Affected conversations:\n",
                    paste(small_dyads, collapse = ", ")))
   }
-  # standardize each AUC to 50
-  all_domain_df_s <- all_domain_df %>%
-    dplyr::mutate(dplyr::across(tidyselect::contains("AUC"), ~ (50 * .x) / Exchanges)) %>%
-    dplyr::select(-Exchanges)
 
-  output_auc <- dplyr::left_join(all_domain_df, all_domain_df_s, by = "Event_ID", suffix = c("_raw", "_scaled100")) %>%
-    dplyr::select(c(Event_ID, Exchanges, dplyr::everything()))
-
-  return(output_auc)
+  return(combined_lag_df)
 }

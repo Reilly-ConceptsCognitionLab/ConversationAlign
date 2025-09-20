@@ -21,7 +21,6 @@
 #' @importFrom dplyr na_if
 #' @importFrom dplyr ungroup
 #' @importFrom magrittr %>%
-#' @importFrom stats lag
 #' @importFrom stringi stri_replace_all_fixed
 #' @importFrom stringi stri_replace_all_regex
 #' @importFrom stringr str_trim

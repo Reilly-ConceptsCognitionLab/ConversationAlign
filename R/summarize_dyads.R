@@ -41,6 +41,8 @@
 #' @export summarize_dyads
 
 summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, corr_type = 'Pearson') {
+  # prevent note - no visible binding
+  Lag <- Talked_First <- NULL
   # Validate correlation type at the start
   if (!corr_type %in% c("Pearson", "Spearman")) {
     stop("corr_type must be either 'Pearson' or 'Spearman'")
@@ -116,12 +118,12 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
   auc_df_long <- auc_df %>%
     tidyr::pivot_longer(
       contains("AUC"),
-      names_to = c("Dimension", "reshaped"),
-      names_pattern = "AUC_(.*)_(raw|scaled100)",
+      names_to = c("Dimension", "reshaped", "Lag"),
+      names_pattern = "AUC_(.*)_(raw|scaled100)_(Immediate|Lag\\d|Lead\\d)",
       values_to = "AUC"
     ) %>%
-    tidyr::pivot_wider(
-      names_from = reshaped,
+    tidyr::pivot_wider( # pivot out the reshaped and lag columns
+      names_from = c(reshaped, Lag),
       names_prefix = "AUC_",
       values_from = AUC
     )
@@ -129,7 +131,8 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
   # Combine all data frames - with conditional join
   df_summarize <- av_df %>%
     dplyr::left_join(auc_df_long, by = c("Event_ID", "Dimension")) %>%
-    dplyr::left_join(covar_df, by = c("Event_ID", "Dimension"))
+    dplyr::left_join(covar_df, by = c("Event_ID", "Dimension")) %>%
+    dplyr::relocate(Talked_First, .after = Participant_ID) # move Talked_First to after Participant ID
 
   # Only join metadata if there were columns to summarize
   if (length(meta_cols) > 0) {
