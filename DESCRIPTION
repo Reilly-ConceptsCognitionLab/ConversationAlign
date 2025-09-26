@@ -50,6 +50,7 @@ Collate:
     'compute_lagcorr.R'
     'corpus_analytics.R'
     'data.R'
+    'generate_shams.R'
     'globals.R'
     'prep_dyads.R'
     'read_1file.R'
