@@ -56,6 +56,7 @@ on each content word in the original conversation transcript.</p>
 <span>  lemmatize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  omit_stops <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  which_stoplist <span class="op">=</span> <span class="st">"Temple_stops25"</span>,</span>
+<span>  remove_backchannel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -79,6 +80,10 @@ on each content word in the original conversation transcript.</p>
 <dt id="arg-which-stoplist">which_stoplist<a class="anchor" aria-label="anchor" href="#arg-which-stoplist"></a></dt>
 <dd><p>user-specified stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25".
 "Temple_Stopwords25 is the default list</p></dd>
+
+
+<dt id="arg-remove-backchannel">remove_backchannel<a class="anchor" aria-label="anchor" href="#arg-remove-backchannel"></a></dt>
+<dd><p>logical, should turns that are full of stopwords (e.g., "Uhm yeah") be preserved as NAs or removed. Removal will 'squish' the turn before and after together into one. If NAs are preserved they are later interpolated.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
