@@ -10,6 +10,6 @@ test_that("required column names are present", {
   # define list of required names and evaluate
   col_vec <- c("Event_ID", "Participant_ID", "Dimension", "Dimension_Mean", "AUC_raw", "AUC_scaled100", "Talked_First")
   col_vec <- c("Event_ID", "Participant_ID", "Talked_First", "Dimension", "Dimension_Mean", "AUC_raw_Immediate",
-               "AUC_scaled100_Immediate", "AUC_raw_Lag1", "AUC_scaled100_Lag1", "TurnCorr_Lead2", "TurnCorr_Immediate", "TurnCorr_Lag2")
+               "AUC_scaled50_Immediate", "AUC_raw_Lag1", "AUC_scaled50_Lag1", "TurnCorr_Lead2", "TurnCorr_Immediate", "TurnCorr_Lag2")
   expect_in(col_vec, colnames(output))
 })
