@@ -2,7 +2,6 @@
 #'
 #' Generates a permutation of each individual dyad. Shuffled dyads may act as controls to their originals.
 #'
-#' @name generate_shams
 #' @param df_prep Output dataframe of prep_dyads().
 #' @param seed (Optional) a seed for reproducibility in random sampling
 #' @returns

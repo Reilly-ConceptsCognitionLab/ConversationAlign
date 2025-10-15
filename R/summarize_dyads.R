@@ -119,7 +119,7 @@ summarize_dyads <- function(df_prep, custom_lags = NULL, sumdat_only = TRUE, cor
     tidyr::pivot_longer(
       contains("AUC"),
       names_to = c("Dimension", "reshaped", "Lag"),
-      names_pattern = "AUC_(.*)_(raw|scaled100)_(Immediate|Lag\\d|Lead\\d)",
+      names_pattern = "AUC_(.*)_(raw|scaled50)_(Immediate|Lag\\d|Lead\\d)",
       values_to = "AUC"
     ) %>%
     tidyr::pivot_wider( # pivot out the reshaped and lag columns
