@@ -127,6 +127,7 @@ knitr::kable(head(MaronGross_2013, 10), format = "pipe")
 - `omit_stops` T/F (default=T) option to remove stopwords
 -  `lemmatize` T/F (default=T) lemmatize strings converting each entry to its dictionary form
 -  `which_stoplist` quoted argument specifying stopword list to apply, options include `none`, `MIT_stops`, `SMART_stops`, `CA_OriginalStops`, or `Temple_stops25`. Default is `Temple_stops25`.
+- `remove_backchannel` T/F (default=F) option to preserve turns composed entirely of stopwords as NAs (when false) or remove the turn by 'squishing' the turns immediately preceding and following together.
 ```{r, eval=F, message=F, warning=F}
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
 ```
@@ -153,12 +154,25 @@ colnames(MarySumDat)
 knitr::kable(head(MarySumDat, 10), format = "simple", digits = 3)
 ```
 
+# Optional: Generate sham conversations
+## `generate_shams()`
+Some research questions may benefit from the use of control conversations that lack the temporal continuity found in real transcripts. ``generate_shams`` shuffles each individual interlocutor's time series, producing a corpus of conversations consisiting of the same production, but in a random order. This provides a control to compare with real corpus summary statistics.
+### <span style="color: darkred;">Arguments to `generate_shams()`:</span> 
+- `dat_prep` dataframe created by ``prep_dyads()``function <br>
+- `seed` a number to supply as a seed for reproducible sampling <br>
+
+```{r}
+MaryShams <- generate_shams(df_prep = NurseryRhymes_Prepped, seed = 202) 
+knitr::kable(head(MaryShams, 10), format = "simple", digits = 3)
+```
+
 # Optional: Generate corpus analytics 
 ## `corpus_analytics()`
 It is often critical to produce descriptives/summary statistics to characterize your language sample. This is typically a laborious process. ``corpus_analytics`` will do it for you, generating a near publication ready table of analytics that you can easily export to the specific journal format of your choice using any number of packages such as `flextable` or `tinytable`.
 
 ### <span style="color: darkred;">Arguments to `corpus_analytics()`:</span> 
 - `dat_prep` dataframe created by ``prep_dyads()``function <br>
+
 ```{r, eval=T, warning=F, message=F}
 NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
 knitr::kable(head(NurseryRhymes_Analytics, 10), format = "simple", digits = 2)
