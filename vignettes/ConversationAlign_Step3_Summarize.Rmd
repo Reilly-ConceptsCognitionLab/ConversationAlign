@@ -21,7 +21,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, message=FALSE, warning=F, echo=F}
-# Load SemanticDistance
+# Load ConversationAlign
+# library(devtools)
+# devtools::install_github("https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign.git")
 library(ConversationAlign)
 ```
 
@@ -41,12 +43,21 @@ This is the final step where `ConversationAlign` will compute summary statistics
 3) **sumdat_only**= boolean default is TRUE, produces grouped summary dataframe with averages by conversation and participant for each alignment dimension, FALSE retrains all of the original rows, filling down empty rows of summary statistics for the conversation (e.g., AUC) <br>
 4) **corr_type**= default='Pearson', other option 'Spearman' for computing turn-by-turn correlations across interlocutors for each dimension of interest.
 
-```{r, eval=T, warning=F, message=F, options(digits = 3)}
+```{r, eval=T, warning=F, message=F, options(digits=3)}
 MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Prepped, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
 colnames(MarySumDat)
 knitr::kable(head(MarySumDat, 15), format = "simple", digits = 3)
 ```
 
+## Generating sham conversations
+Some research questions would benefit from the use of conversations that control for some temporal effects. The function ``generate_shams()`` accepts the output of ``prep_dyads()`` and returns a data frame in the same structure with each interlocutor's time series randomly shuffled. Since the output has the same format as ``prep_dyads()`` output, it can easily be supplied to ``summarize_dyads()`` and compared to the real conversations.
 
+<span style="color: darkred;">Arguments to ``generate_shams()`` include:</span> <br>
+1) **df_prep**= dataframe created by ``prep_dyads()``function <br>
+2) **seed**= numeric, a number to supply as a seed. This allows for reproducible results. <br>
 
-
+```{r, eval=T, warning=F, message=F}
+MaryShams <- generate_shams(df_prep = NurseryRhymes_Prepped, seed = 10)
+MarySumDatShams <- summarize_dyads(df_prep = MaryShams, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
+knitr::kable(head(MarySumDatShams, 15), format = "simple", digits = 3)
+``` 

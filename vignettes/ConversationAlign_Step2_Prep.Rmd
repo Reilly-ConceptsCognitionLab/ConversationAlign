@@ -41,7 +41,8 @@ This is where the magic happens. ``prep_dyads()`` will yoke published norms for 
 1) **dat_read**= name of the dataframe created during `read_dyads()` <br>
 2) **omit_stops**= T/F (default=T) option to remove stopwords
 3) **lemmatize**= lemmatize strings converting each entry to its dictionary form, default is `lemmatize=TRUE` <br>
-4) **which_stoplist**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_stops25``. Default is ``Temple_stops25``
+4) **which_stoplist**= quoted argument specifying stopword list, options include ``none``, ``MIT_stops``, ``SMART``, ``CA_OriginalStops``, or ``Temple_stops25``. Default is ``Temple_stops25`` <br>
+5) **remove_backchannel**= logical, should turns comprised entirely of stopwords be removed or preserved as NAs. NAs are filled in future steps. Defaults is ``FALSE``.
 
 ```{r, eval=F, message=F, warning=F}
 #Example of running the function

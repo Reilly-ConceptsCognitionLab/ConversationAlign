@@ -1,3 +1,22 @@
+# ConversationAlign 0.4.0
+
+# - 2025-10-12
+
+## Breaking Changes
+
+This is a major release including several new features and small changes.
+
+### Added
+- New function ``generate_shams`` to shuffle the order of interlocutor turns within each conversation. This creates a group of control conversations.
+- New argument ``remove_backchannel`` in ``prep_dyads`` allows users to remove turns composed entirely of stopwords, preventing them from being filled in later stages.
+
+### Modified
+- ``summarize_dyads`` now computes dAUC for a lagged time series in addition to the unchanged. This is designed to account for both ways that interlocutors can be paired in each exchange.
+- Updated names of standardized dAUC columns to reflect that they are standardized to 50 turns.
+- Updates to documentation and website for new and modified features.
+
+
+
 # ConversationAlign 0.3.1
 
 # - 2025-7-29
