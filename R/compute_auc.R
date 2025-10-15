@@ -217,7 +217,7 @@ compute_auc <- function(df_prep, verbose = TRUE) {
       dplyr::select(-Exchanges)
 
     output_auc <- dplyr::left_join(all_domain_df, all_domain_df_s,
-                                   by = "Event_ID", suffix = c("_raw", "_scaled100")) %>%
+                                   by = "Event_ID", suffix = c("_raw", "_scaled50")) %>%
       dplyr::select(c(Event_ID, Exchanges, dplyr::everything()))
 
 
@@ -244,7 +244,7 @@ compute_auc <- function(df_prep, verbose = TRUE) {
   # sub out negative lag colnames for lead
   colnames(combined_lag_df) <- gsub("_Lag-", "_Lead", colnames(combined_lag_df))
   # set the names of zero lag columsn to immediate
-  immediate_ind <- grep(".*(raw|scaled100)$", colnames(combined_lag_df), ignore.case = F)
+  immediate_ind <- grep(".*(raw|scaled50)$", colnames(combined_lag_df), ignore.case = F)
   #print(immediate_ind)
   colnames(combined_lag_df)[immediate_ind] <- sapply(colnames(combined_lag_df)[immediate_ind], function(x){
     paste0(x, "_Immediate")
