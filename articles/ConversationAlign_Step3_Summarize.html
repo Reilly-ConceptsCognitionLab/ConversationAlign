@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>ConversationAlign_Step3_Summarize • ConversationAlign</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -20,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ConversationAlign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +68,7 @@
                         <h4 data-toc-skip class="author">Jamie Reilly,
 Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
             
-            <h4 data-toc-skip class="date">October 09, 2025</h4>
+            <h4 data-toc-skip class="date">October 15, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/vignettes/ConversationAlign_Step3_Summarize.Rmd" class="external-link"><code>vignettes/ConversationAlign_Step3_Summarize.Rmd</code></a></small>
       <div class="d-none name"><code>ConversationAlign_Step3_Summarize.Rmd</code></div>
@@ -118,12 +123,10 @@ for each dimension of interest.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MarySumDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span>df_prep <span class="op">=</span> <span class="va">NurseryRhymes_Prepped</span>, custom_lags<span class="op">=</span><span class="cn">NULL</span>, sumdat_only <span class="op">=</span> <span class="cn">TRUE</span>, corr_type<span class="op">=</span><span class="st">'Pearson'</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">MarySumDat</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "Event_ID"                "Participant_ID"         </span></span>
-<span><span class="co">#&gt;  [3] "Talked_First"            "Dimension"              </span></span>
-<span><span class="co">#&gt;  [5] "Dimension_Mean"          "AUC_raw_Immediate"      </span></span>
-<span><span class="co">#&gt;  [7] "AUC_scaled100_Immediate" "AUC_raw_Lag1"           </span></span>
-<span><span class="co">#&gt;  [9] "AUC_scaled100_Lag1"      "TurnCorr_Lead2"         </span></span>
-<span><span class="co">#&gt; [11] "TurnCorr_Immediate"      "TurnCorr_Lag2"</span></span>
+<span><span class="co">#&gt;  [1] "Event_ID"           "Participant_ID"     "Talked_First"      </span></span>
+<span><span class="co">#&gt;  [4] "Dimension"          "Dimension_Mean"     "AUC_raw_Immediate" </span></span>
+<span><span class="co">#&gt;  [7] "AUC_NA_NA"          "AUC_raw_Lag1"       "TurnCorr_Lead2"    </span></span>
+<span><span class="co">#&gt; [10] "TurnCorr_Immediate" "TurnCorr_Lag2"</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MarySumDat</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"simple"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -132,10 +135,9 @@ for each dimension of interest.</p>
 <th align="left">Talked_First</th>
 <th align="left">Dimension</th>
 <th align="right">Dimension_Mean</th>
-<th align="right">AUC_raw_Immediate</th>
-<th align="right">AUC_scaled100_Immediate</th>
-<th align="right">AUC_raw_Lag1</th>
-<th align="right">AUC_scaled100_Lag1</th>
+<th align="left">AUC_raw_Immediate</th>
+<th align="left">AUC_NA_NA</th>
+<th align="left">AUC_raw_Lag1</th>
 <th align="right">TurnCorr_Lead2</th>
 <th align="right">TurnCorr_Immediate</th>
 <th align="right">TurnCorr_Lag2</th>
@@ -147,10 +149,9 @@ for each dimension of interest.</p>
 <td align="left">Yin</td>
 <td align="left">emo_anger</td>
 <td align="right">0.001</td>
-<td align="right">0.783</td>
-<td align="right">1.630</td>
-<td align="right">0.749</td>
-<td align="right">1.560</td>
+<td align="left">0.7826298</td>
+<td align="left">NULL</td>
+<td align="left">0.7486024</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
@@ -161,10 +162,9 @@ for each dimension of interest.</p>
 <td align="left">Yin</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.033</td>
-<td align="right">0.783</td>
-<td align="right">1.630</td>
-<td align="right">0.749</td>
-<td align="right">1.560</td>
+<td align="left">0.7826298</td>
+<td align="left">NULL</td>
+<td align="left">0.7486024</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
 <td align="right">-1</td>
@@ -175,10 +175,9 @@ for each dimension of interest.</p>
 <td align="left">Franklin</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.066</td>
-<td align="right">3.729</td>
-<td align="right">4.662</td>
-<td align="right">3.634</td>
-<td align="right">4.542</td>
+<td align="left">3.72931</td>
+<td align="left">NULL</td>
+<td align="left">3.633687</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -189,10 +188,9 @@ for each dimension of interest.</p>
 <td align="left">Franklin</td>
 <td align="left">emo_anger</td>
 <td align="right">0.030</td>
-<td align="right">3.729</td>
-<td align="right">4.662</td>
-<td align="right">3.634</td>
-<td align="right">4.542</td>
+<td align="left">3.72931</td>
+<td align="left">NULL</td>
+<td align="left">3.633687</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -203,10 +201,9 @@ for each dimension of interest.</p>
 <td align="left">Mary</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.001</td>
-<td align="right">1.486</td>
-<td align="right">1.486</td>
-<td align="right">1.456</td>
-<td align="right">1.456</td>
+<td align="left">1.485925</td>
+<td align="left">NULL</td>
+<td align="left">1.4556</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -217,16 +214,133 @@ for each dimension of interest.</p>
 <td align="left">Mary</td>
 <td align="left">emo_anger</td>
 <td align="right">-0.031</td>
-<td align="right">1.486</td>
-<td align="right">1.486</td>
-<td align="right">1.456</td>
-<td align="right">1.456</td>
+<td align="left">1.485925</td>
+<td align="left">NULL</td>
+<td align="left">1.4556</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
 </tbody>
-</table></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+</table>
+<div class="section level2">
+<h2 id="generating-sham-conversations">Generating sham conversations<a class="anchor" aria-label="anchor" href="#generating-sham-conversations"></a>
+</h2>
+<p>Some research questions would benefit from the use of conversations
+that control for some temporal effects. The function
+<code><a href="../reference/generate_shams.html">generate_shams()</a></code> accepts the output of
+<code><a href="../reference/prep_dyads.html">prep_dyads()</a></code> and returns a data frame in the same structure
+with each interlocutor’s time series randomly shuffled. Since the output
+has the same format as <code><a href="../reference/prep_dyads.html">prep_dyads()</a></code> output, it can easily
+be supplied to <code><a href="../reference/summarize_dyads.html">summarize_dyads()</a></code> and compared to the real
+conversations.</p>
+<p><span style="color: darkred;">Arguments to
+<code><a href="../reference/generate_shams.html">generate_shams()</a></code> include:</span> <br> 1)
+<strong>df_prep</strong>= dataframe created by
+<code><a href="../reference/prep_dyads.html">prep_dyads()</a></code>function <br> 2) <strong>seed</strong>=
+numeric, a number to supply as a seed. This allows for reproducible
+results. <br></p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MaryShams</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_shams.html">generate_shams</a></span><span class="op">(</span>df_prep <span class="op">=</span> <span class="va">NurseryRhymes_Prepped</span>, seed <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">MarySumDatShams</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span>df_prep <span class="op">=</span> <span class="va">MaryShams</span>, custom_lags<span class="op">=</span><span class="cn">NULL</span>, sumdat_only <span class="op">=</span> <span class="cn">TRUE</span>, corr_type<span class="op">=</span><span class="st">'Pearson'</span><span class="op">)</span> </span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MarySumDatShams</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"simple"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Event_ID</th>
+<th align="left">Participant_ID</th>
+<th align="left">Talked_First</th>
+<th align="left">Dimension</th>
+<th align="right">Dimension_Mean</th>
+<th align="left">AUC_raw_Immediate</th>
+<th align="left">AUC_NA_NA</th>
+<th align="left">AUC_raw_Lag1</th>
+<th align="right">TurnCorr_Lead2</th>
+<th align="right">TurnCorr_Immediate</th>
+<th align="right">TurnCorr_Lag2</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">ItsySpider</td>
+<td align="left">Maya</td>
+<td align="left">Maya</td>
+<td align="left">emo_anger</td>
+<td align="right">0.002</td>
+<td align="left">0.7585952</td>
+<td align="left">NULL</td>
+<td align="left">0.7005333</td>
+<td align="right">0.100</td>
+<td align="right">-1</td>
+<td align="right">0.100</td>
+</tr>
+<tr class="even">
+<td align="left">ItsySpider</td>
+<td align="left">Yin</td>
+<td align="left">Maya</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.032</td>
+<td align="left">0.7585952</td>
+<td align="left">NULL</td>
+<td align="left">0.7005333</td>
+<td align="right">0.100</td>
+<td align="right">-1</td>
+<td align="right">0.100</td>
+</tr>
+<tr class="odd">
+<td align="left">JackJill</td>
+<td align="left">Ana</td>
+<td align="left">Ana</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.066</td>
+<td align="left">3.72931</td>
+<td align="left">NULL</td>
+<td align="left">3.633687</td>
+<td align="right">-0.158</td>
+<td align="right">1</td>
+<td align="right">-0.158</td>
+</tr>
+<tr class="even">
+<td align="left">JackJill</td>
+<td align="left">Franklin</td>
+<td align="left">Ana</td>
+<td align="left">emo_anger</td>
+<td align="right">0.030</td>
+<td align="left">3.72931</td>
+<td align="left">NULL</td>
+<td align="left">3.633687</td>
+<td align="right">-0.158</td>
+<td align="right">1</td>
+<td align="right">-0.158</td>
+</tr>
+<tr class="odd">
+<td align="left">LittleLamb</td>
+<td align="left">Dave</td>
+<td align="left">Dave</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.001</td>
+<td align="left">1.485925</td>
+<td align="left">NULL</td>
+<td align="left">1.4556</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">LittleLamb</td>
+<td align="left">Mary</td>
+<td align="left">Dave</td>
+<td align="left">emo_anger</td>
+<td align="right">-0.031</td>
+<td align="left">1.485925</td>
+<td align="left">NULL</td>
+<td align="left">1.4556</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
