@@ -9,6 +9,7 @@ prep_dyads(
   lemmatize = TRUE,
   omit_stops = TRUE,
   which_stoplist = "Temple_stops25",
+  remove_backchannel = FALSE,
   verbose = TRUE
 )
 }
@@ -21,6 +22,8 @@ prep_dyads(
 
 \item{which_stoplist}{user-specified stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25".
 "Temple_Stopwords25 is the default list}
+
+\item{remove_backchannel}{logical, should turns that are full of stopwords (e.g., "Uhm yeah") be preserved as NAs or removed. Removal will 'squish' the turn before and after together into one. If NAs are preserved they are later interpolated.}
 
 \item{verbose}{display detailed output such as error messages and progress (default is TRUE)}
 }

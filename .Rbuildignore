@@ -9,4 +9,8 @@
 ^README\.Rmd$
 ^_pkgdown\.yml$
 ^doc$
+<<<<<<< HEAD
 ^paper/
+=======
+^Meta$
+>>>>>>> origin/main

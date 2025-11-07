@@ -1,7 +1,7 @@
 Package: ConversationAlign
 Type: Package
 Title: Process Text and Compute Linguistic Alignment in Conversation Transcripts
-Version: 0.3.2
+Version: 0.4.0
 Authors@R: c(
      person("Jamie", "Reilly", 
            role = c("aut", "cre"), 
@@ -41,7 +41,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 URL: https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LazyData: true
 VignetteBuilder: knitr
 Collate: 
@@ -50,6 +50,7 @@ Collate:
     'compute_lagcorr.R'
     'corpus_analytics.R'
     'data.R'
+    'generate_shams.R'
     'globals.R'
     'prep_dyads.R'
     'read_1file.R'

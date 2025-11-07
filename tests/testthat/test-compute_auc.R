@@ -8,11 +8,13 @@ one_rhyme <- droplevels(one_rhyme)
 test_that("auc formats properly", {
   # computed previously
   expected_auc_df <- data.frame(
-    Event_ID = "LittleLamb", Exchanges = 50,
-    AUC_emo_anger_raw = 1.485925, AUC_emo_anger_scaled100 = 1.485925
+    Event_ID = "LittleLamb", Exchanges = 50, Talked_First = as.factor("Mary"),
+    AUC_emo_anger_raw_Immediate = 1.485925, AUC_emo_anger_scaled50_Immediate = 1.485925,
+    AUC_emo_anger_raw_Lag1 = 1.4556, AUC_emo_anger_scaled50_Lag1 = 1.4556
   )
+  expected_auc_df$Talked_First <- factor(expected_auc_df$Talked_First, levels = c("Dave", "Mary"))
   # compare to computed df
-  expect_equal(compute_auc(one_rhyme), expected_auc_df)
+  expect_equal(ConversationAlign:::compute_auc(one_rhyme), expected_auc_df)
 })
 
 # remove all but first three exchanges
@@ -20,10 +22,12 @@ one_rhyme_small <- one_rhyme[one_rhyme$Exchange_Count < 3, ]
 
 test_that("auc fills with na when under 3 exchanges", {
   expected_small_auc_df <- data.frame(
-    Event_ID = "LittleLamb", Exchanges = 2,
-    AUC_emo_anger_raw = as.double(NA), AUC_emo_anger_scaled100 = as.double(NA)
+    Event_ID = "LittleLamb", Exchanges = 2, Talked_First = as.factor("Mary"),
+    AUC_emo_anger_raw_Immediate = as.double(NA), AUC_emo_anger_scaled50_Immediate = as.double(NA),
+    AUC_emo_anger_raw_Lag1 = as.double(NA), AUC_emo_anger_scaled50_Lag1 = as.double(NA)
   )
+  expected_small_auc_df$Talked_First <- factor(expected_small_auc_df$Talked_First, levels = c("Dave", "Mary"))
   # compare to computed df
-  expect_equal(compute_auc(one_rhyme_small), expected_small_auc_df)
+  expect_equal(ConversationAlign:::compute_auc(one_rhyme_small), expected_small_auc_df)
 
 })

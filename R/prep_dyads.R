@@ -9,6 +9,7 @@
 #' @param lemmatize logical, should words be lemmatized (switched to base morphological form), default is TRUE
 #' @param which_stoplist user-specified stopword removal method with options including "none", "SMART", "MIT_stops", "CA_OriginalStops", or "Temple_Stopwords25".
 #' "Temple_Stopwords25 is the default list
+#' @param remove_backchannel logical, should turns that are full of stopwords (e.g., "Uhm yeah") be preserved as NAs or removed. Removal will 'squish' the turn before and after together into one. If NAs are preserved they are later interpolated.
 #' @param verbose display detailed output such as error messages and progress (default is TRUE)
 #' @returns
 #' dataframe with text cleaned and vectorized to a one word per-row format.
@@ -20,8 +21,8 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr na_if
 #' @importFrom dplyr ungroup
+#' @importFrom dplyr consecutive_id
 #' @importFrom magrittr %>%
-#' @importFrom stats lag
 #' @importFrom stringi stri_replace_all_fixed
 #' @importFrom stringi stri_replace_all_regex
 #' @importFrom stringr str_trim
@@ -36,7 +37,8 @@
 #' @export
 
 prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE,
-                       which_stoplist = "Temple_stops25", verbose = TRUE) {
+                       which_stoplist = "Temple_stops25",
+                       remove_backchannel = FALSE, verbose = TRUE) {
   # Verification steps
   if (nrow(dat_read) == 0) {
     stop("Input dataframe is empty.")
@@ -46,6 +48,10 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE,
   }
   if (!"Participant_ID" %in% names(dat_read)) {
     stop("Column 'Participant_ID' not found.")
+  }
+  # verify backchanneling argument
+  if (!is.logical(remove_backchannel)) {
+    stop("Argument 'keep_backchannelling' must be logical")
   }
 
   # Define stopword lists
@@ -157,6 +163,18 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE,
   # Reorder columns
   df_prep <- df_prep %>% select(Event_ID, Participant_ID, Exchange_Count, Turn_Count,
                                 Text_Prep, Text_Clean, all_of(myvars), everything())
+
+  # # if backchanneling is set to be removed, squish turns together
+  if (remove_backchannel == TRUE) {
+    df_prep <- df_prep[!is.na(df_prep$Text_Clean), ]
+    df_prep <- df_prep %>%
+      dplyr::group_by(Event_ID) %>%
+      dplyr::mutate(
+        Turn_Count = dplyr::consecutive_id(Participant_ID),
+        Exchange_Count = ceiling(Turn_Count / 2)
+      ) %>%
+      dplyr::ungroup()
+  }
 
   return(df_prep)
 }

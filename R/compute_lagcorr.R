@@ -41,7 +41,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
 
     # Iterate over each split data frame
     output_df_list <- lapply(df_list, function(df) {
-      # Establish participant names and S1/S2 keys
+      # Establish participant names and S1/S2 keys according to who speaks first
       participantvec <- unique(df$Participant_ID)
       names(participantvec) <- c("S1", "S2")
       df$Participant_ID <- gsub(participantvec[1], names(participantvec)[1], df$Participant_ID)
