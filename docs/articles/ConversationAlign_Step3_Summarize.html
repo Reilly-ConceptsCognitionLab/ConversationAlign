@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ConversationAlign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
                         <h4 data-toc-skip class="author">Jamie Reilly,
 Ben Sacks, Ginny Ulichney, Gus Cooney, Chelsea Helion</h4>
             
-            <h4 data-toc-skip class="date">October 14, 2025</h4>
+            <h4 data-toc-skip class="date">November 12, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/HEAD/vignettes/ConversationAlign_Step3_Summarize.Rmd" class="external-link"><code>vignettes/ConversationAlign_Step3_Summarize.Rmd</code></a></small>
       <div class="d-none name"><code>ConversationAlign_Step3_Summarize.Rmd</code></div>
@@ -123,12 +123,10 @@ for each dimension of interest.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MarySumDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_dyads.html">summarize_dyads</a></span><span class="op">(</span>df_prep <span class="op">=</span> <span class="va">NurseryRhymes_Prepped</span>, custom_lags<span class="op">=</span><span class="cn">NULL</span>, sumdat_only <span class="op">=</span> <span class="cn">TRUE</span>, corr_type<span class="op">=</span><span class="st">'Pearson'</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">MarySumDat</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "Event_ID"                "Participant_ID"         </span></span>
-<span><span class="co">#&gt;  [3] "Talked_First"            "Dimension"              </span></span>
-<span><span class="co">#&gt;  [5] "Dimension_Mean"          "AUC_raw_Immediate"      </span></span>
-<span><span class="co">#&gt;  [7] "AUC_scaled100_Immediate" "AUC_raw_Lag1"           </span></span>
-<span><span class="co">#&gt;  [9] "AUC_scaled100_Lag1"      "TurnCorr_Lead2"         </span></span>
-<span><span class="co">#&gt; [11] "TurnCorr_Immediate"      "TurnCorr_Lag2"</span></span>
+<span><span class="co">#&gt;  [1] "Event_ID"               "Participant_ID"         "Talked_First"          </span></span>
+<span><span class="co">#&gt;  [4] "Dimension"              "Dimension_Mean"         "AUC_raw_Immediate"     </span></span>
+<span><span class="co">#&gt;  [7] "AUC_scaled50_Immediate" "AUC_raw_Lag1"           "AUC_scaled50_Lag1"     </span></span>
+<span><span class="co">#&gt; [10] "TurnCorr_Lead2"         "TurnCorr_Immediate"     "TurnCorr_Lag2"</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MarySumDat</span>, <span class="fl">15</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"simple"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -138,9 +136,9 @@ for each dimension of interest.</p>
 <th align="left">Dimension</th>
 <th align="right">Dimension_Mean</th>
 <th align="right">AUC_raw_Immediate</th>
-<th align="right">AUC_scaled100_Immediate</th>
+<th align="right">AUC_scaled50_Immediate</th>
 <th align="right">AUC_raw_Lag1</th>
-<th align="right">AUC_scaled100_Lag1</th>
+<th align="right">AUC_scaled50_Lag1</th>
 <th align="right">TurnCorr_Lead2</th>
 <th align="right">TurnCorr_Immediate</th>
 <th align="right">TurnCorr_Lag2</th>
@@ -261,9 +259,9 @@ results. <br></p>
 <th align="left">Dimension</th>
 <th align="right">Dimension_Mean</th>
 <th align="right">AUC_raw_Immediate</th>
-<th align="right">AUC_scaled100_Immediate</th>
+<th align="right">AUC_scaled50_Immediate</th>
 <th align="right">AUC_raw_Lag1</th>
-<th align="right">AUC_scaled100_Lag1</th>
+<th align="right">AUC_scaled50_Lag1</th>
 <th align="right">TurnCorr_Lead2</th>
 <th align="right">TurnCorr_Immediate</th>
 <th align="right">TurnCorr_Lag2</th>
