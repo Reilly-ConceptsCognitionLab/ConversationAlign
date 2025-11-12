@@ -82,13 +82,13 @@ Any analysis of language comes with assumptions and potential bias. For example,
 
 1. **Preprint** <br>
 Our PsyArXiv preprint describing the method(s) in greater detail is referenced as:
-Sacks, B., Ulichney, V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T., ... Reilly, J. (2025, March 12). *ConversationAlign: Open-Source Software for Analyzing Patterns of Lexical Use and Alignment in Conversation Transcripts*. [Click Here](https://osf.io/preprints/psyarxiv/7xqnp_v1) to read our preprint. It was recently invited for revision at Behavior Rsearch Methods. We will update when/if eventually accepted there! <br>
+Sacks, B., Ulichney, V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T., ... Reilly, J. (2025, March 12). *ConversationAlign: Open-Source Software for Analyzing Patterns of Lexical Use and Alignment in Conversation Transcripts*. to read our preprint. It was recently invited for revision at Behavior Rsearch Methods. We will update when/if eventually accepted there! <br>
 
 2. **Methods for creating internal lookup database** <br>
-ConversationAlign contains a large, internal lexical lookup_database. [Click Here](https://reilly-lab.github.io/ConversationAlign_LookupDatabaseCreation.html) to see how we created this by merging other offline psycholinguistic databases into one. <br>
+ConversationAlign contains a large, internal lexical lookup_database. [Click Here](https://reilly-lab.github.io/ConversationAlign_LookupHowTo_Jun25.html) to see how we created this by merging other offline psycholinguistic databases into one. <br>
 
 3. **Variable Key for ConversationAlign** <br>
-ConversationAlign currently allows users to compute alignment dynamics across >40 different lexical, affective, and semantic dimensions.[Click Here](https://reilly-lab.github.io/ConversationAlign_VariableLookupKey.pdf) to link to a variable key. <br>
+ConversationAlign currently allows users to compute alignment dynamics across >40 different lexical, affective, and semantic dimensions.[Click Here]((https://reilly-lab.github.io/ConversationAlign_LookupJul25_VariableKey.html) to link to a variable key. <br>
 
 # References
 Lewis, David D., et al. (2004) "Rcv1: A new benchmark collection for text categorization research." Journal of machine learning research 5: 361-397.
