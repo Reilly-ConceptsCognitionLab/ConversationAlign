@@ -20,7 +20,7 @@
 Source:
 [`DESCRIPTION`](https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign/blob/main/DESCRIPTION)
 
-Reilly J, Ulichney V, Sacks B (2025). *ConversationAlign: Process Text
+Reilly J, Ulichney V, Sacks B (2026). *ConversationAlign: Process Text
 and Compute Linguistic Alignment in Conversation Transcripts*. R package
 version 0.4.0,
 <https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign>.
@@ -28,7 +28,7 @@ version 0.4.0,
     @Manual{,
       title = {ConversationAlign: Process Text and Compute Linguistic Alignment in Conversation Transcripts},
       author = {Jamie Reilly and Virginia Ulichney and Ben Sacks},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.4.0},
       url = {https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign},
     }
