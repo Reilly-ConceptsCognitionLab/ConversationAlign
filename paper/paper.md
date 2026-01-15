@@ -4,8 +4,8 @@ tags:
   - R
   - conversation analysis
   - alignment
-  - psycholinguistics
-  - natural language processing
+  - language
+  - discourse
 authors:
   - name: Jamie Reilly
     orcid: 0000-0002-0891-438X
@@ -45,57 +45,30 @@ affiliations:
   - name: Wharton School, University of Pennsylvania, United States
     index: 3
 
-correspondence: jamie.reilly@temple.edu
-date: "27 July 2025"
+date: "15 January 2026"
 bibliography: paper.bib
-abstract: |
- `ConversationAlign` is an R package that executes a series of operations upon one or more conversation transcripts (i.e., two-person dialogues). Transcripts nominally contain at least two variables (speaker identity and text). In addition to these essential fields, `ConversationAlign` will retain all other meta-data such as timestamps, demographics, and grouping variables.  `ConversationAlign` imports raw transcripts into R, appends unique document identifiers, and concatenates all conversations into a single dataframe. `ConversationAlign` generates corpus analytics characterizing the conversation transcript(s) of interest. Users guide a number of text cleaning operations such as stopword removal and lemmatization. The package ultimately vectorizes the original text into a one-word-per-row format. `ConversationAlign` yokes published norms to each content word spanning more than 40 lexical, affective, and semantic dimensions (e.g. word length, morphological complexity, arousal, valence). `ConversationAlign` outputs summary data for each conversation including main effects and indices of local and global alignment for each specified dimension of interest.   
-keywords: |
-  conversation analysis; discourse; language processing; alignment
-authorcontributions: |
-  JR, VU, and BS conceived the software. All authors drafted and edited the paper.
 funding: |
-  This research was funded by R01 DC013063 from the US National Institute on Deafness and Other Communicative Disorders (NIH/NIDCD).
-conflictsofinterest: |
-  The authors declare no conflicts of interest.
+ R01 DC013063 (NIH/NIDCD)
 output: rticles::joss_article 
-keep_tex: true
-csl: apa.csl
-journal: JOSS
 ---
 
+# Summary
+ `ConversationAlign` executes a series of operations upon one or more conversation transcripts (i.e., two-person dialogues).  `ConversationAlign` imports raw language transcripts into R, appends unique document identifiers, and concatenates all conversations into a single dataframe. `ConversationAlign` generates corpus analytics and executes text cleaning operations such as stopword removal and lemmatization. The package vectorizes text and yokes published norms to each content word spanning more than 40 lexical, affective, and semantic dimensions. `ConversationAlign` outputs summary statistics each conversation including main effects and indices of local and global alignment for each specified dimension of interest.   
+ 
+# Software Design
+ `ConversationAlign` was designed as a user-friendly R package with no proprietary components or input from AI (large language models). We were intentional about making the software accessible to users who do not have  extensive backgrounds in computational linguistics or Natural Language Processing.
+
 # Statment of Need
-Although many excellent text analysis applications exist (e.g., Quanteda [@benoit_quanteda_2018] and Korpus [@michalke_korpus_2018]), we know of no R packages that are tailored to the unique demands of conversation analysis (but for Python see ALIGN [@duran_align_2019]). `ConversationAlign` offers a comprehensive text processing pipeline and novel algoirthms for computing linguistic alignment in 2-person dialogues. This software offers standardization and automation advantages that are in great need in a field that has historically relied heavily upon manual coding systems and subjective human judgment.
+Although many excellent text analysis applications exist (e.g., `Quanteda` [@benoit:2018] and `Korpus` [@michalke:2018]), we know of no R packages that are tailored to the unique demands of conversation analysis (but for Python see ALIGN [@duran:2019]). `ConversationAlign` offers a comprehensive text processing pipeline and novel algoirthms for computing linguistic alignment in 2-person dialogues. This software offers standardization and automation advantages that are in great need in a field that has historically relied heavily upon manual coding systems and subjective human judgment.
+
+# Research Impact Statement
+ `ConversationAlign` has supported two peer-reviewed publications to date in the cognitive neuroscience and psychological methods journals `Cortex` [@reilly:2025] and `Behavior Research Methods` (article in press). 
+The software is relatively new, and there are limited indices of uptake within the broader language research community.
 
 # Background
-Conversation is among the most complex behaviors that humans routinely undertake. In a dyadic interaction, conversation partners modify the form and content of their own production to align with each other [@pickering_understanding_2021]. This process, known as linguistic alignment, occurs across many dimensions. `ConversationAlign` offers an automated approach to computing linguistic alignment across >40 distinct psycholinguistic dimensions (e.g., word length, valence, concreteness), leveraging recent advances in natural language processing to examine dynamics of human interaction at an unprecedented scale.  
+Conversation is among the most complex behaviors that humans routinely undertake. In a dyadic interaction, conversation partners modify the form and content of their own production to align with each other [@pickering:2021]. This process, known as linguistic alignment, occurs across many dimensions. `ConversationAlign` offers an automated approach to computing linguistic alignment across >40 distinct psycholinguistic dimensions (e.g., word length, valence, concreteness), leveraging recent advances in natural language processing to examine dynamics of human interaction at an unprecedented scale.  
 
-`ConversationAlign` is **NOT** a large language model (LLM). It instead indexes an static lexical lookup database populated with published norms for >100,000 English words across more than 40 unique dimensions spanning affective (e.g., happiness, valence), semantic (e.g., concreteness, semantic density), lexical (e.g., age-of-scqusition, morphological complexity), and phonological (e.g., word length, syllable length) information. During processing, `ConversationAlign` transforms words into time series objects aggregated by speaker, turn, and conversation. Figure 1 illustrates the primary steps undertaken by `ConversationAlign` in executing these transformations. <br>
-
-![Overview of ConversationAlign Pipeline\label{fig:demo}](overview.png){width=70%}
-
-
-# Key Components of the ConversationAlign Pipeline
-`ConversationAlign` processes dyadic (2-person) conversation transcripts via a series of four customizable functions: <br>
-
-1. **read_dyads()**:  imports one or more conversation transcripts into R, concatenating all transcripts into a single dataframe marked with its unique filename as a document identifier. <br>
-2. **prep_dyads()**:  executes numerous text cleaning and formatting operations (e.g., to lowercase, expand contractions, remove special characters, squish whitespace). Options include stopword removal, stopword list specification, and lemmatization. `prep_dyads()' splits the raw text into a one word per row format then prompts the user to select up to three dimensions for computing main effects and alignment. `prep_dyads()' returns a dataframe with values for the variables of interest (e.g., word length, word frequency, valence) to each running content word. <br>
-3. **summarize_dyads()**:  produces a summary dataframe with main effects and alignment indices for the user-specified variables of interest summarized by conversation (Event_ID) and participant (Participant_ID). Alignment indices include: a) lagged spearman R correlation values reflecting turn-by-turn covariance between interlocutors across each dimension of interest (e.g., Mary uses unpleasant words, Dave immediately responds with unpleasant words); b) dAUC: global distance between partners by conversation across each variable of interest (e.g., 'pleasantness' distance between Dave and Mary across all turns). `summarize_dyads()` produces raw AUC and AUC normalized to a fixed conversation length (i.e., 50 exchanges, 100 turns) to promote standardization/comparison across different conversation durations. <br>
-4. **corpus_analytics()**: produces text analytics and descriptive statistics for your conversation corpus, including  total number of tokens, average number of turns per conversation, average number of words-per-turn by conversation, average word length (letter count) by conversation, type token ratio by converation (for comprehensive list see package documentation). Summary dataframe readily exportable to a table for journal submission. <br>
-
-
-# Uses of `ConversationAlign`
-`ConversationAlign` has numerous applications for measuring and modeling conversation dynamics, including: <br>
-- Assesing alignment dynamics between conversation partners across individual difference factors (e.g., age, culture, education level, socio-economic status). <br>
-- Asessing pre/post changes in naturalistic language use as a function of a specific intervention (e.g., meta-cognitive training for traumatic brain injury). <br>
-- Measuring alignment dynamics between friends (and rivals) to elucidate semantic, affective, and lexical dynamics that mark 'good' conversations. <br>
-- Examining alignment (and misalignment) between people with neurological and/or communicative disorders and their significant others (spouses, friends, children) to improve the quality of communication and reduce the prevalence of communication breakdown. <br>
-- Syncrhonizing language with physiological data (e.g., biosignals) to examine real-time coupling between  interacting people and brains. <br>
-
-# Acknowledgements
-We are grateful to Sarah Weinstein, Tania Giovannetti, and Anna Duncan for conceptual and methodological advice. <br>
-
-This work was supported by US Public Health Service grant R01 DC013063 (JR) from the National Institute on Deafness and Communicative Disorders (NIH/NIDCD).
+# AI Usage
+`ConversationAlign` is **NOT** a large language model (LLM). It instead indexes an static lexical lookup database populated with published norms for >100,000 English words across more than 40 unique dimensions. We used DeepSeek to troubleshoot elements of code and to generate regular expressions (regex) for complex pattern matching. We did not use AI to write this paper or generate segments of code. 
 
 # References
-
