@@ -45,7 +45,7 @@ affiliations:
   - name: Wharton School, University of Pennsylvania, United States
     index: 3
 
-date: "15 January 2026"
+date: "16 January 2026"
 bibliography: paper.bib
 funding: |
  R01 DC013063 (NIH/NIDCD)
