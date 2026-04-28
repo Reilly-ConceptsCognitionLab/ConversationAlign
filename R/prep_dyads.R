@@ -89,10 +89,10 @@ prep_dyads <- function(dat_read, lemmatize = TRUE, omit_stops = TRUE,
     mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[\u2018\u2019\u02BC\u201B\uFF07\u0092\u0091\u0060\u00B4\u2032\u2035]", "'"))
 
   # Remove non-alphabetic characters except apostrophes
-  dat_prep <- dat_prep %>% mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[^a-zA-Z']", " "))
+  dat_prep <- dat_prep %>% dplyr::mutate(Text_Prep = stringi::stri_replace_all_regex(Text_Prep, "[^a-zA-Z']", " "))
 
   # Clean whitespace
-  dat_prep <- dat_prep %>% mutate(Text_Prep = str_squish(gsub("\\s+", " ", Text_Prep)))
+  dat_prep <- dat_prep %>% dplyr::mutate(Text_Prep = str_squish(gsub("\\s+", " ", Text_Prep)))
 
   # Split into words
   dat_prep <- dat_prep %>% tidyr::separate_rows(Text_Prep, sep = "[[:space:]]+")

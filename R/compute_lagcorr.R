@@ -1,6 +1,6 @@
 #'
 #' computes lagged correlations alignment measure across partners within each conversation
-#' @name compute_lagcorr
+#' @name compute_lagcorr_noYRMisc
 #' @returns
 #' internal function to summarize_dyads that produces a dataframe with lagged correlations across turns (-2,0,2 as default) for each dimension of interest.
 #' @importFrom dplyr bind_rows
@@ -22,6 +22,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
   if (!corr_type %in% c("Pearson", "Spearman")) {
     stop("corr_type must be either 'Pearson' or 'Spearman'")
   }
+  corr_type <- tolower(corr_type)
 
   # Select alignment variables
   align_var <- grep("^(emo_|lex_|sem_|phon_)", colnames(df_prep), value = TRUE, ignore.case = TRUE)
@@ -90,7 +91,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
         dplyr::rename_with(~stringr::str_replace(., "_S2", ""),
                            tidyselect::ends_with("_S2"))
 
-      # Modified function to calculate lagged correlation
+      # Modified function to calculate lagged correlation (NO YRmisc dependency)
       calculate_lag_corr <- function(x_vars, y_vars, dim, align_var, corr_type) {
         dim_x_vars <- x_vars[[dim]]
         dim_y_vars <- y_vars[[dim]]
@@ -101,33 +102,39 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
           dim_y_vars <- rank(dim_y_vars, na.last = "keep")
         }
 
-        # Get lag and lead times
-        lagTimes <- lags[lags > 0]
-        leadTimes <- lags[lags < 0]
-        if (length(lagTimes) == 0) lagTimes <- c(1)
-        if (length(leadTimes) == 0) leadTimes <- c(1)
-
-        # Calculate lagged correlation
-        suppressWarnings({
-          lo_full <- YRmisc::cor.lag(dim_x_vars, dim_y_vars,
-                                     max(lagTimes), max(abs(leadTimes)))
+        # Directly compute correlations for each requested lag
+        cor_vals <- sapply(lags, function(L) {
+          n <- length(dim_x_vars)
+          if (L == 0) {
+            cor(dim_x_vars, dim_y_vars, use = "complete.obs", method = corr_type)
+          } else if (L < 0) {
+            L <- abs(L)
+            # y lags behind x: correlate x[t] with y[t-L]  (L>0)
+            if (L >= n) return(NA)
+            x_sel <- dim_x_vars[(L+1):n]
+            y_sel <- dim_y_vars[1:(n-L)]
+            cor(x_sel, y_sel, use = "complete.obs", method = corr_type)
+          } else {  # L < 0
+            # y leads x: correlate x[t] with y[t+|L|]
+            #k <- abs(L)
+            k <- L
+            if (k >= n) return(NA)
+            x_sel <- dim_x_vars[1:(n-k)]
+            y_sel <- dim_y_vars[(k+1):n]
+            cor(x_sel, y_sel, use = "complete.obs", method = corr_type)
+          }
         })
 
-        # Rename columns
-        which0 <- which(colnames(lo_full) == "0")
-        new_colnames <- colnames(lo_full)
-        new_colnames[1:(which0-1)] <- paste0("TurnCorr_Lag", gsub("lag", "", new_colnames[1:(which0-1)]))
-        new_colnames[which0] <- "TurnCorr_Immediate"
-        new_colnames[(which0+1):length(new_colnames)] <- paste0("TurnCorr_Lead", gsub("lead", "", new_colnames[(which0+1):length(new_colnames)]))
-        colnames(lo_full) <- new_colnames
-
-        # Select requested lags
+        # Create column names as in the original output
         selectNames <- sapply(lags, function(x) {
           if(x < 0) paste0("TurnCorr_Lead", abs(x))
           else if(x > 0) paste0("TurnCorr_Lag", x)
           else "TurnCorr_Immediate"
         })
 
+        # Build a one-row data frame with the selected names
+        lo_full <- as.data.frame(as.list(setNames(cor_vals, selectNames)),
+                                 stringsAsFactors = FALSE)
         lo_full %>% dplyr::select(tidyselect::all_of(selectNames))
       }
 

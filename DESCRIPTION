@@ -33,7 +33,6 @@ Imports:
     tidyselect,
     stats,
     utils,
-    YRmisc,
     zoo
 Suggests: 
     devtools,

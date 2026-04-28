@@ -69,7 +69,7 @@ read_1file <- function(my_dat) {
   }
 
   # Reorder columns to put standard ones first
-  standard_cols <- c("Event_ID", "Participant_ID", "RawText")
+  standard_cols <- c("Event_ID", "Participant_ID", "Text_Raw")
   other_cols <- setdiff(colnames(my_dat), standard_cols)
   my_dat <- my_dat[, c(standard_cols, other_cols)]
 

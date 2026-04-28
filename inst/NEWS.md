@@ -1,3 +1,16 @@
+# ConversationAlign 0.4.1
+
+# - 2026-4-22
+
+## Breaking Changes
+
+This is a minor release including bug repairs and elimination of a defunct package dependency.
+
+### Modified
+- Removed ``YRmisc`` dependency from namespace and repaired ``compute_lagcorr`` function that relied upon on it, replacing the original with a base R alternative
+- Modified ``read_dyads`` and ``read_1file`` functions to repair column header name ``TextRaw`` so that it matched `text_raw` that is used in subsequent cleaning steps
+- Incremented version number
+
 # ConversationAlign 0.4.0
 
 # - 2025-10-12
