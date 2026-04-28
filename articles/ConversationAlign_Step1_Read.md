@@ -80,22 +80,4 @@ MaryLittleLamb <- read_1file(MaronGross_2013)
 knitr::kable(head(MaronGross_2013, 15), format = "pipe")
 ```
 
-| speaker | text                                                                                                                                                                       |
-|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| MARON   | I’m a little nervous but I’ve prepared I’ve written things on a piece of paper                                                                                             |
-| MARON   | I don’t know how you prepare I could ask you that - maybe I will But this is how I prepare - I panic                                                                       |
-| MARON   | For a while                                                                                                                                                                |
-| GROSS   | Yeah                                                                                                                                                                       |
-| MARON   | And then I scramble and then I type some things up and then I handwrite things that are hard to read So I can you know challenge myself on that level during the interview |
-| GROSS   | Being self-defeating is always a good part of preparation                                                                                                                  |
-| MARON   | What is?                                                                                                                                                                   |
-| GROSS   | Being self-defeating                                                                                                                                                       |
-| MARON   | Yes                                                                                                                                                                        |
-| GROSS   | Self-sabotage                                                                                                                                                              |
-| MARON   | Yes                                                                                                                                                                        |
-| GROSS   | Key                                                                                                                                                                        |
-| MARON   | Right so you do that?                                                                                                                                                      |
-| GROSS   | I sometimes do that                                                                                                                                                        |
-| MARON   | How often?                                                                                                                                                                 |
-
   
