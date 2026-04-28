@@ -55,7 +55,7 @@ MyConvos2 <- read_dyads(my_path='/MyStuff')
 
 <span style="color: darkred;">Arguments to `read_1file` include:</span>  <br>
 1. **my_dat**: object already in your R environment containing text and speaker information.
-```{r, eval=T, message=F, warning=F}
+```{r, eval=F, message=F, warning=F}
 MaryLittleLamb <- read_1file(MaronGross_2013)
 #print first ten rows of header
 knitr::kable(head(MaronGross_2013, 15), format = "pipe")
