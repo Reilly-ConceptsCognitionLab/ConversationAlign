@@ -22,13 +22,13 @@ Source:
 
 Reilly J, Ulichney V, Sacks B (2026). *ConversationAlign: Process Text
 and Compute Linguistic Alignment in Conversation Transcripts*. R package
-version 0.4.0,
+version 0.4.1,
 <https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign>.
 
     @Manual{,
       title = {ConversationAlign: Process Text and Compute Linguistic Alignment in Conversation Transcripts},
       author = {Jamie Reilly and Virginia Ulichney and Ben Sacks},
       year = {2026},
-      note = {R package version 0.4.0},
+      note = {R package version 0.4.1},
       url = {https://github.com/Reilly-ConceptsCognitionLab/ConversationAlign},
     }

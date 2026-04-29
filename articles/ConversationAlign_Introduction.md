@@ -203,15 +203,8 @@ Here are some things to consider:
     preprint. It was recently invited for revision at Behavior Rsearch
     Methods. We will update when/if eventually accepted there!  
 
-2.  **Methods for creating internal lookup database**  
-    ConversationAlign contains a large, internal lexical
-    lookup_database. [Click
-    Here](https://reilly-lab.github.io/ConversationAlign_LookupHowTo_Jun25.html)
-    to see how we created this by merging other offline psycholinguistic
-    databases into one.  
-
-3.  **Variable Key for ConversationAlign**  
-    ConversationAlign currently allows users to compute alignment
+2.  **Variable Key for ConversationAlign**  
+    `ConversationAlign` currently allows users to compute alignment
     dynamics across \>40 different lexical, affective, and semantic
     dimensions.\[Click
     Here\]((<https://reilly-lab.github.io/ConversationAlign_LookupJul25_VariableKey.html>)
