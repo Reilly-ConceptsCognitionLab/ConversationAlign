@@ -206,9 +206,8 @@ Here are some things to consider:
 2.  **Variable Key for ConversationAlign**  
     `ConversationAlign` currently allows users to compute alignment
     dynamics across \>40 different lexical, affective, and semantic
-    dimensions.\[Click
-    Here\]((<https://reilly-lab.github.io/ConversationAlign_LookupJul25_VariableKey.html>)
-    to link to a variable key.  
+    dimensions.[Click Here to View Lookup
+    Key](https://reilly-lab.github.io/Jamie_LookupVariableKey.html).  
 
 ## References
 
