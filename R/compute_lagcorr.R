@@ -49,12 +49,16 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
       df$Participant_ID <- gsub(participantvec[2], names(participantvec)[2], df$Participant_ID)
 
       # Create wide data frame with aggregated scores
+      # Use explicit column selection to avoid tidyselect deprecation warnings
+      align_var_copy <- align_var
       df_wide <- df %>%
         dplyr::group_by(Event_ID, Exchange_Count, Participant_ID, .add = FALSE) %>%
-        dplyr::summarise(dplyr::across(tidyselect::contains(align_var), ~ mean(.x, na.rm = TRUE)),
+        dplyr::summarise(dplyr::across(all_of(align_var_copy), ~ mean(.x, na.rm = TRUE)),
                          .groups = "drop") %>%
-        tidyr::pivot_wider(names_from = tidyselect::contains("Participant_ID"),
-                           values_from = align_var)
+        tidyr::pivot_wider(id_cols = c("Event_ID", "Exchange_Count"),
+                           names_from = "Participant_ID",
+                           values_from = all_of(align_var_copy),
+                           names_sep = "_")
 
       # Handle single alignment variable case
       if (length(align_var) == 1) {
@@ -63,7 +67,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
       }
 
       df_wide <- df_wide %>%
-        dplyr::select(Event_ID, Exchange_Count, tidyselect::contains(align_var))
+        dplyr::select(Event_ID, Exchange_Count, all_of(align_var_copy))
 
       # Remove rows with NA values
       rows_with_na_ind <- apply(df_wide[, which(colnames(df_wide) %in% paste(align_var, "S1", sep = "_") |
@@ -75,7 +79,7 @@ compute_lagcorr <- function(df_prep, lags = c(-2, 0, 2), corr_type = "Pearson") 
 
       # Interpolate missing values
       interp_df <- df_wide %>%
-        dplyr::mutate(dplyr::across(tidyselect::contains(align_var),
+        dplyr::mutate(dplyr::across(all_of(align_var_copy),
                                     ~ zoo::na.approx(.x, na.rm = FALSE))) %>%
         tidyr::fill(names(df_wide[, which(colnames(df_wide) %in% paste(align_var, "S1", sep = "_") |
                                             colnames(df_wide) %in% paste(align_var, "S2", sep = "_"))]),
