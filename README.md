@@ -9,7 +9,7 @@ ConversationAlign
 </h1>
 
 Open-source software for computing main effects and indices of alignment
-across coversation partners in dyadic conversation transcripts.
+across conversation partners in dyadic conversation transcripts.
 
 # <a href="https://reilly-conceptscognitionlab.github.io/ConversationAlign/"><img src="man/figures/logo.png" align="left" height="138" alt="ConversationAlign website" style="margin-right: 20px; margin-bottom: 20px;" /></a>
 
@@ -198,7 +198,7 @@ knitr::kable(head(NurseryRhymes_Prepped, 10), format = "simple", digits=2)
 ## `summarize_dyads()`
 
 This is the computational stage where the package generates a dataframe
-boiled down to two rows per converation with summary data appended to
+boiled down to two rows per conversation with summary data appended to
 each level of Participant_ID. This returns the difference time series
 AUC (dAUC) for every variable of interest you specified and the
 correlation at lags -2,,0, 2. You decide whether you want a Pearson or
