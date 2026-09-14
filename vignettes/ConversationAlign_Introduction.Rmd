@@ -80,11 +80,7 @@ Any analysis of language comes with assumptions and potential bias. For example,
 
 # Background and Supporting Materials
 
-1. **Preprint** <br>
-Our PsyArXiv preprint describing the method(s) in greater detail is referenced as:
-Sacks, B., Ulichney, V., Duncan, A., Helion, C., Weinstein, S., Giovannetti, T., ... Reilly, J. (2025, March 12). *ConversationAlign: Open-Source Software for Analyzing Patterns of Lexical Use and Alignment in Conversation Transcripts*. to read our preprint. It was recently invited for revision at Behavior Rsearch Methods. We will update when/if eventually accepted there! <br>
-
-2. **Variable Key for ConversationAlign** <br>
+1. **Variable Key for ConversationAlign** <br>
 ``ConversationAlign`` currently allows users to compute alignment dynamics across >40 different lexical, affective, and semantic dimensions.[Click Here to View Lookup Key](https://reilly-lab.github.io/Jamie_LookupVariableKey.html). <br>
 
 # References

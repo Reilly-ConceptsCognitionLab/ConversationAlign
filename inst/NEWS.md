@@ -1,5 +1,18 @@
 # ConversationAlign 0.4.1
 
+# 2026-9-04
+
+## Breaking Changes
+
+This is a minor release 
+
+### Modified
+- Changed license to GPL-3 to maintain consistency with textstem package license
+
+
+
+# ConversationAlign 0.4.0
+
 # - 2026-4-22
 
 ## Breaking Changes
