@@ -87,6 +87,7 @@ stopwords be removed or preserved as NAs. NAs are filled in future
 steps. Defaults is `FALSE`.
 
 ``` r
+
 #Example of running the function
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
 ```
@@ -97,28 +98,29 @@ This embedded as external data in the package with ‘anger’ values yoked
 to each word.
 
 ``` r
+
 knitr::kable(head(NurseryRhymes_Prepped, 20), format = "simple", digits=2)
 ```
 
-| Event_ID   | Participant_ID | Exchange_Count | Turn_Count | Text_Prep | Text_Clean | emo_anger |
-|:-----------|:---------------|---------------:|-----------:|:----------|:-----------|----------:|
-| ItsySpider | Yin            |              1 |          1 | the       | NA         |        NA |
-| ItsySpider | Yin            |              1 |          1 | itsy      | itsy       |     -0.02 |
-| ItsySpider | Yin            |              1 |          1 | bitsy     | bitsy      |     -0.02 |
-| ItsySpider | Yin            |              1 |          1 | spider    | spider     |      0.04 |
-| ItsySpider | Yin            |              1 |          1 | climbed   | climb      |     -0.09 |
-| ItsySpider | Yin            |              1 |          1 | up        | up         |     -0.06 |
-| ItsySpider | Yin            |              1 |          1 | the       | NA         |        NA |
-| ItsySpider | Yin            |              1 |          1 | water     | water      |     -0.17 |
-| ItsySpider | Yin            |              1 |          1 | spout     | spout      |      0.05 |
-| ItsySpider | Maya           |              1 |          2 | down      | down       |      0.03 |
-| ItsySpider | Maya           |              1 |          2 | came      | come       |     -0.13 |
-| ItsySpider | Maya           |              1 |          2 | the       | NA         |        NA |
-| ItsySpider | Maya           |              1 |          2 | rain      | rain       |      0.07 |
-| ItsySpider | Maya           |              1 |          2 | and       | NA         |        NA |
-| ItsySpider | Maya           |              1 |          2 | washed    | wash       |      0.06 |
-| ItsySpider | Maya           |              1 |          2 | the       | NA         |        NA |
-| ItsySpider | Maya           |              1 |          2 | spider    | spider     |      0.04 |
-| ItsySpider | Maya           |              1 |          2 | out       | out        |      0.04 |
-| ItsySpider | Yin            |              2 |          3 | out       | out        |      0.04 |
-| ItsySpider | Yin            |              2 |          3 | came      | come       |     -0.13 |
+| Event_ID | Participant_ID | Exchange_Count | Turn_Count | Text_Prep | Text_Clean | emo_anger |
+|:---|:---|---:|---:|:---|:---|---:|
+| ItsySpider | Yin | 1 | 1 | the | NA | NA |
+| ItsySpider | Yin | 1 | 1 | itsy | itsy | -0.02 |
+| ItsySpider | Yin | 1 | 1 | bitsy | bitsy | -0.02 |
+| ItsySpider | Yin | 1 | 1 | spider | spider | 0.04 |
+| ItsySpider | Yin | 1 | 1 | climbed | climb | -0.09 |
+| ItsySpider | Yin | 1 | 1 | up | up | -0.06 |
+| ItsySpider | Yin | 1 | 1 | the | NA | NA |
+| ItsySpider | Yin | 1 | 1 | water | water | -0.17 |
+| ItsySpider | Yin | 1 | 1 | spout | spout | 0.05 |
+| ItsySpider | Maya | 1 | 2 | down | down | 0.03 |
+| ItsySpider | Maya | 1 | 2 | came | come | -0.13 |
+| ItsySpider | Maya | 1 | 2 | the | NA | NA |
+| ItsySpider | Maya | 1 | 2 | rain | rain | 0.07 |
+| ItsySpider | Maya | 1 | 2 | and | NA | NA |
+| ItsySpider | Maya | 1 | 2 | washed | wash | 0.06 |
+| ItsySpider | Maya | 1 | 2 | the | NA | NA |
+| ItsySpider | Maya | 1 | 2 | spider | spider | 0.04 |
+| ItsySpider | Maya | 1 | 2 | out | out | 0.04 |
+| ItsySpider | Yin | 2 | 3 | out | out | 0.04 |
+| ItsySpider | Yin | 2 | 3 | came | come | -0.13 |

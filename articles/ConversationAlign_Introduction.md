@@ -56,6 +56,7 @@ Install and load the development version of `ConversationAlign` from
 [GitHub](https://github.com/) using the `devtools` package.
 
 ``` r
+
 # Load SemanticDistance
 library(ConversationAlign)
 ```
@@ -72,33 +73,35 @@ pipeline reshaopes conversation transcripts.
 #### NurseryRhymes
 
 ``` r
+
 knitr::kable(head(NurseryRhymes, 20), format = "simple")
 ```
 
-| Event_ID   | Participant_ID | Text_Raw                                             |
-|:-----------|:---------------|:-----------------------------------------------------|
-| ItsySpider | Yin            | The itsy-bitsy spider climbed up the water spout     |
-| ItsySpider | Maya           | Down came the rain and washed the spider out         |
-| ItsySpider | Yin            | Out came the sun, and dried up all the rain          |
-| ItsySpider | Maya           | And the itsy-bitsy spider climbed up the spout again |
-| ItsySpider | Yin            | The itsy-bitsy spider climbed up the water spout     |
-| ItsySpider | Maya           | Down came the rain and washed the spider out         |
-| ItsySpider | Yin            | Out came the sun, and dried up all the rain          |
-| ItsySpider | Maya           | And the itsy-bitsy spider climbed up the spout again |
-| ItsySpider | Yin            | The itsy-bitsy spider climbed up the water spout     |
-| ItsySpider | Maya           | Down came the rain and washed the spider out         |
-| ItsySpider | Yin            | Out came the sun, and dried up all the rain          |
-| ItsySpider | Maya           | And the itsy-bitsy spider climbed up the spout again |
-| ItsySpider | Yin            | The itsy-bitsy spider climbed up the water spout     |
-| ItsySpider | Maya           | Down came the rain and washed the spider out         |
-| ItsySpider | Yin            | Out came the sun, and dried up all the rain          |
-| ItsySpider | Maya           | And the itsy-bitsy spider climbed up the spout again |
-| ItsySpider | Yin            | The itsy-bitsy spider climbed up the water spout     |
-| ItsySpider | Maya           | Down came the rain and washed the spider out         |
-| ItsySpider | Yin            | Out came the sun, and dried up all the rain          |
-| ItsySpider | Maya           | And the itsy-bitsy spider climbed up the spout again |
+| Event_ID | Participant_ID | Text_Raw |
+|:---|:---|:---|
+| ItsySpider | Yin | The itsy-bitsy spider climbed up the water spout |
+| ItsySpider | Maya | Down came the rain and washed the spider out |
+| ItsySpider | Yin | Out came the sun, and dried up all the rain |
+| ItsySpider | Maya | And the itsy-bitsy spider climbed up the spout again |
+| ItsySpider | Yin | The itsy-bitsy spider climbed up the water spout |
+| ItsySpider | Maya | Down came the rain and washed the spider out |
+| ItsySpider | Yin | Out came the sun, and dried up all the rain |
+| ItsySpider | Maya | And the itsy-bitsy spider climbed up the spout again |
+| ItsySpider | Yin | The itsy-bitsy spider climbed up the water spout |
+| ItsySpider | Maya | Down came the rain and washed the spider out |
+| ItsySpider | Yin | Out came the sun, and dried up all the rain |
+| ItsySpider | Maya | And the itsy-bitsy spider climbed up the spout again |
+| ItsySpider | Yin | The itsy-bitsy spider climbed up the water spout |
+| ItsySpider | Maya | Down came the rain and washed the spider out |
+| ItsySpider | Yin | Out came the sun, and dried up all the rain |
+| ItsySpider | Maya | And the itsy-bitsy spider climbed up the spout again |
+| ItsySpider | Yin | The itsy-bitsy spider climbed up the water spout |
+| ItsySpider | Maya | Down came the rain and washed the spider out |
+| ItsySpider | Yin | Out came the sun, and dried up all the rain |
+| ItsySpider | Maya | And the itsy-bitsy spider climbed up the spout again |
 
 ``` r
+
 str(NurseryRhymes)
 #> 'data.frame':    228 obs. of  3 variables:
 #>  $ Event_ID      : chr  "ItsySpider" "ItsySpider" "ItsySpider" "ItsySpider" ...
@@ -113,33 +116,35 @@ Gross, titled [Marc Maron: A Life Fueled By ‘Panic And
 Dread’](https://www.npr.org/transcripts/179014321).  
 
 ``` r
+
 knitr::kable(head(MaronGross_2013, 20), format = "simple")
 ```
 
-| speaker | text                                                                                                                                                                       |
-|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| MARON   | I’m a little nervous but I’ve prepared I’ve written things on a piece of paper                                                                                             |
-| MARON   | I don’t know how you prepare I could ask you that - maybe I will But this is how I prepare - I panic                                                                       |
-| MARON   | For a while                                                                                                                                                                |
-| GROSS   | Yeah                                                                                                                                                                       |
-| MARON   | And then I scramble and then I type some things up and then I handwrite things that are hard to read So I can you know challenge myself on that level during the interview |
-| GROSS   | Being self-defeating is always a good part of preparation                                                                                                                  |
-| MARON   | What is?                                                                                                                                                                   |
-| GROSS   | Being self-defeating                                                                                                                                                       |
-| MARON   | Yes                                                                                                                                                                        |
-| GROSS   | Self-sabotage                                                                                                                                                              |
-| MARON   | Yes                                                                                                                                                                        |
-| GROSS   | Key                                                                                                                                                                        |
-| MARON   | Right so you do that?                                                                                                                                                      |
-| GROSS   | I sometimes do that                                                                                                                                                        |
-| MARON   | How often?                                                                                                                                                                 |
-| GROSS   | I try not to do that I do that more in life than I do in radio                                                                                                             |
-| MARON   | Really?                                                                                                                                                                    |
-| GROSS   | Yeah                                                                                                                                                                       |
-| MARON   | Like today?                                                                                                                                                                |
-| GROSS   | Life is harder than radio                                                                                                                                                  |
+| speaker | text |
+|:---|:---|
+| MARON | I’m a little nervous but I’ve prepared I’ve written things on a piece of paper |
+| MARON | I don’t know how you prepare I could ask you that - maybe I will But this is how I prepare - I panic |
+| MARON | For a while |
+| GROSS | Yeah |
+| MARON | And then I scramble and then I type some things up and then I handwrite things that are hard to read So I can you know challenge myself on that level during the interview |
+| GROSS | Being self-defeating is always a good part of preparation |
+| MARON | What is? |
+| GROSS | Being self-defeating |
+| MARON | Yes |
+| GROSS | Self-sabotage |
+| MARON | Yes |
+| GROSS | Key |
+| MARON | Right so you do that? |
+| GROSS | I sometimes do that |
+| MARON | How often? |
+| GROSS | I try not to do that I do that more in life than I do in radio |
+| MARON | Really? |
+| GROSS | Yeah |
+| MARON | Like today? |
+| GROSS | Life is harder than radio |
 
 ``` r
+
 str(MaronGross_2013)
 #> 'data.frame':    546 obs. of  2 variables:
 #>  $ speaker: chr  "MARON" "MARON" "MARON" "GROSS" ...
@@ -194,16 +199,7 @@ Here are some things to consider:
 
 ## Background and Supporting Materials
 
-1.  **Preprint**  
-    Our PsyArXiv preprint describing the method(s) in greater detail is
-    referenced as: Sacks, B., Ulichney, V., Duncan, A., Helion, C.,
-    Weinstein, S., Giovannetti, T., … Reilly, J. (2025, March 12).
-    *ConversationAlign: Open-Source Software for Analyzing Patterns of
-    Lexical Use and Alignment in Conversation Transcripts*. to read our
-    preprint. It was recently invited for revision at Behavior Rsearch
-    Methods. We will update when/if eventually accepted there!  
-
-2.  **Variable Key for ConversationAlign**  
+1.  **Variable Key for ConversationAlign**  
     `ConversationAlign` currently allows users to compute alignment
     dynamics across \>40 different lexical, affective, and semantic
     dimensions.[Click Here to View Lookup

@@ -14,6 +14,7 @@ Arguments to `corpus_analytics` include:
 [`prep_dyads()`](https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/prep_dyads.md)function  
 
 ``` r
+
 NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
 knitr::kable(head(NurseryRhymes_Analytics, 15), format = "simple", digits = 2)
 ```

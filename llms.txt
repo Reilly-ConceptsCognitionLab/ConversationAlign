@@ -55,6 +55,7 @@ ConversationAlign from [GitHub](https://github.com/) using the
 `devtools` package.
 
 ``` r
+
 # Check if devtools is installed, if not install it
 if (!require("devtools", quietly = TRUE)) {
   install.packages("devtools")
@@ -94,6 +95,7 @@ library(ConversationAlign)
   name  
 
 ``` r
+
 #will search for folder 'my_transcripts' in your current directory
 MyConvos <- read_dyads()
 
@@ -116,23 +118,24 @@ MyConvos2 <- read_dyads(my_path='/MyStuff')
   speaker information.
 
 ``` r
+
 MaryLittleLamb <- read_1file(MaronGross_2013)
 #print first ten rows of header
 knitr::kable(head(MaronGross_2013, 10), format = "pipe")
 ```
 
-| speaker | text                                                                                                                                                                       |
-|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| MARON   | I’m a little nervous but I’ve prepared I’ve written things on a piece of paper                                                                                             |
-| MARON   | I don’t know how you prepare I could ask you that - maybe I will But this is how I prepare - I panic                                                                       |
-| MARON   | For a while                                                                                                                                                                |
-| GROSS   | Yeah                                                                                                                                                                       |
-| MARON   | And then I scramble and then I type some things up and then I handwrite things that are hard to read So I can you know challenge myself on that level during the interview |
-| GROSS   | Being self-defeating is always a good part of preparation                                                                                                                  |
-| MARON   | What is?                                                                                                                                                                   |
-| GROSS   | Being self-defeating                                                                                                                                                       |
-| MARON   | Yes                                                                                                                                                                        |
-| GROSS   | Self-sabotage                                                                                                                                                              |
+| speaker | text |
+|:---|:---|
+| MARON | I’m a little nervous but I’ve prepared I’ve written things on a piece of paper |
+| MARON | I don’t know how you prepare I could ask you that - maybe I will But this is how I prepare - I panic |
+| MARON | For a while |
+| GROSS | Yeah |
+| MARON | And then I scramble and then I type some things up and then I handwrite things that are hard to read So I can you know challenge myself on that level during the interview |
+| GROSS | Being self-defeating is always a good part of preparation |
+| MARON | What is? |
+| GROSS | Being self-defeating |
+| MARON | Yes |
+| GROSS | Self-sabotage |
 
   
   
@@ -158,6 +161,7 @@ word. -Retains metadata
   `CA_OriginalStops`, or `Temple_stops25`. Default is `Temple_stops25`.
 
 ``` r
+
 NurseryRhymes_Prepped <- prep_dyads(dat_read=NurseryRhymes, lemmatize=TRUE, omit_stops=T, which_stoplist="Temple_stops25")
 ```
 
@@ -165,21 +169,22 @@ Example of a prepped dataset embedded as external data in the package
 with ‘anger’ values yoked to each word.
 
 ``` r
+
 knitr::kable(head(NurseryRhymes_Prepped, 10), format = "simple", digits=2)
 ```
 
-| Event_ID   | Participant_ID | Exchange_Count | Turn_Count | Text_Prep | Text_Clean | emo_anger |
-|:-----------|:---------------|---------------:|-----------:|:----------|:-----------|----------:|
-| ItsySpider | Yin            |              1 |          1 | the       | NA         |        NA |
-| ItsySpider | Yin            |              1 |          1 | itsy      | itsy       |     -0.02 |
-| ItsySpider | Yin            |              1 |          1 | bitsy     | bitsy      |     -0.02 |
-| ItsySpider | Yin            |              1 |          1 | spider    | spider     |      0.04 |
-| ItsySpider | Yin            |              1 |          1 | climbed   | climb      |     -0.09 |
-| ItsySpider | Yin            |              1 |          1 | up        | up         |     -0.06 |
-| ItsySpider | Yin            |              1 |          1 | the       | NA         |        NA |
-| ItsySpider | Yin            |              1 |          1 | water     | water      |     -0.17 |
-| ItsySpider | Yin            |              1 |          1 | spout     | spout      |      0.05 |
-| ItsySpider | Maya           |              1 |          2 | down      | down       |      0.03 |
+| Event_ID | Participant_ID | Exchange_Count | Turn_Count | Text_Prep | Text_Clean | emo_anger |
+|:---|:---|---:|---:|:---|:---|---:|
+| ItsySpider | Yin | 1 | 1 | the | NA | NA |
+| ItsySpider | Yin | 1 | 1 | itsy | itsy | -0.02 |
+| ItsySpider | Yin | 1 | 1 | bitsy | bitsy | -0.02 |
+| ItsySpider | Yin | 1 | 1 | spider | spider | 0.04 |
+| ItsySpider | Yin | 1 | 1 | climbed | climb | -0.09 |
+| ItsySpider | Yin | 1 | 1 | up | up | -0.06 |
+| ItsySpider | Yin | 1 | 1 | the | NA | NA |
+| ItsySpider | Yin | 1 | 1 | water | water | -0.17 |
+| ItsySpider | Yin | 1 | 1 | spout | spout | 0.05 |
+| ItsySpider | Maya | 1 | 2 | down | down | 0.03 |
 
   
   
@@ -213,6 +218,7 @@ Spearman lagged correlation.
   correlations across interlocutors for each dimension of interest.
 
 ``` r
+
 MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Prepped, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
 colnames(MarySumDat)
 #>  [1] "Event_ID"           "Participant_ID"     "Dimension"         
@@ -222,14 +228,14 @@ colnames(MarySumDat)
 knitr::kable(head(MarySumDat, 10), format = "simple", digits = 3)
 ```
 
-| Event_ID   | Participant_ID | Dimension | Dimension_Mean | AUC_raw | AUC_scaled100 | Talked_First | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
-|:-----------|:---------------|:----------|---------------:|--------:|--------------:|:-------------|---------------:|-------------------:|--------------:|
-| ItsySpider | Maya           | emo_anger |          0.001 |   0.783 |         1.630 | Yin          |             -1 |                 -1 |            -1 |
-| ItsySpider | Yin            | emo_anger |         -0.033 |   0.783 |         1.630 | Yin          |             -1 |                 -1 |            -1 |
-| JackJill   | Ana            | emo_anger |         -0.066 |   3.729 |         4.662 | Franklin     |              1 |                  1 |             1 |
-| JackJill   | Franklin       | emo_anger |          0.030 |   3.729 |         4.662 | Franklin     |              1 |                  1 |             1 |
-| LittleLamb | Dave           | emo_anger |         -0.001 |   1.486 |         1.486 | Mary         |             NA |                 NA |            NA |
-| LittleLamb | Mary           | emo_anger |         -0.031 |   1.486 |         1.486 | Mary         |             NA |                 NA |            NA |
+| Event_ID | Participant_ID | Dimension | Dimension_Mean | AUC_raw | AUC_scaled100 | Talked_First | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
+|:---|:---|:---|---:|---:|---:|:---|---:|---:|---:|
+| ItsySpider | Maya | emo_anger | 0.001 | 0.783 | 1.630 | Yin | -1 | -1 | -1 |
+| ItsySpider | Yin | emo_anger | -0.033 | 0.783 | 1.630 | Yin | -1 | -1 | -1 |
+| JackJill | Ana | emo_anger | -0.066 | 3.729 | 4.662 | Franklin | 1 | 1 | 1 |
+| JackJill | Franklin | emo_anger | 0.030 | 3.729 | 4.662 | Franklin | 1 | 1 | 1 |
+| LittleLamb | Dave | emo_anger | -0.001 | 1.486 | 1.486 | Mary | NA | NA | NA |
+| LittleLamb | Mary | emo_anger | -0.031 | 1.486 | 1.486 | Mary | NA | NA | NA |
 
 # Optional: Generate corpus analytics
 
@@ -248,6 +254,7 @@ as `flextable` or `tinytable`.
   [`prep_dyads()`](https://reilly-conceptscognitionlab.github.io/ConversationAlign/reference/prep_dyads.md)function  
 
 ``` r
+
 NurseryRhymes_Analytics <-  corpus_analytics(dat_prep=NurseryRhymes_Prepped)
 knitr::kable(head(NurseryRhymes_Analytics, 10), format = "simple", digits = 2)
 ```

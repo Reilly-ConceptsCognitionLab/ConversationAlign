@@ -47,6 +47,7 @@ computing turn-by-turn correlations across interlocutors for each
 dimension of interest.
 
 ``` r
+
 MarySumDat <- summarize_dyads(df_prep = NurseryRhymes_Prepped, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
 colnames(MarySumDat)
 #>  [1] "Event_ID"               "Participant_ID"         "Talked_First"          
@@ -56,14 +57,14 @@ colnames(MarySumDat)
 knitr::kable(head(MarySumDat, 15), format = "simple", digits = 3)
 ```
 
-| Event_ID   | Participant_ID | Talked_First | Dimension | Dimension_Mean | AUC_raw_Immediate | AUC_scaled50_Immediate | AUC_raw_Lag1 | AUC_scaled50_Lag1 | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
-|:-----------|:---------------|:-------------|:----------|---------------:|------------------:|-----------------------:|-------------:|------------------:|---------------:|-------------------:|--------------:|
-| ItsySpider | Maya           | Yin          | emo_anger |          0.001 |             0.783 |                  1.630 |        0.749 |             1.560 |             -1 |                 -1 |            -1 |
-| ItsySpider | Yin            | Yin          | emo_anger |         -0.033 |             0.783 |                  1.630 |        0.749 |             1.560 |             -1 |                 -1 |            -1 |
-| JackJill   | Ana            | Franklin     | emo_anger |         -0.066 |             3.729 |                  4.662 |        3.634 |             4.542 |              1 |                  1 |             1 |
-| JackJill   | Franklin       | Franklin     | emo_anger |          0.030 |             3.729 |                  4.662 |        3.634 |             4.542 |              1 |                  1 |             1 |
-| LittleLamb | Dave           | Mary         | emo_anger |         -0.001 |             1.486 |                  1.486 |        1.456 |             1.456 |             NA |                 NA |            NA |
-| LittleLamb | Mary           | Mary         | emo_anger |         -0.031 |             1.486 |                  1.486 |        1.456 |             1.456 |             NA |                 NA |            NA |
+| Event_ID | Participant_ID | Talked_First | Dimension | Dimension_Mean | AUC_raw_Immediate | AUC_scaled50_Immediate | AUC_raw_Lag1 | AUC_scaled50_Lag1 | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
+|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| ItsySpider | Maya | Yin | emo_anger | 0.001 | 0.783 | 1.630 | 0.749 | 1.560 | -1 | -1 | -1 |
+| ItsySpider | Yin | Yin | emo_anger | -0.033 | 0.783 | 1.630 | 0.749 | 1.560 | -1 | -1 | -1 |
+| JackJill | Ana | Franklin | emo_anger | -0.066 | 3.729 | 4.662 | 3.634 | 4.542 | 1 | 1 | 1 |
+| JackJill | Franklin | Franklin | emo_anger | 0.030 | 3.729 | 4.662 | 3.634 | 4.542 | 1 | 1 | 1 |
+| LittleLamb | Dave | Mary | emo_anger | -0.001 | 1.486 | 1.486 | 1.456 | 1.456 | NA | NA | NA |
+| LittleLamb | Mary | Mary | emo_anger | -0.031 | 1.486 | 1.486 | 1.456 | 1.456 | NA | NA | NA |
 
 ## Generating sham conversations
 
@@ -88,16 +89,17 @@ include:
 reproducible results.  
 
 ``` r
+
 MaryShams <- generate_shams(df_prep = NurseryRhymes_Prepped, seed = 10)
 MarySumDatShams <- summarize_dyads(df_prep = MaryShams, custom_lags=NULL, sumdat_only = TRUE, corr_type='Pearson') 
 knitr::kable(head(MarySumDatShams, 15), format = "simple", digits = 3)
 ```
 
-| Event_ID   | Participant_ID | Talked_First | Dimension | Dimension_Mean | AUC_raw_Immediate | AUC_scaled50_Immediate | AUC_raw_Lag1 | AUC_scaled50_Lag1 | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
-|:-----------|:---------------|:-------------|:----------|---------------:|------------------:|-----------------------:|-------------:|------------------:|---------------:|-------------------:|--------------:|
-| ItsySpider | Maya           | Maya         | emo_anger |          0.002 |             0.759 |                  1.580 |        0.701 |             1.459 |          0.100 |                 -1 |         0.100 |
-| ItsySpider | Yin            | Maya         | emo_anger |         -0.032 |             0.759 |                  1.580 |        0.701 |             1.459 |          0.100 |                 -1 |         0.100 |
-| JackJill   | Ana            | Ana          | emo_anger |         -0.066 |             3.729 |                  4.662 |        3.634 |             4.542 |         -0.158 |                  1 |        -0.158 |
-| JackJill   | Franklin       | Ana          | emo_anger |          0.030 |             3.729 |                  4.662 |        3.634 |             4.542 |         -0.158 |                  1 |        -0.158 |
-| LittleLamb | Dave           | Dave         | emo_anger |         -0.001 |             1.486 |                  1.486 |        1.456 |             1.456 |             NA |                 NA |            NA |
-| LittleLamb | Mary           | Dave         | emo_anger |         -0.031 |             1.486 |                  1.486 |        1.456 |             1.456 |             NA |                 NA |            NA |
+| Event_ID | Participant_ID | Talked_First | Dimension | Dimension_Mean | AUC_raw_Immediate | AUC_scaled50_Immediate | AUC_raw_Lag1 | AUC_scaled50_Lag1 | TurnCorr_Lead2 | TurnCorr_Immediate | TurnCorr_Lag2 |
+|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| ItsySpider | Maya | Maya | emo_anger | 0.002 | 0.759 | 1.580 | 0.701 | 1.459 | 0.100 | -1 | 0.100 |
+| ItsySpider | Yin | Maya | emo_anger | -0.032 | 0.759 | 1.580 | 0.701 | 1.459 | 0.100 | -1 | 0.100 |
+| JackJill | Ana | Ana | emo_anger | -0.066 | 3.729 | 4.662 | 3.634 | 4.542 | -0.158 | 1 | -0.158 |
+| JackJill | Franklin | Ana | emo_anger | 0.030 | 3.729 | 4.662 | 3.634 | 4.542 | -0.158 | 1 | -0.158 |
+| LittleLamb | Dave | Dave | emo_anger | -0.001 | 1.486 | 1.486 | 1.456 | 1.456 | NA | NA | NA |
+| LittleLamb | Mary | Dave | emo_anger | -0.031 | 1.486 | 1.486 | 1.456 | 1.456 | NA | NA | NA |

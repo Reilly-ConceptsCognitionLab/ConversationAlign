@@ -55,6 +55,7 @@ Arguments to `read_dyads` include:
 name  
 
 ``` r
+
 #will search for folder 'my_transcripts' in your current directory
 MyConvos <- read_dyads()
 
@@ -75,6 +76,7 @@ Arguments to `read_1file` include:
 speaker information.
 
 ``` r
+
 MaryLittleLamb <- read_1file(MaronGross_2013)
 #print first ten rows of header
 knitr::kable(head(MaronGross_2013, 15), format = "pipe")
