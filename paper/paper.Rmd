@@ -55,7 +55,7 @@ output: rticles::joss_article
 # Summary
  `ConversationAlign` executes a series of operations upon one or more conversation transcripts (i.e., two-person dialogues).  `ConversationAlign` imports raw language transcripts into R, appends unique document identifiers, and concatenates all conversations into a single dataframe. `ConversationAlign` generates corpus analytics and executes text cleaning operations such as stopword removal and lemmatization. The package vectorizes text and yokes published norms to each content word spanning more than 40 lexical, affective, and semantic dimensions. `ConversationAlign` outputs summary statistics each conversation including main effects and indices of local and global alignment for each specified dimension of interest.   
  
-# Statment of need
+# Statement of need
 Many excellent text analysis applications exist (e.g., `Quanteda` [@benoit:2018] and `Korpus` [@michalke:2018]). However, few applications are tailored to the unique demands of conversation analysis (but for Python see ALIGN [@duran:2019]). `ConversationAlign` offers a comprehensive text processing pipeline and novel algoirthms for computing linguistic alignment in 2-person dialogues. This software offers standardization and automation advantages that are in great need in a field that has historically relied heavily upon manual coding systems and subjective human judgment.
 
 # State of the field
@@ -71,7 +71,7 @@ The fundamental challenges involved in conversation analysis involve not only me
 # Background
 Conversation is among the most complex behaviors that humans routinely undertake. In a dyadic interaction, conversation partners modify the form and content of their own production to align with each other [@pickering:2021]. This process, known as linguistic alignment, occurs across many dimensions. `ConversationAlign` offers an automated approach to computing linguistic alignment across >40 distinct psycholinguistic dimensions (e.g., word length, valence, concreteness), leveraging recent advances in natural language processing to examine dynamics of human interaction at an unprecedented scale.  
 
-# AI usage
+# AI usage disclosure
 `ConversationAlign` is **NOT** a large language model (LLM). It instead indexes an static lexical lookup database populated with published norms for >100,000 English words across more than 40 unique dimensions. We used DeepSeek to troubleshoot elements of code and to generate regular expressions (regex) for complex pattern matching. We did not use AI to write this paper or generate segments of code. 
 
 # References
