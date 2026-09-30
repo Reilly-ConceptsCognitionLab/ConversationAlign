@@ -7,9 +7,8 @@ Authors@R: c(
            role = c("aut", "cre"), 
            email = "jamie_reilly@temple.edu",
            comment = c(ORCID = "0000-0002-0891-438X")),
-    person("Virginia", "Ulichney", role = "aut"),
-    person("Ben", "Sacks", role = "aut"),
-    person("Sarah", "Weinstein", role = "ctb"),
+    person("Ben", "Sacks", role = "aut", role = "ctb"),
+    person("Virginia", "Ulichney", role = "ctb"),
     person("Chelsea", "Helion", role = "ctb"),
     person("Gus", "Cooney", role = "ctb"))
 Maintainer: Jamie Reilly <jamie_reilly@temple.edu>
