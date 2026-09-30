@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.19)  30 SEP 2026 16:20
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.19)  30 SEP 2026 18:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -913,6 +913,11 @@ Package hyperref Warning: Suppressing link with empty target on input line 269.
 
 Package hyperref Warning: Suppressing link with empty target on input line 269.
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 315--333
+
+ []
+
 File: /Users/Jamie/Library/Caches/org.R-project.R/R/renv/cache/v5/macos/R-4.6/aarch64-apple-darwin23/rticles/0.27/1a05d2cc06f9fb360d2dc15f99293dfe/rticles/rmarkdown/templates/joss/resources/JOSS-logo.png Graphic file (type bmp)
 </Users/Jamie/Library/Caches/org.R-project.R/R/renv/cache/v5/macos/R-4.6/aarch64-apple-darwin23/rticles/0.27/1a05d2cc06f9fb360d2dc15f99293dfe/rticles/rmarkdown/templates/joss/resources/JOSS-logo.png>
 
@@ -923,22 +928,12 @@ Package fancyhdr Warning: \headheight is too small (62.59596pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.95425pt}.
 
 LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <8> not available
-(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 320.
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 333.
 [1
 
 ]
-Underfull \hbox (badness 2111) in paragraph at lines 375--379
-\TU/lmr/m/it/10 guage Use and Social Interaction\TU/lmr/m/n/10 . Cambridge University Press. [][]$[][][][][] [] [] []
- []
+Underfull \hbox (badness 10000) in paragraph at lines 334--339
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 375--379
-[][][][][] [] [][][][][][] [] [][][] [] [][][][][] [] [][] [] [][] [] [][] [] [][][] [] [][][][][][][][][][][][] [] [][] [] [][][] [] [][] [] [][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 375--379
-[][] [] [][][][][][][][][] [] [][][][][][] [] [][][][][][][][][][][][][] [] [][][][][][][][] [] [][][] [] [][][][][][][][][][] [] [][][] [] [][][] []
  []
 
 File: /Users/Jamie/Library/Caches/org.R-project.R/R/renv/cache/v5/macos/R-4.6/aarch64-apple-darwin23/rticles/0.27/1a05d2cc06f9fb360d2dc15f99293dfe/rticles/rmarkdown/templates/joss/resources/JOSS-logo.png Graphic file (type bmp)
@@ -951,6 +946,20 @@ Package fancyhdr Warning: \headheight is too small (62.59596pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.95425pt}.
 
 [2]
+Underfull \hbox (badness 2111) in paragraph at lines 394--398
+\TU/lmr/m/it/10 guage Use and Social Interaction\TU/lmr/m/n/10 . Cambridge University Press. [][]$[][][][][] [] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--398
+[][][][][] [] [][][][][][] [] [][][] [] [][][][][] [] [][] [] [][] [] [][] [] [][][] [] [][][][][][][][][][][][] [] [][] [] [][][] [] [][] [] [][][] []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--398
+[][] [] [][][][][][][][][] [] [][][][][][] [] [][][][][][][][][][][][][] [] [][][][][][][][] [] [][][] [] [][][][][][][][][][] [] [][][] [] [][][] []
+ []
+
 File: /Users/Jamie/Library/Caches/org.R-project.R/R/renv/cache/v5/macos/R-4.6/aarch64-apple-darwin23/rticles/0.27/1a05d2cc06f9fb360d2dc15f99293dfe/rticles/rmarkdown/templates/joss/resources/JOSS-logo.png Graphic file (type bmp)
 </Users/Jamie/Library/Caches/org.R-project.R/R/renv/cache/v5/macos/R-4.6/aarch64-apple-darwin23/rticles/0.27/1a05d2cc06f9fb360d2dc15f99293dfe/rticles/rmarkdown/templates/joss/resources/JOSS-logo.png>
 
@@ -972,10 +981,10 @@ Package logreq Info: Writing requests to 'paper.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 34553 strings out of 470189
- 712473 string characters out of 5478015
- 1581998 words of memory out of 5000000
- 62665 multiletter control sequences out of 15000+600000
+ 34554 strings out of 470189
+ 712489 string characters out of 5478015
+ 1584034 words of memory out of 5000000
+ 62666 multiletter control sequences out of 15000+600000
  634577 words of font info for 86 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,12n,94p,694b,850s stack positions out of 10000i,1000n,20000p,200000b,200000s

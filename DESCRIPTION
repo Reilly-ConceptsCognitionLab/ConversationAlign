@@ -19,7 +19,7 @@ Depends:
     R (>= 3.5)
 Imports:
     DescTools,
-    dplyr (>= 0.4.3),
+    dplyr (>= 1.2.0),
     httr,
     magrittr,
     purrr,

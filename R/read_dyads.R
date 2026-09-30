@@ -109,12 +109,12 @@ read_dyads <- function(my_path = "my_transcripts") {
              any(grepl("^Interlocutor$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Patient$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Person$", colnames(x_read_csv), ignore.case = T)) == TRUE |
+             any(grepl("^talker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Partner$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Source$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^PID$", colnames(x_read_csv), ignore.case = T)) == TRUE) &
             (any(grepl("^Text$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Turn$", colnames(x_read_csv), ignore.case = T)) == TRUE |
-             any(grepl("^talker$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^MyText$", colnames(x_read_csv), ignore.case = T)) == TRUE |
              any(grepl("^Utterance$", colnames(x_read_csv), ignore.case = T)) == TRUE)) {
 
@@ -127,10 +127,12 @@ read_dyads <- function(my_path = "my_transcripts") {
                                        grepl("partner", colnames(x_read_csv), ignore.case = T) |
                                        grepl("source", colnames(x_read_csv), ignore.case = T) |
                                        grepl("talker", colnames(x_read_csv), ignore.case = T) |
+                                       grepl("turn", colnames(x_read_csv), ignore.case = T) |
                                        grepl("participant", colnames(x_read_csv), ignore.case = T))] <- "Participant_ID"
 
           colnames(x_read_csv)[which(grepl("Text", colnames(x_read_csv), ignore.case = T) |
-                                       grepl("utterance", colnames(x_read_csv), ignore.case = T))] <- "Text_Raw"
+                                       grepl("utterance", colnames(x_read_csv), ignore.case = T) |
+                                        grepl("MyText", colnames(x_read_csv), ignore.case = T))] <- "Text_Raw"
 
           x_read_csv <- data.frame(x_read_csv)
           x_final <- x_read_csv
